@@ -3,4 +3,23 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="register">Daftar</string>
+    <string name="login">Login</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_forgot_password">Lupa password?</string>
+    <string name="dont_have_account">Daftar</string>
+    <string name="facebook_app_id">1234</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">56789</string>
+    <string name="hint_email_username">Email / Username</string>
+    <string name="welcome_isyara">selamat datang di isyara</string>
+    <string name="confirm_password">Konfirmasi Password</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_code_otp">Kode OTP</string>
+    <string name="verification">Verifikasi</string>
+    <string name="send">Kirim</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="have_account_or_not">Sudah punya akun? Login</string>
 </resources>
