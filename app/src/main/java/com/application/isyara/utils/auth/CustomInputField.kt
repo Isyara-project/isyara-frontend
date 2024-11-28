@@ -22,7 +22,8 @@ fun CustomInputField(
     isError: Boolean = false,
     errorMessage: String? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    isSingleLine: Boolean = false
 ) {
     Column(modifier = modifier) {
         OutlinedTextField(
@@ -35,7 +36,8 @@ fun CustomInputField(
             visualTransformation = visualTransformation,
             isError = isError,
             modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = keyboardOptions
+            keyboardOptions = keyboardOptions,
+            singleLine = isSingleLine
         )
         if (isError && !errorMessage.isNullOrBlank()) {
             Text(
@@ -46,3 +48,4 @@ fun CustomInputField(
         }
     }
 }
+
