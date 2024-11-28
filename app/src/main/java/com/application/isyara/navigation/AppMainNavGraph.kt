@@ -47,9 +47,20 @@ import com.application.isyara.utils.main.NavigationItem
 
 @Composable
 fun AppMainNavGraph(navController: NavHostController) {
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    val shouldShowBottomNav = when (currentRoute) {
+        NavRoute.Onboarding.route,
+        NavRoute.Login.route,
+        NavRoute.Register.route,
+        NavRoute.ForgotPassword.route -> false
+
+        else -> true
+    }
     Scaffold(
         bottomBar = {
-            CustomBottomNavigationBar(navController)
+            if (shouldShowBottomNav) {
+                CustomBottomNavigationBar(navController)
+            }
         }
     ) { paddingValues ->
         Box(
@@ -59,9 +70,11 @@ fun AppMainNavGraph(navController: NavHostController) {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = NavRoute.Dashboard.route,
+                startDestination = NavRoute.Onboarding.route,
                 modifier = Modifier.fillMaxSize()
             ) {
+                authNavGraph(navController)
+
                 composable(NavRoute.Dashboard.route) {
                     DashboardScreen(
                         userName = "Zacky",

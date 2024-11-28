@@ -154,7 +154,7 @@ fun DashboardScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp)
+                .height(230.dp)
                 .offset { IntOffset(x = 0, y = -scrollState.value) }
                 .background(
                     Brush.verticalGradient(

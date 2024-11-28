@@ -131,8 +131,7 @@ fun LoginScreen(navController: NavHostController) {
                     if (emailError == null && passwordError == null) {
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Masuk")
             }

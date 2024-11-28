@@ -24,7 +24,11 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"https://debug-api.dicoding.dev/v1/\"")
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://user-dot-project-isyara.et.r.appspot.com/\""
+            )
         }
         release {
             isMinifyEnabled = false
@@ -69,7 +73,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.androidx.compose.ui.ui.tooling)
-    implementation (libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -85,6 +89,7 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    implementation (libs.androidx.hilt.navigation.compose)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
