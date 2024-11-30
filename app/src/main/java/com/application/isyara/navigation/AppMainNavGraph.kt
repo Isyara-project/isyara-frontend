@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.application.isyara.ui.auth.ChangePasswordScreen
+import com.application.isyara.ui.auth.SplashScreen
 import com.application.isyara.ui.main.dashboard.DashboardScreen
 import com.application.isyara.ui.main.dashboard.NotificationsScreen
 import com.application.isyara.ui.main.dashboard.SearchScreen
@@ -49,13 +50,14 @@ import com.application.isyara.utils.main.NavigationItem
 fun AppMainNavGraph(navController: NavHostController) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     val shouldShowBottomNav = when (currentRoute) {
+        NavRoute.Splash.route,
         NavRoute.Onboarding.route,
         NavRoute.Login.route,
         NavRoute.Register.route,
         NavRoute.ForgotPassword.route -> false
-
         else -> true
     }
+
     Scaffold(
         bottomBar = {
             if (shouldShowBottomNav) {
@@ -70,15 +72,20 @@ fun AppMainNavGraph(navController: NavHostController) {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = NavRoute.Onboarding.route,
+                startDestination = NavRoute.Splash.route, // Menambahkan Splash Screen di awal
                 modifier = Modifier.fillMaxSize()
             ) {
+                composable(NavRoute.Splash.route) {
+                    SplashScreen(navController) // Memanggil SplashScreen
+                }
+
+                // Tambahkan komponen lain setelah splash screen
                 authNavGraph(navController)
 
                 composable(NavRoute.Dashboard.route) {
                     DashboardScreen(
                         userName = "Zacky",
-                        onSearchClick = { navController.navigate("search_screen") },
+                        onSearchClick = { navController.navigate(NavRoute.Search.route) },
                         navController = navController
                     )
                 }
@@ -88,7 +95,6 @@ fun AppMainNavGraph(navController: NavHostController) {
                         searchResults = listOf()
                     )
                 }
-
                 composable(NavRoute.Notification.route) {
                     NotificationsScreen(
                         onBackClick = { navController.popBackStack() },
@@ -216,5 +222,3 @@ fun CustomBottomNavigationBar(navController: NavHostController) {
         }
     }
 }
-
-

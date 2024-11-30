@@ -2,6 +2,7 @@ package com.application.isyara.navigation
 
 sealed class NavRoute(val route: String) {
     // Auth Screens
+    object Splash : NavRoute("splash")  // Rute Splash Screen
     object Onboarding : NavRoute("onboarding")
     object Login : NavRoute("login")
     object Register : NavRoute("register")
