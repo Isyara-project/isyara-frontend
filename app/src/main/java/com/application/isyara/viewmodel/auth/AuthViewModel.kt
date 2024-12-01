@@ -2,16 +2,12 @@ package com.application.isyara.viewmodel.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.application.isyara.data.model.OtpRequest
-import com.application.isyara.data.model.RegisterRequest
+import com.application.isyara.data.model.*
 import com.application.isyara.data.repository.AuthRepository
-import com.application.isyara.data.model.OtpResponse
-import com.application.isyara.data.model.RegisterResponse
-import com.application.isyara.data.model.ResendOtpResponse
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.StateFlow
 import com.application.isyara.utils.auth.Result
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,10 +23,15 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     private val _resendOtpState = MutableStateFlow<Result<ResendOtpResponse>>(Result.Loading)
     val resendOtpState: StateFlow<Result<ResendOtpResponse>> get() = _resendOtpState
 
+    private val _loginState = MutableStateFlow<Result<LoginResponse>>(Result.Loading)
+    val loginState: StateFlow<Result<LoginResponse>> get() = _loginState
+
+    private val _forgotPasswordState = MutableStateFlow<Result<ForgotPasswordResponse>>(Result.Loading)
+    val forgotPasswordState: StateFlow<Result<ForgotPasswordResponse>> get() = _forgotPasswordState
+
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean> get() = _loadingState
 
-    // Fungsi Register
     // Fungsi Register
     fun registerUser(registerRequest: RegisterRequest) {
         viewModelScope.launch {
@@ -38,7 +39,7 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
                 _loadingState.value = true
                 authRepository.registerUser(registerRequest).collect { result ->
                     _registerState.value = result
-                    _loadingState.value = false // Set loading false setelah selesai
+                    _loadingState.value = false
                 }
             } catch (e: Exception) {
                 _registerState.value = Result.Error("Registration failed: ${e.message}")
@@ -47,12 +48,22 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
         }
     }
 
-
     // Fungsi Verifikasi OTP
     fun verifyOtp(otpRequest: OtpRequest, token: String) {
         viewModelScope.launch {
             authRepository.verifyOtp(otpRequest, token).collect { result ->
                 _otpState.value = result
+            }
+        }
+    }
+
+    // Fungsi untuk login
+    fun loginUser(loginRequest: LoginRequest) {
+        viewModelScope.launch {
+            _loadingState.value = true
+            authRepository.loginUser(loginRequest).collect { result ->
+                _loginState.value = result
+                _loadingState.value = false
             }
         }
     }
@@ -65,5 +76,20 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
             }
         }
     }
-}
 
+    // Fungsi Lupa Kata Sandi
+    fun forgotPassword(forgotPasswordRequest: ForgotPasswordRequest) {
+        viewModelScope.launch {
+            _loadingState.value = true
+            try {
+                authRepository.forgotPassword(forgotPasswordRequest).collect { result ->
+                    _forgotPasswordState.value = result
+                    _loadingState.value = false
+                }
+            } catch (e: Exception) {
+                _forgotPasswordState.value = Result.Error("Forgot password failed: ${e.message}")
+                _loadingState.value = false
+            }
+        }
+    }
+}
