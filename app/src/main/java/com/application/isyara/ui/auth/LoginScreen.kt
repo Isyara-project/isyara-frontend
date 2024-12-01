@@ -1,5 +1,6 @@
 package com.application.isyara.ui.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,15 +21,29 @@ import com.application.isyara.R
 import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.auth.AppHeaderAuth
 import com.application.isyara.utils.auth.CustomInputField
+import com.application.isyara.viewmodel.auth.AuthViewModel
+import com.application.isyara.data.model.LoginRequest
+import com.application.isyara.utils.auth.Result
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.application.isyara.utils.auth.loadCredentials
 
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen(navController: NavHostController, authViewModel: AuthViewModel = hiltViewModel()) {
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
     var rememberMe by remember { mutableStateOf(false) }
+
+    // Observing login state from ViewModel
+    val loginState by authViewModel.loginState.collectAsState()
+
+    // Observing loading state
+    val loadingState by authViewModel.loadingState.collectAsState()
+
+    // Error messages
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         val (savedEmail, savedPassword) = loadCredentials(context)
@@ -36,9 +51,6 @@ fun LoginScreen(navController: NavHostController) {
         savedPassword?.let { password = it }
         rememberMe = savedEmail != null && savedPassword != null
     }
-
-    var emailError by remember { mutableStateOf<String?>(null) }
-    var passwordError by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -124,19 +136,32 @@ fun LoginScreen(navController: NavHostController) {
             // Tombol Masuk
             Button(
                 onClick = {
-
+                    // Validasi input
                     if (email.isBlank()) emailError = "Email harus diisi!"
                     if (password.isBlank()) passwordError = "Kata sandi harus diisi!"
 
+                    // Hanya panggil login jika tidak ada error
                     if (emailError == null && passwordError == null) {
+                        authViewModel.loginUser(LoginRequest(email, password))
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !loadingState // Menonaktifkan tombol jika loading
             ) {
-                Text("Masuk")
+                if (loadingState) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                } else {
+                    Text("Masuk")
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            // Menampilkan error jika ada
+            if (loginState is Result.Error) {
+                val errorMessage = (loginState as Result.Error).message
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            }
 
             // Navigasi ke Daftar
             Row(
