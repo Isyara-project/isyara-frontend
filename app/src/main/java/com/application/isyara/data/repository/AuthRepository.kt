@@ -1,5 +1,7 @@
 package com.application.isyara.data.repository
 
+import com.application.isyara.data.model.LoginRequest
+import com.application.isyara.data.model.LoginResponse
 import com.application.isyara.data.model.OtpRequest
 import com.application.isyara.data.model.RegisterRequest
 import com.application.isyara.data.model.OtpResponse
@@ -44,6 +46,18 @@ class AuthRepository @Inject constructor(private val apiService: ApiService) {
             emit(Result.Success(response))
         } catch (e: Exception) {
             emit(Result.Error(e.message ?: "Unknown Error"))
+        }
+    }
+
+    // Fungsi untuk login
+    suspend fun loginUser(loginRequest: LoginRequest): Flow<Result<LoginResponse>> {
+        return flow {
+            try {
+                val response = apiService.loginUser(loginRequest)
+                emit(Result.Success(response)) // Mengirimkan respons login jika sukses
+            } catch (e: Exception) {
+                emit(Result.Error("Login failed: ${e.message}")) // Menangani error dan mengirimkan error message
+            }
         }
     }
 }

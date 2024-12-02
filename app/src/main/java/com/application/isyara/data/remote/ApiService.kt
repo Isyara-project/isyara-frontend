@@ -1,5 +1,7 @@
 package com.application.isyara.data.remote
 
+import com.application.isyara.data.model.LoginRequest
+import com.application.isyara.data.model.LoginResponse
 import com.application.isyara.data.model.OtpRequest
 import com.application.isyara.data.model.OtpResponse
 import com.application.isyara.data.model.RegisterRequest
@@ -14,6 +16,10 @@ interface ApiService {
     // Endpoint untuk Register
     @POST("register")
     suspend fun registerUser(@Body registerRequest: RegisterRequest): RegisterResponse
+
+    // Endpoint untuk Login
+    @POST("login")
+    suspend fun loginUser(@Body loginRequest: LoginRequest): LoginResponse
 
     // Endpoint untuk Verifikasi OTP
     @POST("verification-otp")

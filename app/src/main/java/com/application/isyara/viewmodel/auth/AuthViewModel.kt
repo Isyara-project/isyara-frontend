@@ -2,6 +2,8 @@ package com.application.isyara.viewmodel.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.application.isyara.data.model.LoginRequest
+import com.application.isyara.data.model.LoginResponse
 import com.application.isyara.data.model.OtpRequest
 import com.application.isyara.data.model.RegisterRequest
 import com.application.isyara.data.repository.AuthRepository
@@ -26,6 +28,9 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
 
     private val _resendOtpState = MutableStateFlow<Result<ResendOtpResponse>>(Result.Loading)
     val resendOtpState: StateFlow<Result<ResendOtpResponse>> get() = _resendOtpState
+
+    private val _loginState = MutableStateFlow<Result<LoginResponse>>(Result.Loading)
+    val loginState: StateFlow<Result<LoginResponse>> get() = _loginState
 
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean> get() = _loadingState
@@ -62,6 +67,17 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
         viewModelScope.launch {
             authRepository.resendOtp(token).collect { result ->
                 _resendOtpState.value = result
+            }
+        }
+    }
+
+    // Fungsi untuk login
+    fun loginUser(loginRequest: LoginRequest) {
+        viewModelScope.launch {
+            _loadingState.value = true
+            authRepository.loginUser(loginRequest).collect { result ->
+                _loginState.value = result
+                _loadingState.value = false
             }
         }
     }
