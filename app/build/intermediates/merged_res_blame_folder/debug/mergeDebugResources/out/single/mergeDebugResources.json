@@ -1,0 +1,186 @@
+[
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_bisindo.png.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_bisindo.png"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-xxxhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/font_roboto_bold.ttf.flat",
+        "source": "com.application.isyara.app-main-73:/font/roboto_bold.ttf"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-hdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-hdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_tips.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_tips.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_sibi.png.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_sibi.png"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_header_dictionary.png.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_header_dictionary.png"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/font_roboto_regular.ttf.flat",
+        "source": "com.application.isyara.app-main-73:/font/roboto_regular.ttf"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_onboarding_image_2.png.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/onboarding_image_2.png"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-mdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-mdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_search.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_search.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_password.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_password.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/font_roboto_medium.ttf.flat",
+        "source": "com.application.isyara.app-main-73:/font/roboto_medium.ttf"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/xml_data_extraction_rules.xml.flat",
+        "source": "com.application.isyara.app-main-73:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_image_placeholder.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_image_placeholder.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_onboarding_image_1.png.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/onboarding_image_1.png"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-xhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-xhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_arrow_back.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_arrow_back.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_logout.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_logout.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_header_isyara.png.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/header_isyara.png"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_otp.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_otp.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_isyara_logo.png.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/isyara_logo.png"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_isyara_splash.png.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/isyara_splash.png"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_username.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_username.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_email.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_email.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_user.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_user.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_notification.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_notification.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/xml_backup_rules.xml.flat",
+        "source": "com.application.isyara.app-main-73:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.application.isyara.app-main-73:/mipmap-xxhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_help.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_help.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_isyara_putih.png.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/isyara_putih.png"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-71:/drawable_ic_phone.xml.flat",
+        "source": "com.application.isyara.app-main-73:/drawable/ic_phone.xml"
+    }
+]

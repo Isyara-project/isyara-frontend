@@ -54,8 +54,21 @@ fun AppMainNavGraph(navController: NavHostController) {
         NavRoute.Onboarding.route,
         NavRoute.Login.route,
         NavRoute.Register.route,
-        NavRoute.ForgotPassword.route -> false
-        else -> true
+        NavRoute.ForgotPassword.route,
+        NavRoute.EditAccount.route,
+        NavRoute.LanguageSettings.route,
+        NavRoute.ThemeSettings.route,
+        NavRoute.About.route,
+        NavRoute.Feedback.route,
+        NavRoute.PrivacyPolicy.route -> false
+
+        NavRoute.Dashboard.route,
+        NavRoute.Dictionary.route,
+        NavRoute.Translate.route,
+        NavRoute.History.route,
+        NavRoute.Settings.route -> true
+
+        else -> false
     }
 
     Scaffold(

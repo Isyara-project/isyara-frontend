@@ -1,5 +1,6 @@
 package com.application.isyara.data.repository;
 
+import com.application.isyara.data.local.SessionManager;
 import com.application.isyara.data.remote.ApiService;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
@@ -26,20 +27,25 @@ import javax.inject.Provider;
 public final class AuthRepository_Factory implements Factory<AuthRepository> {
   private final Provider<ApiService> apiServiceProvider;
 
-  public AuthRepository_Factory(Provider<ApiService> apiServiceProvider) {
+  private final Provider<SessionManager> sessionManagerProvider;
+
+  public AuthRepository_Factory(Provider<ApiService> apiServiceProvider,
+      Provider<SessionManager> sessionManagerProvider) {
     this.apiServiceProvider = apiServiceProvider;
+    this.sessionManagerProvider = sessionManagerProvider;
   }
 
   @Override
   public AuthRepository get() {
-    return newInstance(apiServiceProvider.get());
+    return newInstance(apiServiceProvider.get(), sessionManagerProvider.get());
   }
 
-  public static AuthRepository_Factory create(Provider<ApiService> apiServiceProvider) {
-    return new AuthRepository_Factory(apiServiceProvider);
+  public static AuthRepository_Factory create(Provider<ApiService> apiServiceProvider,
+      Provider<SessionManager> sessionManagerProvider) {
+    return new AuthRepository_Factory(apiServiceProvider, sessionManagerProvider);
   }
 
-  public static AuthRepository newInstance(ApiService apiService) {
-    return new AuthRepository(apiService);
+  public static AuthRepository newInstance(ApiService apiService, SessionManager sessionManager) {
+    return new AuthRepository(apiService, sessionManager);
   }
 }

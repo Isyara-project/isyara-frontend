@@ -1,5 +1,6 @@
 package com.application.isyara.data.di
 
+import com.application.isyara.data.local.SessionManager
 import com.application.isyara.data.remote.ApiService
 import com.application.isyara.data.repository.AuthRepository
 import dagger.Module
@@ -14,7 +15,10 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(apiService: ApiService): AuthRepository {
-        return AuthRepository(apiService)
+    fun provideAuthRepository(
+        apiService: ApiService,
+        sessionManager: SessionManager
+    ): AuthRepository {
+        return AuthRepository(apiService, sessionManager)
     }
 }

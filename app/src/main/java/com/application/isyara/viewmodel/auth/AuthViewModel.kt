@@ -23,10 +23,8 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     private val _resendOtpState = MutableStateFlow<Result<ResendOtpResponse>>(Result.Loading)
     val resendOtpState: StateFlow<Result<ResendOtpResponse>> get() = _resendOtpState
 
-    private val _loginState = MutableStateFlow<Result<LoginResponse>>(Result.Loading)
-    val loginState: StateFlow<Result<LoginResponse>> get() = _loginState
-
-    private val _forgotPasswordState = MutableStateFlow<Result<ForgotPasswordResponse>>(Result.Loading)
+    private val _forgotPasswordState =
+        MutableStateFlow<Result<ForgotPasswordResponse>>(Result.Loading)
     val forgotPasswordState: StateFlow<Result<ForgotPasswordResponse>> get() = _forgotPasswordState
 
     private val _loadingState = MutableStateFlow(false)
@@ -53,17 +51,6 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
         viewModelScope.launch {
             authRepository.verifyOtp(otpRequest, token).collect { result ->
                 _otpState.value = result
-            }
-        }
-    }
-
-    // Fungsi untuk login
-    fun loginUser(loginRequest: LoginRequest) {
-        viewModelScope.launch {
-            _loadingState.value = true
-            authRepository.loginUser(loginRequest).collect { result ->
-                _loginState.value = result
-                _loadingState.value = false
             }
         }
     }

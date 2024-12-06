@@ -15,7 +15,6 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         OnboardingScreen(navController)
     }
     composable(NavRoute.Login.route) {
-
         LoginScreen(navController)
     }
     composable(NavRoute.Register.route) {

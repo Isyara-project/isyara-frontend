@@ -24,8 +24,6 @@ interface ApiService {
     suspend fun loginUser(@Body loginRequest: LoginRequest): LoginResponse
 
     // Endpoint untuk Verifikasi OTP
-
-    // Endpoint untuk Verifikasi OTP
     @POST("verification-otp")
     suspend fun verifyOtp(
         @Header("Authorization") token: String, // Menggunakan header Authorization untuk token

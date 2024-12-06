@@ -17,7 +17,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    // Menyediakan OkHttpClient dengan timeout dan interceptor (jika diperlukan)
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {

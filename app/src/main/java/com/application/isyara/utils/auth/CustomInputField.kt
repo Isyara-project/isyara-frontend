@@ -8,6 +8,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 
 @Composable
@@ -23,6 +24,7 @@ fun CustomInputField(
     errorMessage: String? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardType: KeyboardType = KeyboardType.Text,
     isSingleLine: Boolean = false
 ) {
     Column(modifier = modifier) {
@@ -36,7 +38,7 @@ fun CustomInputField(
             visualTransformation = visualTransformation,
             isError = isError,
             modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = keyboardOptions,
+            keyboardOptions = keyboardOptions.copy(keyboardType = keyboardType),
             singleLine = isSingleLine
         )
         if (isError && !errorMessage.isNullOrBlank()) {
@@ -48,4 +50,3 @@ fun CustomInputField(
         }
     }
 }
-
