@@ -9,6 +9,9 @@ import com.application.isyara.data.model.OtpResponse
 import com.application.isyara.data.model.RegisterRequest
 import com.application.isyara.data.model.RegisterResponse
 import com.application.isyara.data.model.ResendOtpResponse
+import com.application.isyara.data.model.ResetPasswordRequest
+import com.application.isyara.data.model.ResetPasswordResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -19,7 +22,7 @@ interface ApiService {
     @POST("register")
     suspend fun registerUser(@Body registerRequest: RegisterRequest): RegisterResponse
 
-    // Endpoint Login
+    // Endpoint untuk Login
     @POST("login")
     suspend fun loginUser(@Body loginRequest: LoginRequest): LoginResponse
 
@@ -37,7 +40,19 @@ interface ApiService {
         @Body resendOtpRequest: Map<String, String>
     ): ResendOtpResponse
 
-    // Endpoint Lupa Password
+    // Endpoint untuk Lupa Password
     @POST("forgot-password")
-    suspend fun forgotPassword(@Body emailRequest: ForgotPasswordRequest): ForgotPasswordResponse
+    suspend fun forgotPassword(
+        @Body emailRequest: ForgotPasswordRequest
+    ): Response<ForgotPasswordResponse> // Menggunakan Response untuk error handling dan konsistensi
+
+
+
+    // Fungsi Reset Password di repository
+    @POST("reset-password")
+    suspend fun resetPassword(
+        @Header("Authorization") token: String, // Token dikirim lewat header
+        @Body resetPasswordRequest: ResetPasswordRequest // Request body berisi password
+    ): ResetPasswordResponse
+
 }

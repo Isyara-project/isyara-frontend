@@ -10,12 +10,15 @@ import com.application.isyara.data.model.OtpResponse
 import com.application.isyara.data.model.RegisterRequest
 import com.application.isyara.data.model.RegisterResponse
 import com.application.isyara.data.model.ResendOtpResponse
+import com.application.isyara.data.model.ResetPasswordRequest
+import com.application.isyara.data.model.ResetPasswordResponse
 import com.application.isyara.data.remote.ApiService
 import com.application.isyara.utils.auth.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import java.io.IOException
+import retrofit2.Response
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
@@ -24,17 +27,17 @@ class AuthRepository @Inject constructor(
 ) {
 
     // Fungsi Register User
-    suspend fun registerUser(registerRequest: RegisterRequest): Flow<Result<RegisterResponse>> =
-        flow {
-            emit(Result.Loading)
-            try {
-                val response = apiService.registerUser(registerRequest)
-                emit(Result.Success(response))
-            } catch (e: Exception) {
-                emit(Result.Error(e.message ?: "Unknown Error"))
-            }
+    suspend fun registerUser(registerRequest: RegisterRequest): Flow<Result<RegisterResponse>> = flow {
+        emit(Result.Loading)
+        try {
+            val response = apiService.registerUser(registerRequest)
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message ?: "Unknown Error"))
         }
+    }
 
+    // Fungsi Verifikasi OTP
     suspend fun verifyOtp(otpRequest: OtpRequest, token: String): Flow<Result<OtpResponse>> = flow {
         emit(Result.Loading)
         try {
@@ -84,15 +87,35 @@ class AuthRepository @Inject constructor(
     }
 
     // Fungsi Lupa Kata Sandi
-    suspend fun forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): Flow<Result<ForgotPasswordResponse>> =
-        flow {
-            emit(Result.Loading)  // Emit status loading sebelum request
-            try {
-                // Memanggil endpoint API untuk lupa kata sandi
-                val response = apiService.forgotPassword(forgotPasswordRequest)
-                emit(Result.Success(response))  // Emit response jika berhasil
-            } catch (e: Exception) {
-                emit(Result.Error(e.message ?: "Forgot password failed"))  // Emit error jika gagal
+    suspend fun forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): Flow<Result<ForgotPasswordResponse>> = flow {
+        emit(Result.Loading)
+        try {
+            val response: Response<ForgotPasswordResponse> = apiService.forgotPassword(forgotPasswordRequest)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    emit(Result.Success(it))
+                } ?: emit(Result.Error("Empty response body"))
+            } else {
+                val errorResponse = response.errorBody()?.string() ?: "Unknown Error"
+                emit(Result.Error("Forgot password failed: $errorResponse"))
             }
+        } catch (e: Exception) {
+            emit(Result.Error("Forgot password failed: ${e.message}"))
         }
+    }
+
+    // Fungsi Reset Password
+    suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest, token: String): Flow<Result<ResetPasswordResponse>> = flow {
+        emit(Result.Loading)
+        try {
+            // Memanggil API untuk reset password, mengirim token lewat header
+            val response: ResetPasswordResponse = apiService.resetPassword("Bearer $token", resetPasswordRequest)
+            // Mengirim hasil jika berhasil
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            // Menangani kesalahan jika ada
+            emit(Result.Error("Reset password failed: ${e.message}"))
+        }
+    }
+
 }
