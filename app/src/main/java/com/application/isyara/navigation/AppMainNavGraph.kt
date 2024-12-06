@@ -22,28 +22,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.application.isyara.ui.auth.ChangePasswordScreen
+import androidx.navigation.navArgument
+import com.application.isyara.ui.auth.ResetPasswordScreen
 import com.application.isyara.ui.auth.SplashScreen
-import com.application.isyara.ui.main.dashboard.DashboardScreen
-import com.application.isyara.ui.main.dashboard.NotificationsScreen
-import com.application.isyara.ui.main.dashboard.SearchScreen
-import com.application.isyara.ui.main.dashboard.TipsScreen
-import com.application.isyara.ui.main.dictionary.BISINDOScreen
-import com.application.isyara.ui.main.dictionary.DictionaryScreen
-import com.application.isyara.ui.main.dictionary.SIBIScreen
+import com.application.isyara.ui.main.dashboard.*
+import com.application.isyara.ui.main.dictionary.*
 import com.application.isyara.ui.main.history.HistoryScreen
-import com.application.isyara.ui.main.settings.AboutIsyaraScreen
-import com.application.isyara.ui.main.settings.EditAccountScreen
-import com.application.isyara.ui.main.settings.FeedbackScreen
-import com.application.isyara.ui.main.settings.LanguageSettingsScreen
-import com.application.isyara.ui.main.settings.PrivacyPolicyScreen
-import com.application.isyara.ui.main.settings.SettingsScreen
-import com.application.isyara.ui.main.settings.ThemeSettingsScreen
-import com.application.isyara.ui.main.translate.TranslateGuideScreen
-import com.application.isyara.ui.main.translate.TranslateScreen
+import com.application.isyara.ui.main.settings.*
+import com.application.isyara.ui.main.translate.*
 import com.application.isyara.utils.main.NavigationItem
 
 @Composable
@@ -54,7 +44,9 @@ fun AppMainNavGraph(navController: NavHostController) {
         NavRoute.Onboarding.route,
         NavRoute.Login.route,
         NavRoute.Register.route,
-        NavRoute.ForgotPassword.route -> false
+        NavRoute.Otp.route,
+        NavRoute.ForgotPassword.route,
+        NavRoute.ResetPassword.route -> false
         else -> true
     }
 
@@ -72,16 +64,27 @@ fun AppMainNavGraph(navController: NavHostController) {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = NavRoute.Splash.route, // Menambahkan Splash Screen di awal
+                startDestination = NavRoute.Splash.route, // Splash screen
                 modifier = Modifier.fillMaxSize()
             ) {
+                // Splash screen
                 composable(NavRoute.Splash.route) {
-                    SplashScreen(navController) // Memanggil SplashScreen
+                    SplashScreen(navController)
                 }
 
-                // Tambahkan komponen lain setelah splash screen
+                // Auth navigation graph
                 authNavGraph(navController)
 
+// Passing token dynamically
+                composable(
+                    route = "${NavRoute.ResetPassword.route}/{token}",
+                    arguments = listOf(navArgument("token") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val token = backStackEntry.arguments?.getString("token") ?: ""
+                    ResetPasswordScreen(navController, token = token)
+                }
+
+                // Main screens
                 composable(NavRoute.Dashboard.route) {
                     DashboardScreen(
                         userName = "Zacky",
@@ -116,7 +119,6 @@ fun AppMainNavGraph(navController: NavHostController) {
                 composable(NavRoute.SIBI.route) {
                     SIBIScreen(navController = navController)
                 }
-
                 composable(NavRoute.Translate.route) {
                     TranslateScreen(navController = navController)
                 }
@@ -126,20 +128,16 @@ fun AppMainNavGraph(navController: NavHostController) {
                         navController = navController
                     )
                 }
-
                 composable(NavRoute.History.route) {
                     HistoryScreen(navController = navController, historyItems = listOf())
                 }
-
                 composable(NavRoute.Settings.route) {
                     SettingsScreen(navController = navController)
                 }
                 composable(NavRoute.EditAccount.route) {
                     EditAccountScreen(
                         navController = navController,
-                        onSaveClick = { name, phone, newPassword ->
-
-                        }
+                        onSaveClick = { name, phone, newPassword -> }
                     )
                 }
                 composable(NavRoute.LanguageSettings.route) {
@@ -150,7 +148,11 @@ fun AppMainNavGraph(navController: NavHostController) {
                     )
                 }
                 composable(NavRoute.ThemeSettings.route) {
-                    ThemeSettingsScreen(navController, "System Default", onThemeChange = {})
+                    ThemeSettingsScreen(
+                        navController,
+                        "System Default",
+                        onThemeChange = {}
+                    )
                 }
                 composable(NavRoute.About.route) {
                     AboutIsyaraScreen(
@@ -161,9 +163,7 @@ fun AppMainNavGraph(navController: NavHostController) {
                 composable(NavRoute.Feedback.route) {
                     FeedbackScreen(
                         navController,
-                        onSendClick = { email, description ->
-
-                        }
+                        onSendClick = { email, description -> }
                     )
                 }
                 composable(NavRoute.PrivacyPolicy.route) {
@@ -193,7 +193,7 @@ fun CustomBottomNavigationBar(navController: NavHostController) {
 
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-        items.forEachIndexed { index, item ->
+        items.forEach { item ->
             BottomNavigationItem(
                 selected = currentRoute == item.route,
                 onClick = {

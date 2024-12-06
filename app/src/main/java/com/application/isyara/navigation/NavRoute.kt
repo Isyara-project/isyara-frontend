@@ -8,6 +8,7 @@ sealed class NavRoute(val route: String) {
     object Register : NavRoute("register")
     object Otp : NavRoute("otp")
     object ForgotPassword : NavRoute("forgot_password")
+    object ResetPassword : NavRoute("reset_password")
     object ChangePassword : NavRoute("change_password")
 
     // Bottom Navigation Screens
