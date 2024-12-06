@@ -402,15 +402,15 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_application_isyara_viewmodel_auth_AuthViewModel = "com.application.isyara.viewmodel.auth.AuthViewModel";
-
       static String com_application_isyara_viewmodel_auth_LoginViewModel = "com.application.isyara.viewmodel.auth.LoginViewModel";
 
-      @KeepFieldType
-      AuthViewModel com_application_isyara_viewmodel_auth_AuthViewModel2;
+      static String com_application_isyara_viewmodel_auth_AuthViewModel = "com.application.isyara.viewmodel.auth.AuthViewModel";
 
       @KeepFieldType
       LoginViewModel com_application_isyara_viewmodel_auth_LoginViewModel2;
+
+      @KeepFieldType
+      AuthViewModel com_application_isyara_viewmodel_auth_AuthViewModel2;
     }
   }
 
