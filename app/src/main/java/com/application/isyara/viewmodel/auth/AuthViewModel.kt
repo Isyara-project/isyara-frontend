@@ -33,10 +33,14 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     private val _resetPasswordState = MutableStateFlow<Result<ResetPasswordResponse>>(Result.Loading)
     val resetPasswordState: StateFlow<Result<ResetPasswordResponse>> get() = _resetPasswordState
 
+    private val _feedbackState = MutableStateFlow<Result<FeedbackResponse>>(Result.Loading)
+    val feedbackState: StateFlow<Result<FeedbackResponse>> get() = _feedbackState
+
+    private val _feedbackHistoriesState = MutableStateFlow<Result<FeedbackHistoryResponse>>(Result.Loading)
+    val feedbackHistoriesState: StateFlow<Result<FeedbackHistoryResponse>> get() = _feedbackHistoriesState
+
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean> get() = _loadingState
-
-
 
     // Fungsi untuk Login
     fun loginUser(loginRequest: LoginRequest) {
@@ -118,30 +122,56 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
         }
     }
 
-
-
     // Fungsi untuk Reset Password
     fun resetPassword(resetPasswordRequest: ResetPasswordRequest, token: String) {
         viewModelScope.launch {
-            _loadingState.value = true // Set loading state to true
-
+            _loadingState.value = true
             try {
-                // Validasi password terlebih dahulu
                 if (!isPasswordValid(resetPasswordRequest.password)) {
                     _resetPasswordState.value =
                         Result.Error("Password must be 8-16 characters long, include one uppercase letter, one number, and one special character.")
                     return@launch
                 }
-
-                // Memanggil repository untuk melakukan reset password
-                authRepository.resetPassword(resetPasswordRequest, "Bearer $token")
+                authRepository.resetPassword(resetPasswordRequest, token)
                     .collect { result ->
                         _resetPasswordState.value = result
                     }
             } catch (e: Exception) {
                 _resetPasswordState.value = Result.Error("Reset password failed: ${e.message}")
             } finally {
-                _loadingState.value = false // Set loading state to false after operation completes
+                _loadingState.value = false
+            }
+        }
+    }
+
+    // Fungsi untuk Mengirimkan Feedback
+    fun sendFeedback(feedbackRequest: FeedbackRequest) {
+        viewModelScope.launch {
+            _loadingState.value = true
+            try {
+                authRepository.sendFeedback(feedbackRequest).collect { result ->
+                    _feedbackState.value = result
+                }
+            } catch (e: Exception) {
+                _feedbackState.value = Result.Error("Sending feedback failed: ${e.message}")
+            } finally {
+                _loadingState.value = false
+            }
+        }
+    }
+
+    // Fungsi untuk Mendapatkan Riwayat Feedback
+    fun getFeedbackHistories() {
+        viewModelScope.launch {
+            _loadingState.value = true
+            try {
+                authRepository.getFeedbackHistories().collect { result ->
+                    _feedbackHistoriesState.value = result
+                }
+            } catch (e: Exception) {
+                _feedbackHistoriesState.value = Result.Error("Fetching feedback histories failed: ${e.message}")
+            } finally {
+                _loadingState.value = false
             }
         }
     }

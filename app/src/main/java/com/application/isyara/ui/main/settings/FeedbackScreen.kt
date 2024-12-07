@@ -1,5 +1,6 @@
 package com.application.isyara.ui.main.settings
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,15 +22,44 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.application.isyara.utils.main.AppHeaderMain
+import com.application.isyara.viewmodel.auth.AuthViewModel
+import com.application.isyara.data.model.FeedbackRequest
+import com.application.isyara.utils.auth.Result
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun FeedbackScreen(
     navController: NavController,
-    onSendClick: (String, String) -> Unit
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
+    // State untuk input email dan deskripsi
     var email by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+
+    // State untuk menampilkan status loading dan feedback response
+    val feedbackState = authViewModel.feedbackState.collectAsStateWithLifecycle().value
+    val context = LocalContext.current
+
+    // Menangani feedback pengiriman
+    when (feedbackState) {
+        is Result.Loading -> {
+            // Menampilkan loading ketika sedang memproses pengiriman feedback
+            Toast.makeText(context, "Mengirim feedback...", Toast.LENGTH_SHORT).show()
+        }
+        is Result.Success -> {
+            // Menampilkan pesan sukses saat feedback terkirim
+            Toast.makeText(context, "Feedback berhasil terkirim!", Toast.LENGTH_SHORT).show()
+        }
+        is Result.Error -> {
+            // Menampilkan pesan kesalahan jika ada masalah dalam mengirim feedback
+            Toast.makeText(context, "Error: ${feedbackState.message}", Toast.LENGTH_SHORT).show()
+        }
+        else -> {
+            // Tidak ada state yang aktif, biarkan tetap kosong
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -78,8 +108,9 @@ fun FeedbackScreen(
             // Tombol Kirim
             Button(
                 onClick = {
-                    onSendClick(email, description)
-                    navController.popBackStack()
+                    val feedbackRequest = FeedbackRequest(email, description)
+                    authViewModel.sendFeedback(feedbackRequest) // Mengirim feedback melalui ViewModel
+                    navController.popBackStack() // Navigasi kembali setelah mengirim feedback
                 },
                 enabled = email.isNotBlank() && description.isNotBlank(),
                 modifier = Modifier
@@ -94,12 +125,11 @@ fun FeedbackScreen(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun FeedbackScreenPreview() {
     FeedbackScreen(
         navController = NavController(LocalContext.current),
-        onSendClick = { _, _ -> /* Handle Send Action */ }
+        authViewModel = hiltViewModel()
     )
 }

@@ -27,14 +27,30 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         OtpScreen(navController, token = "token")
     }
 
+
+
     // Forgot password screen
     composable(NavRoute.ForgotPassword.route) {
         ForgotPasswordScreen(navController)
     }
 
     // Reset password screen
-    composable(NavRoute.ResetPassword.route) {
-        ResetPasswordScreen(navController, token = "token")
+    composable(
+        route = "${NavRoute.ResetPassword.route}/{token}",
+        arguments = listOf(
+            navArgument("token") {
+                type = NavType.StringType
+                nullable = false // Token tidak boleh null
+            }
+        )
+    ) { backStackEntry ->
+        val token = backStackEntry.arguments?.getString("token")
+        if (token != null) {
+            ResetPasswordScreen(navController, token = token)
+        } else {
+            // Handle jika token tidak ada, misalnya navigasi kembali atau tampilkan pesan error
+            navController.popBackStack()
+        }
     }
 
 }
