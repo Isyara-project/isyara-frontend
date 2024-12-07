@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -61,6 +62,7 @@ fun AppMainNavGraph(navController: NavHostController) {
         else -> false
     }
 
+
     Scaffold(
         bottomBar = {
             if (shouldShowBottomNav) {
@@ -86,7 +88,6 @@ fun AppMainNavGraph(navController: NavHostController) {
                 // Auth navigation graph
                 authNavGraph(navController)
 
-// Passing token dynamically
                 composable(
                     route = "${NavRoute.ResetPassword.route}/{token}",
                     arguments = listOf(navArgument("token") { type = NavType.StringType })
@@ -94,6 +95,9 @@ fun AppMainNavGraph(navController: NavHostController) {
                     val token = backStackEntry.arguments?.getString("token") ?: ""
                     ResetPasswordScreen(navController, token = token)
                 }
+
+
+
 
                 // Main screens
                 composable(NavRoute.Dashboard.route) {
@@ -171,14 +175,13 @@ fun AppMainNavGraph(navController: NavHostController) {
                         navController = navController
                     )
                 }
+                // Feedback screen
                 composable(NavRoute.Feedback.route) {
+                    // Memanggil FeedbackScreen dengan viewModel
                     FeedbackScreen(
-                        navController,
-                        onSendClick = { email, description -> }
+                        navController = navController,
+                        authViewModel = hiltViewModel() // Menggunakan Hilt untuk menyuntikkan AuthViewModel
                     )
-                }
-                composable(NavRoute.PrivacyPolicy.route) {
-                    PrivacyPolicyScreen(navController)
                 }
             }
         }

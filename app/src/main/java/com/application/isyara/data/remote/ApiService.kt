@@ -13,8 +13,13 @@ import com.application.isyara.data.model.ResetPasswordRequest
 import com.application.isyara.data.model.ResetPasswordResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+Feedback
+import retrofit2.http.Path
+=======
+  application
 
 interface ApiService {
 
@@ -43,16 +48,23 @@ interface ApiService {
     // Endpoint untuk Lupa Password
     @POST("forgot-password")
     suspend fun forgotPassword(
-        @Body emailRequest: ForgotPasswordRequest
-    ): Response<ForgotPasswordResponse> // Menggunakan Response untuk error handling dan konsistensi
-
-
+        @Body email: String // Mengubah parameter menjadi String (email)
+    ): Response<ForgotPasswordResponse>
 
     // Fungsi Reset Password di repository
-    @POST("reset-password")
+    @POST("reset-password/{token}")
     suspend fun resetPassword(
-        @Header("Authorization") token: String, // Token dikirim lewat header
+        @Path("token") token: String, // Token dikirim lewat path URL
         @Body resetPasswordRequest: ResetPasswordRequest // Request body berisi password
     ): ResetPasswordResponse
 
+    // Endpoint untuk Kirim Feedback
+    @POST("feedback")
+    suspend fun sendFeedback(
+        @Body feedbackRequest: FeedbackRequest // Request body berisi email dan feedback
+    ): FeedbackResponse
+
+    // Endpoint untuk Mendapatkan Riwayat Feedback
+    @GET("feedback/histories")
+    suspend fun getFeedbackHistories(): FeedbackHistoryResponse
 }

@@ -27,15 +27,16 @@ class AuthRepository @Inject constructor(
 ) {
 
     // Fungsi Register User
-    suspend fun registerUser(registerRequest: RegisterRequest): Flow<Result<RegisterResponse>> = flow {
-        emit(Result.Loading)
-        try {
-            val response = apiService.registerUser(registerRequest)
-            emit(Result.Success(response))
-        } catch (e: Exception) {
-            emit(Result.Error(e.message ?: "Unknown Error"))
+    suspend fun registerUser(registerRequest: RegisterRequest): Flow<Result<RegisterResponse>> =
+        flow {
+            emit(Result.Loading)
+            try {
+                val response = apiService.registerUser(registerRequest)
+                emit(Result.Success(response))
+            } catch (e: Exception) {
+                emit(Result.Error(e.message ?: "Unknown Error"))
+            }
         }
-    }
 
     // Fungsi Verifikasi OTP
     suspend fun verifyOtp(otpRequest: OtpRequest, token: String): Flow<Result<OtpResponse>> = flow {
@@ -87,29 +88,36 @@ class AuthRepository @Inject constructor(
     }
 
     // Fungsi Lupa Kata Sandi
-    suspend fun forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): Flow<Result<ForgotPasswordResponse>> = flow {
-        emit(Result.Loading)
-        try {
-            val response: Response<ForgotPasswordResponse> = apiService.forgotPassword(forgotPasswordRequest)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    emit(Result.Success(it))
-                } ?: emit(Result.Error("Empty response body"))
-            } else {
-                val errorResponse = response.errorBody()?.string() ?: "Unknown Error"
-                emit(Result.Error("Forgot password failed: $errorResponse"))
+    suspend fun forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): Flow<Result<ForgotPasswordResponse>> =
+        flow {
+            emit(Result.Loading)
+            try {
+                // Mengambil email dari ForgotPasswordRequest dan mengirimkan sebagai String
+                val response: Response<ForgotPasswordResponse> =
+                    apiService.forgotPassword(forgotPasswordRequest.email) // Menggunakan email langsung
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        emit(Result.Success(it))
+                    } ?: emit(Result.Error("Empty response body"))
+                } else {
+                    val errorResponse = response.errorBody()?.string() ?: "Unknown Error"
+                    emit(Result.Error("Forgot password failed: $errorResponse"))
+                }
+            } catch (e: Exception) {
+                emit(Result.Error("Forgot password failed: ${e.message}"))
             }
-        } catch (e: Exception) {
-            emit(Result.Error("Forgot password failed: ${e.message}"))
         }
-    }
 
     // Fungsi Reset Password
-    suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest, token: String): Flow<Result<ResetPasswordResponse>> = flow {
+    suspend fun resetPassword(
+        resetPasswordRequest: ResetPasswordRequest,
+        token: String
+    ): Flow<Result<ResetPasswordResponse>> = flow {
         emit(Result.Loading)
         try {
-            // Memanggil API untuk reset password, mengirim token lewat header
-            val response: ResetPasswordResponse = apiService.resetPassword("Bearer $token", resetPasswordRequest)
+            // Memanggil API untuk reset password, mengirim token lewat URL path
+            val response: ResetPasswordResponse =
+                apiService.resetPassword(token, resetPasswordRequest)
             // Mengirim hasil jika berhasil
             emit(Result.Success(response))
         } catch (e: Exception) {
@@ -118,4 +126,25 @@ class AuthRepository @Inject constructor(
         }
     }
 
+    // Fungsi Kirim Feedback
+    suspend fun sendFeedback(feedbackRequest: FeedbackRequest): Flow<Result<FeedbackResponse>> = flow {
+        emit(Result.Loading)
+        try {
+            val response = apiService.sendFeedback(feedbackRequest)
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message ?: "Unknown Error"))
+        }
+    }
+
+    // Fungsi Mendapatkan Riwayat Feedback
+    suspend fun getFeedbackHistories(): Flow<Result<FeedbackHistoryResponse>> = flow {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getFeedbackHistories()
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message ?: "Unknown Error"))
+        }
+    }
 }
