@@ -1,14 +1,30 @@
 package com.application.isyara.data.repository
 
-import com.application.isyara.data.model.*
+import com.application.isyara.data.local.SessionManager
+import com.application.isyara.data.model.ForgotPasswordRequest
+import com.application.isyara.data.model.ForgotPasswordResponse
+import com.application.isyara.data.model.LoginRequest
+import com.application.isyara.data.model.LoginResponse
+import com.application.isyara.data.model.OtpRequest
+import com.application.isyara.data.model.OtpResponse
+import com.application.isyara.data.model.RegisterRequest
+import com.application.isyara.data.model.RegisterResponse
+import com.application.isyara.data.model.ResendOtpResponse
+import com.application.isyara.data.model.ResetPasswordRequest
+import com.application.isyara.data.model.ResetPasswordResponse
 import com.application.isyara.data.remote.ApiService
+import com.application.isyara.utils.auth.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import com.application.isyara.utils.auth.Result
+import timber.log.Timber
+import java.io.IOException
 import retrofit2.Response
 import javax.inject.Inject
 
-class AuthRepository @Inject constructor(private val apiService: ApiService) {
+class AuthRepository @Inject constructor(
+    private val apiService: ApiService,
+    private val sessionManager: SessionManager
+) {
 
     // Fungsi Register User
     suspend fun registerUser(registerRequest: RegisterRequest): Flow<Result<RegisterResponse>> =
@@ -33,21 +49,30 @@ class AuthRepository @Inject constructor(private val apiService: ApiService) {
         }
     }
 
-    // Fungsi untuk Login
-    suspend fun loginUser(loginRequest: LoginRequest): Flow<Result<LoginResponse>> = flow {
-        emit(Result.Loading)
-        try {
-            val response: Response<LoginResponse> = apiService.loginUser(loginRequest)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    emit(Result.Success(it))
-                } ?: emit(Result.Error("Empty response body"))
-            } else {
-                val errorResponse = response.errorBody()?.string() ?: "Unknown Error"
-                emit(Result.Error("Login failed: $errorResponse"))
+    suspend fun loginUser(loginRequest: LoginRequest): Flow<Result<LoginResponse>> {
+        return flow {
+            emit(Result.Loading)
+
+            try {
+                val response: LoginResponse = apiService.loginUser(loginRequest)
+                Timber.d("Login Response: ${response.message}")
+                val token = response.access_token
+                if (token.isEmpty()) {
+                    Timber.e("Token is null or empty in response")
+                    emit(Result.Error("Login failed: Token is null or empty"))
+                } else {
+                    Timber.d("Token received: $token")
+                    sessionManager.saveToken(token)
+                    Timber.d("Token saved successfully, current token: ${sessionManager.getToken()}")
+                    emit(Result.Success(response))
+                }
+            } catch (e: IOException) {
+                Timber.e("Network error: ${e.message}")
+                emit(Result.Error("Network error: ${e.message}"))
+            } catch (e: Exception) {
+                Timber.e("Login failed: ${e.message}")
+                emit(Result.Error("Login failed: ${e.message}"))
             }
-        } catch (e: Exception) {
-            emit(Result.Error("Login failed: ${e.message}"))
         }
     }
 

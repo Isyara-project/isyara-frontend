@@ -36,6 +36,7 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     private val _feedbackState = MutableStateFlow<Result<FeedbackResponse>>(Result.Loading)
     val feedbackState: StateFlow<Result<FeedbackResponse>> get() = _feedbackState
 
+Feedback
     private val _feedbackHistoriesState = MutableStateFlow<Result<FeedbackHistoryResponse>>(Result.Loading)
     val feedbackHistoriesState: StateFlow<Result<FeedbackHistoryResponse>> get() = _feedbackHistoriesState
 
@@ -59,10 +60,13 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     }
 
     // Fungsi untuk Register
+=======
+    // Fungsi Register
+  application
     fun registerUser(registerRequest: RegisterRequest) {
         viewModelScope.launch {
-            _loadingState.value = true
             try {
+                _loadingState.value = true
                 authRepository.registerUser(registerRequest).collect { result ->
                     _registerState.value = result
                 }

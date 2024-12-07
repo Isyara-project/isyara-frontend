@@ -1,5 +1,6 @@
 package com.application.isyara.data.di;
 
+import com.application.isyara.data.local.SessionManager;
 import com.application.isyara.data.remote.ApiService;
 import com.application.isyara.data.repository.AuthRepository;
 import dagger.internal.DaggerGenerated;
@@ -28,21 +29,26 @@ import javax.inject.Provider;
 public final class RepositoryModule_ProvideAuthRepositoryFactory implements Factory<AuthRepository> {
   private final Provider<ApiService> apiServiceProvider;
 
-  public RepositoryModule_ProvideAuthRepositoryFactory(Provider<ApiService> apiServiceProvider) {
+  private final Provider<SessionManager> sessionManagerProvider;
+
+  public RepositoryModule_ProvideAuthRepositoryFactory(Provider<ApiService> apiServiceProvider,
+      Provider<SessionManager> sessionManagerProvider) {
     this.apiServiceProvider = apiServiceProvider;
+    this.sessionManagerProvider = sessionManagerProvider;
   }
 
   @Override
   public AuthRepository get() {
-    return provideAuthRepository(apiServiceProvider.get());
+    return provideAuthRepository(apiServiceProvider.get(), sessionManagerProvider.get());
   }
 
   public static RepositoryModule_ProvideAuthRepositoryFactory create(
-      Provider<ApiService> apiServiceProvider) {
-    return new RepositoryModule_ProvideAuthRepositoryFactory(apiServiceProvider);
+      Provider<ApiService> apiServiceProvider, Provider<SessionManager> sessionManagerProvider) {
+    return new RepositoryModule_ProvideAuthRepositoryFactory(apiServiceProvider, sessionManagerProvider);
   }
 
-  public static AuthRepository provideAuthRepository(ApiService apiService) {
-    return Preconditions.checkNotNullFromProvides(RepositoryModule.INSTANCE.provideAuthRepository(apiService));
+  public static AuthRepository provideAuthRepository(ApiService apiService,
+      SessionManager sessionManager) {
+    return Preconditions.checkNotNullFromProvides(RepositoryModule.INSTANCE.provideAuthRepository(apiService, sessionManager));
   }
 }

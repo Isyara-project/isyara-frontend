@@ -37,7 +37,7 @@ android {
                 "proguard-rules.pro"
             )
 
-            buildConfigField("String", "BASE_URL", "\"https://debug-api.dicoding.dev/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"https://user-dot-project-isyara.et.r.appspot.com/\"")
         }
     }
     compileOptions {
@@ -107,5 +107,6 @@ dependencies {
     implementation(libs.lottie.compose)
     implementation(libs.timber)
     implementation(libs.androidx.datastore.preferences)
+    implementation (libs.androidx.datastore)
 
 }

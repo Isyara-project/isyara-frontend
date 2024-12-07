@@ -1,5 +1,8 @@
 package com.application.isyara.ui.auth
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -41,9 +44,15 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(navController: NavController) {
+    val context = LocalContext.current
+    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val pages = OnboardingPage.pages
     val pagerState = rememberPagerState(initialPage = 0) { pages.size }
     val coroutineScope = rememberCoroutineScope()
+
+    BackHandler {
+        (context as? Activity)?.finishAffinity()
+    }
 
     LaunchedEffect(pagerState.currentPage) {
         if (pagerState.currentPage == 0) {
