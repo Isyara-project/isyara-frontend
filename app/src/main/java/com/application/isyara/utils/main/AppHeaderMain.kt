@@ -101,7 +101,7 @@ fun AppHeaderMain(
                     text = "Isyara",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Red
+                    color = Color.White
                 )
             }
         }
