@@ -36,10 +36,15 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     private val _feedbackState = MutableStateFlow<Result<FeedbackResponse>>(Result.Loading)
     val feedbackState: StateFlow<Result<FeedbackResponse>> get() = _feedbackState
 
-Feedback
+
     private val _feedbackHistoriesState = MutableStateFlow<Result<FeedbackHistoryResponse>>(Result.Loading)
     val feedbackHistoriesState: StateFlow<Result<FeedbackHistoryResponse>> get() = _feedbackHistoriesState
 
+    // State untuk mengelola status perubahan password
+    private val _changePasswordState = MutableStateFlow<Result<ChangePasswordResponse>>(Result.Loading)
+    val changePasswordState: StateFlow<Result<ChangePasswordResponse>> get() = _changePasswordState
+
+    // State untuk mengelola status loading (menunggu response API)
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean> get() = _loadingState
 
@@ -59,10 +64,41 @@ Feedback
         }
     }
 
-    // Fungsi untuk Register
-=======
+    // Fungsi untuk mengubah password
+    fun changePassword(oldPass: String, newPass: String) {
+        viewModelScope.launch {
+            _loadingState.value = true // Menandakan bahwa proses sedang berlangsung
+            try {
+                // Memanggil fungsi changePassword dari AuthRepository
+                authRepository.changePassword(oldPass, newPass).collect { result ->
+                    when (result) {
+                        is Result.Success -> {
+                            // Jika berhasil, update state dengan hasil yang berhasil
+                            _changePasswordState.value = Result.Success(result.data)
+                        }
+                        is Result.Error -> {
+                            // Jika gagal, update state dengan error yang terjadi
+                            _changePasswordState.value = Result.Error(result.message)
+                        }
+                        else -> {
+                            // Jika ada status loading atau lainnya
+                            _changePasswordState.value = Result.Loading
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Jika terjadi exception, kirimkan error message
+                _changePasswordState.value = Result.Error("Change password failed: ${e.message}")
+            } finally {
+                // Menyelesaikan proses loading setelah API call selesai
+                _loadingState.value = false
+            }
+        }
+    }
+
+
     // Fungsi Register
-  application
+
     fun registerUser(registerRequest: RegisterRequest) {
         viewModelScope.launch {
             try {
