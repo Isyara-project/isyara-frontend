@@ -10,26 +10,42 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.application.isyara.R
 import com.application.isyara.utils.auth.AppHeaderAuth
 import com.application.isyara.utils.auth.CustomInputField
+import com.application.isyara.viewmodel.auth.AuthViewModel
+import com.application.isyara.utils.auth.Result
+
 
 @Composable
 fun ChangePasswordScreen(
     onBackClick: () -> Unit,
-    onPasswordChangeSuccess: () -> Unit
+    onPasswordChangeSuccess: () -> Unit,
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
+    // Variables for UI input
+    var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isConfirmPasswordVisible by remember { mutableStateOf(false) }
+
+    // Variables for validation errors
+    var oldPasswordError by remember { mutableStateOf<String?>(null) }
     var newPasswordError by remember { mutableStateOf<String?>(null) }
     var confirmPasswordError by remember { mutableStateOf<String?>(null) }
+
+    // UI error and loading states from ViewModel
+    val changePasswordState by viewModel.changePasswordState.collectAsState()
+    val loadingState by viewModel.loadingState.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -42,13 +58,34 @@ fun ChangePasswordScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Konten
+        // Content
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Input Kata Sandi Lama
+            CustomInputField(
+                value = oldPassword,
+                onValueChange = {
+                    oldPassword = it
+                    oldPasswordError = null
+                },
+                label = "Kata Sandi Lama",
+                placeholder = "Masukkan kata sandi lama",
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_password),
+                        contentDescription = "Kata Sandi Lama"
+                    )
+                },
+                trailingIcon = {},
+                visualTransformation = PasswordVisualTransformation(),
+                isError = oldPasswordError != null,
+                errorMessage = oldPasswordError
+            )
+
             // Input Kata Sandi Baru
             CustomInputField(
                 value = newPassword,
@@ -108,7 +145,10 @@ fun ChangePasswordScreen(
             // Tombol Ganti Kata Sandi
             Button(
                 onClick = {
-                    // Validasi Kata Sandi Baru
+                    // Validasi Input
+                    if (oldPassword.isBlank()) {
+                        oldPasswordError = "Kata sandi lama harus diisi!"
+                    }
                     if (newPassword.isBlank()) {
                         newPasswordError = "Kata sandi baru harus diisi!"
                     } else if (newPassword.length < 8) {
@@ -117,18 +157,35 @@ fun ChangePasswordScreen(
                         newPasswordError = "Kata sandi harus mengandung huruf besar!"
                     }
 
-                    // Validasi Konfirmasi Kata Sandi
                     if (newPassword != confirmPassword) {
                         confirmPasswordError = "Kata sandi tidak cocok!"
                     }
 
-                    if (newPasswordError == null && confirmPasswordError == null) {
-                        onPasswordChangeSuccess()
+                    if (oldPasswordError == null && newPasswordError == null && confirmPasswordError == null) {
+                        viewModel.changePassword(oldPassword, newPassword)
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Ganti Kata Sandi")
+            }
+
+            // Loading indicator
+            if (loadingState) {
+                // Show loading spinner or message
+                Text(text = "Mengubah Kata Sandi...", modifier = Modifier.fillMaxWidth())
+            }
+
+            // Menampilkan pesan error jika terjadi
+            when (val result = changePasswordState) {
+                is Result.Error -> {
+                    Text(text = result.message ?: "Gagal mengubah kata sandi", color = Color.Red)
+                }
+                is Result.Success -> {
+                    onPasswordChangeSuccess()
+                    Text(text = result.data.message ?: "Password changed successfully.")
+                }
+                else -> {}
             }
         }
     }
