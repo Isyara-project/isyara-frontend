@@ -10,7 +10,7 @@ data class RegisterRequest(
 data class RegisterResponse(
     val message: String,
     val data: UserData,
-    val temporary_token: String?
+    val token: String
 )
 
 data class UserData(
@@ -21,4 +21,5 @@ data class UserData(
     val password: String,
     val created_at: String
 )
+
 

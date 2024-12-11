@@ -42,8 +42,9 @@ import com.application.isyara.data.model.RegisterRequest
 import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.auth.AppHeaderAuth
 import com.application.isyara.utils.auth.CustomInputField
-import com.application.isyara.utils.auth.Result
+import com.application.isyara.utils.state.Result
 import com.application.isyara.viewmodel.auth.AuthViewModel
+
 
 @Composable
 fun RegisterScreen(navController: NavHostController, viewModel: AuthViewModel = hiltViewModel()) {
@@ -61,8 +62,6 @@ fun RegisterScreen(navController: NavHostController, viewModel: AuthViewModel = 
 
     // Menggunakan collectAsState untuk mendapatkan state dari StateFlow
     val result by viewModel.registerState.collectAsState()
-
-    // State untuk menunjukkan loading
     val isLoading by viewModel.loadingState.collectAsState()
 
     // Fungsi untuk validasi email
@@ -78,8 +77,7 @@ fun RegisterScreen(navController: NavHostController, viewModel: AuthViewModel = 
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             AppHeaderAuth(
                 title = "Daftar",
@@ -230,12 +228,12 @@ fun RegisterScreen(navController: NavHostController, viewModel: AuthViewModel = 
                     }
 
                     is Result.Success -> {
-                        // Navigasi ke halaman OTP jika sukses
-                        navController.navigate(NavRoute.Otp.route)
+                        val token = (result as Result.Success).data.token
+                        navController.navigate("${NavRoute.Otp.route}/$token")
                     }
 
                     else -> {
-
+                        // Tidak ada tindakan
                     }
                 }
 

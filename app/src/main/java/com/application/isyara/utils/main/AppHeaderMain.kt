@@ -1,5 +1,8 @@
 package com.application.isyara.utils.main
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,8 +16,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -44,15 +49,23 @@ fun AppHeaderMain(
     isTopLevelPage: Boolean = false
 
 ) {
+
+    val alphaAnim by animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = tween(
+            durationMillis = 500,
+            easing = FastOutSlowInEasing
+        ), label = "animations"
+    )
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(60.dp)
             .background(backgroundColor)
-            .padding(start = paddingStart, end = paddingEnd),
+            .padding(start = paddingStart, end = paddingEnd)
+            .alpha(alphaAnim),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Tombol Kembali atau Logo Isyara
         if (onBackClick != null && !isTopLevelPage) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -66,7 +79,6 @@ fun AppHeaderMain(
                     )
                 }
 
-                // Judul untuk Non-Dashboard
                 if (!showDashboardElements) {
                     Text(
                         text = title,
@@ -78,7 +90,6 @@ fun AppHeaderMain(
                 }
             }
         } else if (isTopLevelPage) {
-            // Judul tanpa tombol back untuk Top-Level page
             Text(
                 text = title,
                 fontSize = 20.sp,
@@ -87,7 +98,6 @@ fun AppHeaderMain(
                 textAlign = TextAlign.Start
             )
         } else if (showDashboardElements) {
-            // Logo Kustom untuk Dashboard
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)

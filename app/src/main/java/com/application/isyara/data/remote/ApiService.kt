@@ -1,25 +1,30 @@
 package com.application.isyara.data.remote
 
-import com.application.isyara.data.model.ForgotPasswordRequest
+import com.application.isyara.data.model.EmailRequest
+import com.application.isyara.data.model.FeedbackHistoryResponse
+import com.application.isyara.data.model.FeedbackRequest
+import com.application.isyara.data.model.FeedbackResponse
 import com.application.isyara.data.model.ForgotPasswordResponse
 import com.application.isyara.data.model.LoginRequest
 import com.application.isyara.data.model.LoginResponse
 import com.application.isyara.data.model.OtpRequest
 import com.application.isyara.data.model.OtpResponse
+import com.application.isyara.data.model.ProfileResponse
+import com.application.isyara.data.model.ProfileUpdateResponse
 import com.application.isyara.data.model.RegisterRequest
 import com.application.isyara.data.model.RegisterResponse
 import com.application.isyara.data.model.ResendOtpResponse
 import com.application.isyara.data.model.ResetPasswordRequest
 import com.application.isyara.data.model.ResetPasswordResponse
-import retrofit2.Response
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
-Feedback
+import retrofit2.http.Part
 import retrofit2.http.Path
-=======
-  application
 
 interface ApiService {
 
@@ -31,31 +36,33 @@ interface ApiService {
     @POST("login")
     suspend fun loginUser(@Body loginRequest: LoginRequest): LoginResponse
 
-    // Endpoint untuk Verifikasi OTP
-    @POST("verification-otp")
+
+    @POST("/verification-otp/{token}")
     suspend fun verifyOtp(
-        @Header("Authorization") token: String, // Menggunakan header Authorization untuk token
-        @Body otpRequest: OtpRequest
+        @Path("token") token: String,
+        @Body request: OtpRequest
     ): OtpResponse
 
-    // Endpoint untuk Kirim Ulang OTP
+
     @POST("resend-otp")
     suspend fun resendOtp(
-        @Header("Authorization") token: String, // Menggunakan header Authorization untuk token
+        @Header("Authorization") token: String,
         @Body resendOtpRequest: Map<String, String>
     ): ResendOtpResponse
 
     // Endpoint untuk Lupa Password
+
     @POST("forgot-password")
     suspend fun forgotPassword(
-        @Body email: String // Mengubah parameter menjadi String (email)
-    ): Response<ForgotPasswordResponse>
+        @Body emailRequest: EmailRequest
+    ): ForgotPasswordResponse
+
 
     // Fungsi Reset Password di repository
     @POST("reset-password/{token}")
     suspend fun resetPassword(
-        @Path("token") token: String, // Token dikirim lewat path URL
-        @Body resetPasswordRequest: ResetPasswordRequest // Request body berisi password
+        @Path("token") token: String,
+        @Body resetPasswordRequest: ResetPasswordRequest
     ): ResetPasswordResponse
 
     // Endpoint untuk Kirim Feedback
@@ -67,4 +74,23 @@ interface ApiService {
     // Endpoint untuk Mendapatkan Riwayat Feedback
     @GET("feedback/histories")
     suspend fun getFeedbackHistories(): FeedbackHistoryResponse
+
+    @GET("get-profile")
+    suspend fun getProfile(
+        @Header("Authorization") token: String
+    ): ProfileResponse
+
+    @Multipart
+    @POST("upload-picture")
+    suspend fun updateProfile(
+        @Header("Authorization") token: String,
+        @Part file: MultipartBody.Part?,
+        @Part("fullname") fullname: RequestBody,
+        @Part("bio") bio: RequestBody
+    ): ProfileUpdateResponse
+
+
+    @GET("isyara_kamus_bucket/file-list.json")
+    suspend fun getVideoList(): List<String>
+
 }

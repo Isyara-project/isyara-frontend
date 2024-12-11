@@ -1,5 +1,7 @@
 package com.application.isyara.navigation
 
+import android.net.Uri
+
 sealed class NavRoute(val route: String) {
     // Auth Screens
     object Splash : NavRoute("splash")  // Rute Splash Screen
@@ -25,7 +27,9 @@ sealed class NavRoute(val route: String) {
 
     // Dictionary
     object SIBI : NavRoute("sibi")
-    object BISINDO : NavRoute("bisindo")
+    object VideoPlayer : NavRoute("videoPlayer/{videoUrl}") {
+        fun createRoute(videoUrl: String) = "videoPlayer/${Uri.encode(videoUrl)}"
+    }
 
     // Translate
     object TranslateGuide : NavRoute("translate_guide")
@@ -40,7 +44,6 @@ sealed class NavRoute(val route: String) {
     object About : NavRoute("about")
     object Feedback : NavRoute("feedback")
     object PrivacyPolicy : NavRoute("privacy_policy")
-
 
 
 }

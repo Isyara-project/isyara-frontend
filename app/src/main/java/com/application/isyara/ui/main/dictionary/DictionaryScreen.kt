@@ -63,16 +63,9 @@ fun DictionaryScreen(
                     iconRes = R.drawable.ic_sibi,
                     label = "SIBI",
                     backgroundColor = Color(0xFFFFD54F),
-                    onClick = {  }
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                DictionaryOptionCard(
-                    iconRes = R.drawable.ic_bisindo,
-                    label = "BISINDO",
-                    backgroundColor = Color(0xFFFF8A65),
-                    onClick = {  }
+                    onClick = {
+                        navController.navigate(NavRoute.SIBI.route)
+                    }
                 )
             }
         }
@@ -120,10 +113,4 @@ fun DictionaryOptionCard(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DictionaryScreenPreview() {
-    DictionaryScreen(navController = NavController(LocalContext.current))
 }

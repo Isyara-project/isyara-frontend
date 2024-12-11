@@ -3,6 +3,7 @@ package com.application.isyara.ui.main.dashboard
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,22 +26,29 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,45 +59,50 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.application.isyara.R
 import com.application.isyara.navigation.NavRoute
+import com.application.isyara.utils.state.Result
 import com.application.isyara.utils.main.AppHeaderMain
 import com.application.isyara.utils.main.QuickAccessItem
+import com.application.isyara.viewmodel.auth.LoginViewModel
+import com.application.isyara.viewmodel.main.ProfileViewModel
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
-
 @Composable
 fun DashboardScreen(
-    userName: String = "Zacky",
-    fullName: String = "Nama Lengkap",
     onSearchClick: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     val scrollState = rememberScrollState()
-
+    val profileState by profileViewModel.profile.collectAsState()
     val scrollThreshold = 50
     val isScrolled by remember {
         derivedStateOf { scrollState.value > scrollThreshold }
     }
-
     val headerBackgroundColor by animateColorAsState(
         targetValue = if (isScrolled) Color.White else Color.Transparent,
-        animationSpec = tween(durationMillis = 1000)
+        animationSpec = tween(durationMillis = 1000), label = "colorAnimation"
     )
-
     var isProfileCardClicked by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        profileViewModel.fetchProfile()
+    }
+    val fullName = when (profileState) {
+        is Result.Idle -> null
+        is Result.Loading -> null
+        is Result.Success -> (profileState as Result.Success).data.fullname
+        is Result.Error -> null
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -101,7 +114,12 @@ fun DashboardScreen(
             Spacer(modifier = Modifier.height(60.dp))
 
             Text(
-                text = "Selamat Datang, $userName!",
+                text = when (profileState) {
+                    is Result.Idle -> "Memuat profil data..."
+                    is Result.Loading -> "Memuat profil data..."
+                    is Result.Success -> "Selamat Datang, $fullName!"
+                    is Result.Error -> "Gagal memuat profil"
+                },
                 fontSize = 20.sp,
                 color = Color.Black,
                 modifier = Modifier.padding(horizontal = 16.dp)
@@ -188,17 +206,21 @@ fun DashboardScreen(
                     .align(alignment = Alignment.TopEnd)
                     .offset(y = 50.dp)
             ) {
-                ProfileCardSmall()
+                ProfileCardSmall(navController = navController, fullName = fullName ?: "User")
             }
         }
     }
 }
 
-
 @Composable
-fun ProfileCardSmall() {
+fun ProfileCardSmall(
+    navController: NavController,
+    fullName: String,
+    loginViewModel: LoginViewModel = hiltViewModel()
+) {
     val cardWidth = 230.dp
     val cardHeight = 250.dp
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -215,40 +237,38 @@ fun ProfileCardSmall() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            // Foto Profil
             Box(
                 modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFFE1F5FE))
+                    .size(72.dp)
+                    .background(Color(0xFFE1F5FE), CircleShape)
+                    .border(2.dp, Color(0xFF008E9B), CircleShape),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_user),
-                    contentDescription = "Foto Profil Kecil",
-                    modifier = Modifier.size(48.dp),
-                    tint = Color(0xFF008E9B)
-                )
+                IconButton(
+                    onClick = {
+                        navController.navigate(NavRoute.EditAccount.route)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Foto Profil",
+                        modifier = Modifier.size(60.dp),
+                        tint = Color(0xFF008E9B)
+                    )
+                }
             }
 
-            // Username
             Text(
-                text = "Username",
+                text = fullName,
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.Bold
             )
 
-            // Email
-            Text(
-                text = "lucubanget@gmail.com",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
-            )
-
             Button(
-                onClick = { },
+                onClick = { showLogoutDialog = true },
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .height(40.dp)
+                    .height(36.dp)
                     .fillMaxWidth(0.6f),
                 colors = ButtonDefaults.buttonColors(Color(0xFF008E9B))
             ) {
@@ -258,8 +278,48 @@ fun ProfileCardSmall() {
                     style = MaterialTheme.typography.bodySmall
                 )
             }
+            if (showLogoutDialog) {
+                LogoutConfirmationDialog(
+                    onConfirm = {
+                        loginViewModel.logout()
+                        navController.navigate(NavRoute.Onboarding.route) {
+                            popUpTo(NavRoute.Settings.route) { inclusive = true }
+                        }
+                        showLogoutDialog = false
+                    },
+                    onDismiss = {
+                        showLogoutDialog = false
+                    }
+                )
+            }
         }
     }
+}
+
+
+@Composable
+fun LogoutConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Konfirmasi Logout") },
+        text = { Text("Apakah Anda yakin ingin keluar?") },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm()
+                }
+            ) {
+                Text("Ya")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text("Batal")
+            }
+        }
+    )
 }
 
 
@@ -271,8 +331,8 @@ fun HotNewsCarousel() {
         "Hot News: Komunitas Tuna Rungu Berkembang"
     )
 
-    var currentIndex by remember { mutableStateOf(0) }
-    var offsetX by remember { mutableStateOf(0f) }
+    var currentIndex by remember { mutableIntStateOf(0) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(currentIndex) {
         delay(5000)
@@ -372,7 +432,6 @@ fun QuickAccessCard(screenWidth: Int, navController: NavController) {
         QuickAccessItem(Icons.Default.Book, "Dictionary"),
         QuickAccessItem(Icons.Default.TipsAndUpdates, "Tips Belajar"),
         QuickAccessItem(Icons.Default.Language, "SIBI"),
-        QuickAccessItem(Icons.Default.Translate, "BISINDO"),
         QuickAccessItem(Icons.Default.MoreHoriz, "Lainnya")
     )
 
@@ -411,10 +470,6 @@ fun QuickAccessCard(screenWidth: Int, navController: NavController) {
 
                             "SIBI" -> {
                                 navController.navigate(NavRoute.SIBI.route)
-                            }
-
-                            "BISINDO" -> {
-                                navController.navigate(NavRoute.BISINDO.route)
                             }
 
                             "Lainnya" -> {}
@@ -479,14 +534,3 @@ fun DevelopmentSection() {
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun DashboardScreenPreview() {
-    val navController = rememberNavController()
-    DashboardScreen(
-        userName = "Zacky",
-        onSearchClick = {},
-        navController = navController
-    )
-}

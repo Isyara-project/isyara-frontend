@@ -1,5 +1,8 @@
+@file:OptIn(FlowPreview::class)
+
 package com.application.isyara.navigation
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +24,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -30,12 +32,24 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.application.isyara.ui.auth.ResetPasswordScreen
 import com.application.isyara.ui.auth.SplashScreen
-import com.application.isyara.ui.main.dashboard.*
-import com.application.isyara.ui.main.dictionary.*
+import com.application.isyara.ui.main.dashboard.DashboardScreen
+import com.application.isyara.ui.main.dashboard.NotificationsScreen
+import com.application.isyara.ui.main.dashboard.SearchScreen
+import com.application.isyara.ui.main.dashboard.TipsScreen
+import com.application.isyara.ui.main.dictionary.DictionaryScreen
+import com.application.isyara.ui.main.dictionary.SIBIScreen
+import com.application.isyara.ui.main.dictionary.VideoPlayerScreen
 import com.application.isyara.ui.main.history.HistoryScreen
-import com.application.isyara.ui.main.settings.*
-import com.application.isyara.ui.main.translate.*
+import com.application.isyara.ui.main.settings.AboutIsyaraScreen
+import com.application.isyara.ui.main.settings.EditAccountScreen
+import com.application.isyara.ui.main.settings.FeedbackScreen
+import com.application.isyara.ui.main.settings.LanguageSettingsScreen
+import com.application.isyara.ui.main.settings.SettingsScreen
+import com.application.isyara.ui.main.settings.ThemeSettingsScreen
+import com.application.isyara.ui.main.translate.TranslateGuideScreen
+import com.application.isyara.ui.main.translate.TranslateScreen
 import com.application.isyara.utils.main.NavigationItem
+import kotlinx.coroutines.FlowPreview
 
 @Composable
 fun AppMainNavGraph(navController: NavHostController) {
@@ -77,10 +91,9 @@ fun AppMainNavGraph(navController: NavHostController) {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = NavRoute.Splash.route, // Splash screen
+                startDestination = NavRoute.Splash.route,
                 modifier = Modifier.fillMaxSize()
             ) {
-                // Splash screen
                 composable(NavRoute.Splash.route) {
                     SplashScreen(navController)
                 }
@@ -96,13 +109,8 @@ fun AppMainNavGraph(navController: NavHostController) {
                     ResetPasswordScreen(navController, token = token)
                 }
 
-
-
-
-                // Main screens
                 composable(NavRoute.Dashboard.route) {
                     DashboardScreen(
-                        userName = "Zacky",
                         onSearchClick = { navController.navigate(NavRoute.Search.route) },
                         navController = navController
                     )
@@ -128,31 +136,38 @@ fun AppMainNavGraph(navController: NavHostController) {
                 composable(NavRoute.Dictionary.route) {
                     DictionaryScreen(navController = navController)
                 }
-                composable(NavRoute.BISINDO.route) {
-                    BISINDOScreen(navController = navController)
-                }
                 composable(NavRoute.SIBI.route) {
                     SIBIScreen(navController = navController)
                 }
-                composable(NavRoute.Translate.route) {
-                    TranslateScreen(navController = navController)
+                composable(
+                    route = NavRoute.VideoPlayer.route,
+                    arguments = listOf(navArgument("videoUrl") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val encodedUrl = backStackEntry.arguments?.getString("videoUrl")
+                    val videoUrl = encodedUrl?.let { Uri.decode(it) }
+                    videoUrl?.let {
+                        VideoPlayerScreen(navController = navController, videoUrl = it)
+                    }
                 }
+
                 composable(NavRoute.TranslateGuide.route) {
                     TranslateGuideScreen(
                         onBackClick = { navController.popBackStack() },
                         navController = navController
                     )
                 }
+                composable(NavRoute.Translate.route) {
+                    TranslateScreen(navController = navController)
+                }
                 composable(NavRoute.History.route) {
-                    HistoryScreen(navController = navController, historyItems = listOf())
+                    HistoryScreen(navController = navController)
                 }
                 composable(NavRoute.Settings.route) {
                     SettingsScreen(navController = navController)
                 }
                 composable(NavRoute.EditAccount.route) {
                     EditAccountScreen(
-                        navController = navController,
-                        onSaveClick = { name, phone, newPassword -> }
+                        navController = navController
                     )
                 }
                 composable(NavRoute.LanguageSettings.route) {
@@ -175,12 +190,9 @@ fun AppMainNavGraph(navController: NavHostController) {
                         navController = navController
                     )
                 }
-                // Feedback screen
                 composable(NavRoute.Feedback.route) {
-                    // Memanggil FeedbackScreen dengan viewModel
                     FeedbackScreen(
-                        navController = navController,
-                        authViewModel = hiltViewModel() // Menggunakan Hilt untuk menyuntikkan AuthViewModel
+                        navController = navController
                     )
                 }
             }
