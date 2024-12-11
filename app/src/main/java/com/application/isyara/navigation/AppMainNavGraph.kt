@@ -170,6 +170,18 @@ fun AppMainNavGraph(navController: NavHostController) {
                         navController = navController
                     )
                 }
+
+                  // Tambahkan rute baru untuk ChangePasswordScreen
+                composable(NavRoute.ChangePassword.route) {
+                    ChangePasswordScreen(
+                        onBackClick = { navController.popBackStack() },
+                        onPasswordChangeSuccess = {
+                            navController.popBackStack() // Navigasi kembali setelah sukses
+                            navController.navigate(NavRoute.Dashboard.route) // Opsional, arahkan ke dashboard setelah sukses
+                        }
+                    )
+                }
+                
                 composable(NavRoute.LanguageSettings.route) {
                     LanguageSettingsScreen(
                         navController = navController,

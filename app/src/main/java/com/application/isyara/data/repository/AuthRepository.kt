@@ -135,4 +135,66 @@ class AuthRepository @Inject constructor(
             emit(Result.Error(e.message ?: "Unknown Error"))
         }
     }
+
+
+    Fungsi untuk mengubah password
+    suspend fun changePassword(oldPass: String, newPass: String): Flow<Result<ChangePasswordResponse>> {
+        return flow {
+            try {
+                val token = sessionManager.getToken()
+                if (token.isNullOrEmpty()) {
+                    emit(Result.Error("No token found. Please log in again."))
+                    return@flow
+                }
+
+                val response = apiService.changePassword(
+                    token = "Bearer $token",
+                    changePasswordRequest = ChangePasswordRequest(oldPass, newPass)
+                )
+
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        emit(Result.Success(it))
+                    } ?: emit(Result.Error("Empty response from server."))
+                } else {
+                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                    emit(Result.Error("Failed to change password: $errorMessage"))
+                }
+            } catch (e: HttpException) {
+                emit(Result.Error("HTTP error: ${e.message}"))
+            } catch (e: Exception) {
+                emit(Result.Error("Unexpected error: ${e.message}"))
+            }
+        }
+    }
+      // Fungsi untuk mengubah password
+    suspend fun changePassword(oldPass: String, newPass: String): Flow<Result<ChangePasswordResponse>> {
+        return flow {
+            try {
+                val token = sessionManager.getToken()
+                if (token.isNullOrEmpty()) {
+                    emit(Result.Error("No token found. Please log in again."))
+                    return@flow
+                }
+
+                val response = apiService.changePassword(
+                    token = "Bearer $token",
+                    changePasswordRequest = ChangePasswordRequest(oldPass, newPass)
+                )
+
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        emit(Result.Success(it))
+                    } ?: emit(Result.Error("Empty response from server."))
+                } else {
+                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                    emit(Result.Error("Failed to change password: $errorMessage"))
+                }
+            } catch (e: HttpException) {
+                emit(Result.Error("HTTP error: ${e.message}"))
+            } catch (e: Exception) {
+                emit(Result.Error("Unexpected error: ${e.message}"))
+            }
+        }
+    }
 }

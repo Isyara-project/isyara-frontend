@@ -37,15 +37,17 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     private val _feedbackState = MutableStateFlow<Result<FeedbackResponse>>(Result.Loading)
     val feedbackState: StateFlow<Result<FeedbackResponse>> get() = _feedbackState
 
-    private val _feedbackHistoriesState =
-        MutableStateFlow<Result<FeedbackHistoryResponse>>(Result.Loading)
+    private val _feedbackHistoriesState = MutableStateFlow<Result<FeedbackHistoryResponse>>(Result.Loading)
     val feedbackHistoriesState: StateFlow<Result<FeedbackHistoryResponse>> get() = _feedbackHistoriesState
 
+    // State untuk mengelola status perubahan password
+    private val _changePasswordState = MutableStateFlow<Result<ChangePasswordResponse>>(Result.Loading)
+    val changePasswordState: StateFlow<Result<ChangePasswordResponse>> get() = _changePasswordState
+
+    // State untuk mengelola status loading (menunggu response API)
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean> get() = _loadingState
 
-
-    // Fungsi untuk Register
     fun registerUser(registerRequest: RegisterRequest) {
         viewModelScope.launch {
             authRepository.registerUser(registerRequest).collect { result ->

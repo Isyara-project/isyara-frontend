@@ -65,6 +65,13 @@ interface ApiService {
         @Body resetPasswordRequest: ResetPasswordRequest
     ): ResetPasswordResponse
 
+      // Endpoint untuk mengubah password
+    @PATCH("change-password")
+    suspend fun changePassword(
+        @Header("Authorization") token: String,
+        @Body changePasswordRequest: ChangePasswordRequest
+    ): Response<ChangePasswordResponse
+  
     // Endpoint untuk Kirim Feedback
     @POST("feedback")
     suspend fun sendFeedback(

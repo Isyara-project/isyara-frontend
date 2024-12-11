@@ -1,11 +1,25 @@
-package com.application.isyara.theme
+package com.application.isyara.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Blue80 = Color(0xFF0077EE)
-val PurpleGrey80 = Color(0xFFC2D2DC)
-val Pink80 = Color(0xFFB8E7EF)
+// Define colors
+val PrimaryColor = Color(0xFF0097B2)
+val SecondaryColor = Color(0xFF5CE1E6)
+val AccentColor = Color(0xFFFFBD59)
+val TextColorPrimary = Color(0xFF000000)
+val BackgroundColor = Color(0xFFFBFBFB) // Lighter background for general use
+val OnPrimaryColor = Color(0xFFFFFFFF) // Text color for on primary background
 
-val Purple40 = Color(0xFF5080A4)
-val PurpleGrey40 = Color(0xFF5B6C71)
-val Pink40 = Color(0xFF526A7D)
+// Light Theme Colors
+val LightPrimary = PrimaryColor
+val LightSecondary = SecondaryColor
+val LightBackground = BackgroundColor
+val LightOnPrimary = OnPrimaryColor
+val LightTextPrimary = TextColorPrimary
+
+// Dark Theme Colors
+val DarkPrimary = PrimaryColor
+val DarkSecondary = SecondaryColor
+val DarkBackground = Color(0xFF121212) // Dark background for dark theme
+val DarkOnPrimary = OnPrimaryColor
+val DarkTextPrimary = TextColorPrimary
