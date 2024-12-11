@@ -6,19 +6,49 @@ import android.view.View;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
-import com.application.isyara.data.di.NetworkModule_ProvideApiServiceFactory;
-import com.application.isyara.data.di.NetworkModule_ProvideOkHttpClientFactory;
-import com.application.isyara.data.di.NetworkModule_ProvideRetrofitFactory;
+import com.application.isyara.data.di.DatabaseModule_ProvideDatabaseFactory;
+import com.application.isyara.data.di.DatabaseModule_ProvideDictionaryRepositoryFactory;
+import com.application.isyara.data.di.DatabaseModule_ProvideDownloadedDictionaryDaoFactory;
+import com.application.isyara.data.di.DatabaseModule_ProvideTranslatedTextDaoFactory;
+import com.application.isyara.data.di.DatabaseModule_ProvideTranslatedTextRepositoryFactory;
+import com.application.isyara.data.di.NetworkModule_ProvideApiServiceDictionaryFactory;
+import com.application.isyara.data.di.NetworkModule_ProvideApiServiceMainAPIFactory;
+import com.application.isyara.data.di.NetworkModule_ProvideOkHttpClientDictionaryFactory;
+import com.application.isyara.data.di.NetworkModule_ProvideOkHttpClientMainAPIFactory;
+import com.application.isyara.data.di.NetworkModule_ProvideRetrofitDictionaryFactory;
+import com.application.isyara.data.di.NetworkModule_ProvideRetrofitMainAPIFactory;
 import com.application.isyara.data.di.RepositoryModule_ProvideAuthRepositoryFactory;
+import com.application.isyara.data.di.RepositoryModule_ProvidePasswordRepositoryFactory;
 import com.application.isyara.data.di.SharedPreferencesModule_ProvideSessionManagerFactory;
+import com.application.isyara.data.local.AppDatabase;
+import com.application.isyara.data.local.DownloadedDictionaryDao;
 import com.application.isyara.data.local.SessionManager;
+import com.application.isyara.data.local.TranslatedTextDao;
 import com.application.isyara.data.remote.ApiService;
 import com.application.isyara.data.repository.AuthRepository;
+import com.application.isyara.data.repository.DictionaryRepository;
+import com.application.isyara.data.repository.PasswordRepository;
+import com.application.isyara.data.repository.ProfileRepository;
+import com.application.isyara.data.repository.TranslatedTextRepository;
 import com.application.isyara.ui.MainActivity;
 import com.application.isyara.viewmodel.auth.AuthViewModel;
 import com.application.isyara.viewmodel.auth.AuthViewModel_HiltModules;
+import com.application.isyara.viewmodel.auth.ForgotPasswordViewModel;
+import com.application.isyara.viewmodel.auth.ForgotPasswordViewModel_HiltModules;
 import com.application.isyara.viewmodel.auth.LoginViewModel;
 import com.application.isyara.viewmodel.auth.LoginViewModel_HiltModules;
+import com.application.isyara.viewmodel.auth.ResetPasswordViewModel;
+import com.application.isyara.viewmodel.auth.ResetPasswordViewModel_HiltModules;
+import com.application.isyara.viewmodel.history.HistoryViewModel;
+import com.application.isyara.viewmodel.history.HistoryViewModel_HiltModules;
+import com.application.isyara.viewmodel.main.DictionaryViewModel;
+import com.application.isyara.viewmodel.main.DictionaryViewModel_HiltModules;
+import com.application.isyara.viewmodel.main.ProfileViewModel;
+import com.application.isyara.viewmodel.main.ProfileViewModel_HiltModules;
+import com.application.isyara.viewmodel.translate.TranslateViewModel;
+import com.application.isyara.viewmodel.translate.TranslateViewModel_HiltModules;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import dagger.hilt.android.ActivityRetainedLifecycle;
 import dagger.hilt.android.ViewModelLifecycle;
 import dagger.hilt.android.internal.builders.ActivityComponentBuilder;
@@ -39,10 +69,8 @@ import dagger.internal.DoubleCheck;
 import dagger.internal.IdentifierNameString;
 import dagger.internal.KeepFieldType;
 import dagger.internal.LazyClassKeyMap;
-import dagger.internal.MapBuilder;
 import dagger.internal.Preconditions;
 import dagger.internal.Provider;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.Generated;
@@ -382,7 +410,7 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     @Override
     public Map<Class<?>, Boolean> getViewModelKeys() {
-      return LazyClassKeyMap.<Boolean>of(MapBuilder.<String, Boolean>newMapBuilder(2).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_AuthViewModel, AuthViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_LoginViewModel, LoginViewModel_HiltModules.KeyModule.provide()).build());
+      return LazyClassKeyMap.<Boolean>of(ImmutableMap.<String, Boolean>builderWithExpectedSize(8).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_AuthViewModel, AuthViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_application_isyara_viewmodel_main_DictionaryViewModel, DictionaryViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_ForgotPasswordViewModel, ForgotPasswordViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_application_isyara_viewmodel_history_HistoryViewModel, HistoryViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_LoginViewModel, LoginViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_application_isyara_viewmodel_main_ProfileViewModel, ProfileViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_ResetPasswordViewModel, ResetPasswordViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_application_isyara_viewmodel_translate_TranslateViewModel, TranslateViewModel_HiltModules.KeyModule.provide()).build());
     }
 
     @Override
@@ -404,13 +432,43 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
     private static final class LazyClassKeyProvider {
       static String com_application_isyara_viewmodel_auth_LoginViewModel = "com.application.isyara.viewmodel.auth.LoginViewModel";
 
+      static String com_application_isyara_viewmodel_main_ProfileViewModel = "com.application.isyara.viewmodel.main.ProfileViewModel";
+
+      static String com_application_isyara_viewmodel_auth_ForgotPasswordViewModel = "com.application.isyara.viewmodel.auth.ForgotPasswordViewModel";
+
+      static String com_application_isyara_viewmodel_translate_TranslateViewModel = "com.application.isyara.viewmodel.translate.TranslateViewModel";
+
+      static String com_application_isyara_viewmodel_main_DictionaryViewModel = "com.application.isyara.viewmodel.main.DictionaryViewModel";
+
+      static String com_application_isyara_viewmodel_history_HistoryViewModel = "com.application.isyara.viewmodel.history.HistoryViewModel";
+
       static String com_application_isyara_viewmodel_auth_AuthViewModel = "com.application.isyara.viewmodel.auth.AuthViewModel";
+
+      static String com_application_isyara_viewmodel_auth_ResetPasswordViewModel = "com.application.isyara.viewmodel.auth.ResetPasswordViewModel";
 
       @KeepFieldType
       LoginViewModel com_application_isyara_viewmodel_auth_LoginViewModel2;
 
       @KeepFieldType
+      ProfileViewModel com_application_isyara_viewmodel_main_ProfileViewModel2;
+
+      @KeepFieldType
+      ForgotPasswordViewModel com_application_isyara_viewmodel_auth_ForgotPasswordViewModel2;
+
+      @KeepFieldType
+      TranslateViewModel com_application_isyara_viewmodel_translate_TranslateViewModel2;
+
+      @KeepFieldType
+      DictionaryViewModel com_application_isyara_viewmodel_main_DictionaryViewModel2;
+
+      @KeepFieldType
+      HistoryViewModel com_application_isyara_viewmodel_history_HistoryViewModel2;
+
+      @KeepFieldType
       AuthViewModel com_application_isyara_viewmodel_auth_AuthViewModel2;
+
+      @KeepFieldType
+      ResetPasswordViewModel com_application_isyara_viewmodel_auth_ResetPasswordViewModel2;
     }
   }
 
@@ -423,7 +481,19 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     private Provider<AuthViewModel> authViewModelProvider;
 
+    private Provider<DictionaryViewModel> dictionaryViewModelProvider;
+
+    private Provider<ForgotPasswordViewModel> forgotPasswordViewModelProvider;
+
+    private Provider<HistoryViewModel> historyViewModelProvider;
+
     private Provider<LoginViewModel> loginViewModelProvider;
+
+    private Provider<ProfileViewModel> profileViewModelProvider;
+
+    private Provider<ResetPasswordViewModel> resetPasswordViewModelProvider;
+
+    private Provider<TranslateViewModel> translateViewModelProvider;
 
     private ViewModelCImpl(SingletonCImpl singletonCImpl,
         ActivityRetainedCImpl activityRetainedCImpl, SavedStateHandle savedStateHandleParam,
@@ -435,34 +505,74 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     }
 
+    private ProfileRepository profileRepository() {
+      return new ProfileRepository(singletonCImpl.provideApiServiceMainAPIProvider.get(), singletonCImpl.sessionManager());
+    }
+
     @SuppressWarnings("unchecked")
     private void initialize(final SavedStateHandle savedStateHandleParam,
         final ViewModelLifecycle viewModelLifecycleParam) {
       this.authViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 0);
-      this.loginViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
+      this.dictionaryViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
+      this.forgotPasswordViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
+      this.historyViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
+      this.loginViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
+      this.profileViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
+      this.resetPasswordViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 6);
+      this.translateViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 7);
     }
 
     @Override
     public Map<Class<?>, javax.inject.Provider<ViewModel>> getHiltViewModelMap() {
-      return LazyClassKeyMap.<javax.inject.Provider<ViewModel>>of(MapBuilder.<String, javax.inject.Provider<ViewModel>>newMapBuilder(2).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_AuthViewModel, ((Provider) authViewModelProvider)).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_LoginViewModel, ((Provider) loginViewModelProvider)).build());
+      return LazyClassKeyMap.<javax.inject.Provider<ViewModel>>of(ImmutableMap.<String, javax.inject.Provider<ViewModel>>builderWithExpectedSize(8).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_AuthViewModel, ((Provider) authViewModelProvider)).put(LazyClassKeyProvider.com_application_isyara_viewmodel_main_DictionaryViewModel, ((Provider) dictionaryViewModelProvider)).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_ForgotPasswordViewModel, ((Provider) forgotPasswordViewModelProvider)).put(LazyClassKeyProvider.com_application_isyara_viewmodel_history_HistoryViewModel, ((Provider) historyViewModelProvider)).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_LoginViewModel, ((Provider) loginViewModelProvider)).put(LazyClassKeyProvider.com_application_isyara_viewmodel_main_ProfileViewModel, ((Provider) profileViewModelProvider)).put(LazyClassKeyProvider.com_application_isyara_viewmodel_auth_ResetPasswordViewModel, ((Provider) resetPasswordViewModelProvider)).put(LazyClassKeyProvider.com_application_isyara_viewmodel_translate_TranslateViewModel, ((Provider) translateViewModelProvider)).build());
     }
 
     @Override
     public Map<Class<?>, Object> getHiltViewModelAssistedMap() {
-      return Collections.<Class<?>, Object>emptyMap();
+      return ImmutableMap.<Class<?>, Object>of();
     }
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_application_isyara_viewmodel_auth_AuthViewModel = "com.application.isyara.viewmodel.auth.AuthViewModel";
+      static String com_application_isyara_viewmodel_auth_ForgotPasswordViewModel = "com.application.isyara.viewmodel.auth.ForgotPasswordViewModel";
+
+      static String com_application_isyara_viewmodel_auth_ResetPasswordViewModel = "com.application.isyara.viewmodel.auth.ResetPasswordViewModel";
 
       static String com_application_isyara_viewmodel_auth_LoginViewModel = "com.application.isyara.viewmodel.auth.LoginViewModel";
+
+      static String com_application_isyara_viewmodel_translate_TranslateViewModel = "com.application.isyara.viewmodel.translate.TranslateViewModel";
+
+      static String com_application_isyara_viewmodel_main_ProfileViewModel = "com.application.isyara.viewmodel.main.ProfileViewModel";
+
+      static String com_application_isyara_viewmodel_history_HistoryViewModel = "com.application.isyara.viewmodel.history.HistoryViewModel";
+
+      static String com_application_isyara_viewmodel_auth_AuthViewModel = "com.application.isyara.viewmodel.auth.AuthViewModel";
+
+      static String com_application_isyara_viewmodel_main_DictionaryViewModel = "com.application.isyara.viewmodel.main.DictionaryViewModel";
+
+      @KeepFieldType
+      ForgotPasswordViewModel com_application_isyara_viewmodel_auth_ForgotPasswordViewModel2;
+
+      @KeepFieldType
+      ResetPasswordViewModel com_application_isyara_viewmodel_auth_ResetPasswordViewModel2;
+
+      @KeepFieldType
+      LoginViewModel com_application_isyara_viewmodel_auth_LoginViewModel2;
+
+      @KeepFieldType
+      TranslateViewModel com_application_isyara_viewmodel_translate_TranslateViewModel2;
+
+      @KeepFieldType
+      ProfileViewModel com_application_isyara_viewmodel_main_ProfileViewModel2;
+
+      @KeepFieldType
+      HistoryViewModel com_application_isyara_viewmodel_history_HistoryViewModel2;
 
       @KeepFieldType
       AuthViewModel com_application_isyara_viewmodel_auth_AuthViewModel2;
 
       @KeepFieldType
-      LoginViewModel com_application_isyara_viewmodel_auth_LoginViewModel2;
+      DictionaryViewModel com_application_isyara_viewmodel_main_DictionaryViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -489,8 +599,26 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
           case 0: // com.application.isyara.viewmodel.auth.AuthViewModel 
           return (T) new AuthViewModel(singletonCImpl.provideAuthRepositoryProvider.get());
 
-          case 1: // com.application.isyara.viewmodel.auth.LoginViewModel 
+          case 1: // com.application.isyara.viewmodel.main.DictionaryViewModel 
+          return (T) new DictionaryViewModel(singletonCImpl.provideDictionaryRepositoryProvider.get());
+
+          case 2: // com.application.isyara.viewmodel.auth.ForgotPasswordViewModel 
+          return (T) new ForgotPasswordViewModel(singletonCImpl.providePasswordRepositoryProvider.get());
+
+          case 3: // com.application.isyara.viewmodel.history.HistoryViewModel 
+          return (T) new HistoryViewModel(singletonCImpl.provideTranslatedTextRepositoryProvider.get(), singletonCImpl.provideDictionaryRepositoryProvider.get());
+
+          case 4: // com.application.isyara.viewmodel.auth.LoginViewModel 
           return (T) new LoginViewModel(singletonCImpl.provideAuthRepositoryProvider.get(), singletonCImpl.sessionManager());
+
+          case 5: // com.application.isyara.viewmodel.main.ProfileViewModel 
+          return (T) new ProfileViewModel(viewModelCImpl.profileRepository());
+
+          case 6: // com.application.isyara.viewmodel.auth.ResetPasswordViewModel 
+          return (T) new ResetPasswordViewModel(singletonCImpl.providePasswordRepositoryProvider.get());
+
+          case 7: // com.application.isyara.viewmodel.translate.TranslateViewModel 
+          return (T) new TranslateViewModel(singletonCImpl.provideTranslatedTextRepositoryProvider.get(), ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
           default: throw new AssertionError(id);
         }
@@ -572,13 +700,31 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     private final SingletonCImpl singletonCImpl = this;
 
-    private Provider<OkHttpClient> provideOkHttpClientProvider;
+    private Provider<OkHttpClient> provideOkHttpClientMainAPIProvider;
 
-    private Provider<Retrofit> provideRetrofitProvider;
+    private Provider<Retrofit> provideRetrofitMainAPIProvider;
 
-    private Provider<ApiService> provideApiServiceProvider;
+    private Provider<ApiService> provideApiServiceMainAPIProvider;
 
     private Provider<AuthRepository> provideAuthRepositoryProvider;
+
+    private Provider<OkHttpClient> provideOkHttpClientDictionaryProvider;
+
+    private Provider<Retrofit> provideRetrofitDictionaryProvider;
+
+    private Provider<ApiService> provideApiServiceDictionaryProvider;
+
+    private Provider<AppDatabase> provideDatabaseProvider;
+
+    private Provider<DownloadedDictionaryDao> provideDownloadedDictionaryDaoProvider;
+
+    private Provider<DictionaryRepository> provideDictionaryRepositoryProvider;
+
+    private Provider<PasswordRepository> providePasswordRepositoryProvider;
+
+    private Provider<TranslatedTextDao> provideTranslatedTextDaoProvider;
+
+    private Provider<TranslatedTextRepository> provideTranslatedTextRepositoryProvider;
 
     private SingletonCImpl(ApplicationContextModule applicationContextModuleParam) {
       this.applicationContextModule = applicationContextModuleParam;
@@ -592,10 +738,19 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     @SuppressWarnings("unchecked")
     private void initialize(final ApplicationContextModule applicationContextModuleParam) {
-      this.provideOkHttpClientProvider = DoubleCheck.provider(new SwitchingProvider<OkHttpClient>(singletonCImpl, 3));
-      this.provideRetrofitProvider = DoubleCheck.provider(new SwitchingProvider<Retrofit>(singletonCImpl, 2));
-      this.provideApiServiceProvider = DoubleCheck.provider(new SwitchingProvider<ApiService>(singletonCImpl, 1));
+      this.provideOkHttpClientMainAPIProvider = DoubleCheck.provider(new SwitchingProvider<OkHttpClient>(singletonCImpl, 3));
+      this.provideRetrofitMainAPIProvider = DoubleCheck.provider(new SwitchingProvider<Retrofit>(singletonCImpl, 2));
+      this.provideApiServiceMainAPIProvider = DoubleCheck.provider(new SwitchingProvider<ApiService>(singletonCImpl, 1));
       this.provideAuthRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<AuthRepository>(singletonCImpl, 0));
+      this.provideOkHttpClientDictionaryProvider = DoubleCheck.provider(new SwitchingProvider<OkHttpClient>(singletonCImpl, 7));
+      this.provideRetrofitDictionaryProvider = DoubleCheck.provider(new SwitchingProvider<Retrofit>(singletonCImpl, 6));
+      this.provideApiServiceDictionaryProvider = DoubleCheck.provider(new SwitchingProvider<ApiService>(singletonCImpl, 5));
+      this.provideDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<AppDatabase>(singletonCImpl, 9));
+      this.provideDownloadedDictionaryDaoProvider = DoubleCheck.provider(new SwitchingProvider<DownloadedDictionaryDao>(singletonCImpl, 8));
+      this.provideDictionaryRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<DictionaryRepository>(singletonCImpl, 4));
+      this.providePasswordRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<PasswordRepository>(singletonCImpl, 10));
+      this.provideTranslatedTextDaoProvider = DoubleCheck.provider(new SwitchingProvider<TranslatedTextDao>(singletonCImpl, 12));
+      this.provideTranslatedTextRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<TranslatedTextRepository>(singletonCImpl, 11));
     }
 
     @Override
@@ -604,7 +759,7 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     @Override
     public Set<Boolean> getDisableFragmentGetContextFix() {
-      return Collections.<Boolean>emptySet();
+      return ImmutableSet.<Boolean>of();
     }
 
     @Override
@@ -632,16 +787,43 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
       public T get() {
         switch (id) {
           case 0: // com.application.isyara.data.repository.AuthRepository 
-          return (T) RepositoryModule_ProvideAuthRepositoryFactory.provideAuthRepository(singletonCImpl.provideApiServiceProvider.get(), singletonCImpl.sessionManager());
+          return (T) RepositoryModule_ProvideAuthRepositoryFactory.provideAuthRepository(singletonCImpl.provideApiServiceMainAPIProvider.get(), singletonCImpl.sessionManager());
 
-          case 1: // com.application.isyara.data.remote.ApiService 
-          return (T) NetworkModule_ProvideApiServiceFactory.provideApiService(singletonCImpl.provideRetrofitProvider.get());
+          case 1: // @com.application.isyara.data.di.RetrofitMain com.application.isyara.data.remote.ApiService 
+          return (T) NetworkModule_ProvideApiServiceMainAPIFactory.provideApiServiceMainAPI(singletonCImpl.provideRetrofitMainAPIProvider.get());
 
-          case 2: // retrofit2.Retrofit 
-          return (T) NetworkModule_ProvideRetrofitFactory.provideRetrofit(singletonCImpl.provideOkHttpClientProvider.get());
+          case 2: // @com.application.isyara.data.di.RetrofitMain retrofit2.Retrofit 
+          return (T) NetworkModule_ProvideRetrofitMainAPIFactory.provideRetrofitMainAPI(singletonCImpl.provideOkHttpClientMainAPIProvider.get());
 
-          case 3: // okhttp3.OkHttpClient 
-          return (T) NetworkModule_ProvideOkHttpClientFactory.provideOkHttpClient();
+          case 3: // @com.application.isyara.data.di.RetrofitMain okhttp3.OkHttpClient 
+          return (T) NetworkModule_ProvideOkHttpClientMainAPIFactory.provideOkHttpClientMainAPI();
+
+          case 4: // com.application.isyara.data.repository.DictionaryRepository 
+          return (T) DatabaseModule_ProvideDictionaryRepositoryFactory.provideDictionaryRepository(singletonCImpl.provideApiServiceDictionaryProvider.get(), ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.provideDownloadedDictionaryDaoProvider.get());
+
+          case 5: // @com.application.isyara.data.di.RetrofitDictionary com.application.isyara.data.remote.ApiService 
+          return (T) NetworkModule_ProvideApiServiceDictionaryFactory.provideApiServiceDictionary(singletonCImpl.provideRetrofitDictionaryProvider.get());
+
+          case 6: // @com.application.isyara.data.di.RetrofitDictionary retrofit2.Retrofit 
+          return (T) NetworkModule_ProvideRetrofitDictionaryFactory.provideRetrofitDictionary(singletonCImpl.provideOkHttpClientDictionaryProvider.get());
+
+          case 7: // @com.application.isyara.data.di.RetrofitDictionary okhttp3.OkHttpClient 
+          return (T) NetworkModule_ProvideOkHttpClientDictionaryFactory.provideOkHttpClientDictionary();
+
+          case 8: // com.application.isyara.data.local.DownloadedDictionaryDao 
+          return (T) DatabaseModule_ProvideDownloadedDictionaryDaoFactory.provideDownloadedDictionaryDao(singletonCImpl.provideDatabaseProvider.get());
+
+          case 9: // com.application.isyara.data.local.AppDatabase 
+          return (T) DatabaseModule_ProvideDatabaseFactory.provideDatabase(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 10: // com.application.isyara.data.repository.PasswordRepository 
+          return (T) RepositoryModule_ProvidePasswordRepositoryFactory.providePasswordRepository(singletonCImpl.provideApiServiceMainAPIProvider.get());
+
+          case 11: // com.application.isyara.data.repository.TranslatedTextRepository 
+          return (T) DatabaseModule_ProvideTranslatedTextRepositoryFactory.provideTranslatedTextRepository(singletonCImpl.provideTranslatedTextDaoProvider.get(), ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 12: // com.application.isyara.data.local.TranslatedTextDao 
+          return (T) DatabaseModule_ProvideTranslatedTextDaoFactory.provideTranslatedTextDao(singletonCImpl.provideDatabaseProvider.get());
 
           default: throw new AssertionError(id);
         }

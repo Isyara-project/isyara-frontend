@@ -17,12 +17,21 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+    private const val DICTIONARY_BASE_URL = BuildConfig.DICTIONARY_URL
+    private const val MAIN_API_BASE_URL = BuildConfig.BASE_URL
+
+    private fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().apply {
+            level =
+                if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+        }
+    }
+
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
+    @RetrofitDictionary
+    fun provideOkHttpClientDictionary(): OkHttpClient {
+        val loggingInterceptor = provideLoggingInterceptor()
 
         return OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -32,21 +41,54 @@ object NetworkModule {
             .build()
     }
 
-    // Menyediakan Retrofit instance
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    @RetrofitMain
+    fun provideOkHttpClientMainAPI(): OkHttpClient {
+        val loggingInterceptor = provideLoggingInterceptor()
+
+        return OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @RetrofitDictionary
+    fun provideRetrofitDictionary(@RetrofitDictionary okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
+            .baseUrl(DICTIONARY_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    // Menyediakan ApiService
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiService {
+    @RetrofitMain
+    fun provideRetrofitMainAPI(@RetrofitMain okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(MAIN_API_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @RetrofitDictionary
+    fun provideApiServiceDictionary(@RetrofitDictionary retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
+
+    @Provides
+    @Singleton
+    @RetrofitMain
+    fun provideApiServiceMainAPI(@RetrofitMain retrofit: Retrofit): ApiService {
+        return retrofit.create(ApiService::class.java)
+    }
+
 }

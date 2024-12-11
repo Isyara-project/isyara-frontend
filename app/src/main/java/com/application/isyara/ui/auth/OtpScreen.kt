@@ -33,7 +33,7 @@ import com.application.isyara.data.model.OtpRequest
 import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.auth.AppHeaderAuth
 import com.application.isyara.utils.auth.CustomInputField
-import com.application.isyara.utils.auth.Result
+import com.application.isyara.utils.state.Result
 import com.application.isyara.viewmodel.auth.AuthViewModel
 import kotlinx.coroutines.delay
 import java.util.Locale
@@ -72,24 +72,23 @@ fun OtpScreen(
     LaunchedEffect(otpState) {
         when (otpState) {
             is Result.Success -> {
-                // Jika OTP berhasil diverifikasi, lanjutkan ke halaman onboarding
                 navController.navigate(NavRoute.Onboarding.route)
             }
 
             is Result.Error -> {
                 otpError =
-                    (otpState as Result.Error).message // Menampilkan pesan error jika gagal verifikasi
+                    (otpState as Result.Error).message
             }
 
-            else -> otpError = null // Reset error jika loading
+            else -> otpError = null
         }
     }
 
     LaunchedEffect(resendOtpState) {
         otpError = when (resendOtpState) {
-            is Result.Success -> null // Reset error jika OTP berhasil dikirim ulang
-            is Result.Error -> (resendOtpState as Result.Error).message // Tampilkan error jika gagal kirim ulang OTP
-            else -> null // Reset error jika loading
+            is Result.Success -> null
+            is Result.Error -> (resendOtpState as Result.Error).message
+            else -> null
         }
     }
 

@@ -1,6 +1,12 @@
 package com.application.isyara.ui.main.settings
 
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,48 +20,124 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.application.isyara.R
+import com.application.isyara.utils.state.Result
 import com.application.isyara.utils.main.AppHeaderMain
+import com.application.isyara.viewmodel.main.ProfileViewModel
 
 @Composable
 fun EditAccountScreen(
     navController: NavController,
-    onSaveClick: (String, String, String) -> Unit,
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
-    var name by remember { mutableStateOf("Nama Pengguna") }
-    var email by remember { mutableStateOf("user@isyara.com") }
-    var phone by remember { mutableStateOf("081234567890") }
-    var password by remember { mutableStateOf("********") }
-    var newPassword by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    var profileImageUri by remember { mutableStateOf<Uri?>(null) }
+    var name by remember { mutableStateOf("") }
+    var bio by remember { mutableStateOf("") }
+    var newName by remember { mutableStateOf("") }
+    var newBio by remember { mutableStateOf("") }
+
+    val profileState by profileViewModel.profile.collectAsState()
+    val updateProfileState by profileViewModel.updateProfileState.collectAsState()
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri: Uri? ->
+            if (uri != null) {
+                profileImageUri = uri
+            }
+        }
+    )
+
+    // Ambil profil saat pertama kali masuk ke layar
+    LaunchedEffect(Unit) {
+        profileViewModel.fetchProfile()  // untuk mengambil profil
+    }
+
+    when (profileState) {
+        is Result.Idle -> {
+            Toast.makeText(LocalContext.current, "Memuat profil data...", Toast.LENGTH_SHORT).show()
+        }
+
+        is Result.Loading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is Result.Error -> {
+            Toast.makeText(LocalContext.current, "Gagal memuat profil", Toast.LENGTH_SHORT).show()
+        }
+
+        is Result.Success -> {
+            val profileData = (profileState as Result.Success).data
+            name = profileData.fullname // set nama dari profil yang diambil
+            bio = profileData.bio ?: "Bio anda masih kosong"
+        }
+    }
+
+    // Menampilkan status update profil
+    when (updateProfileState) {
+        is Result.Idle -> {
+            Toast.makeText(LocalContext.current, "Menyimpan perubahan...", Toast.LENGTH_SHORT).show()
+        }
+        is Result.Loading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is Result.Error -> {
+            Toast.makeText(LocalContext.current, "Gagal memperbarui profil", Toast.LENGTH_SHORT)
+                .show()
+        }
+
+        is Result.Success -> {
+            val response = (updateProfileState as Result.Success).data
+            Toast.makeText(LocalContext.current, response.message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF7F7F7))
     ) {
-        // Header
         AppHeaderMain(
             title = "Edit Akun",
             onBackClick = { navController.popBackStack() },
@@ -69,7 +151,7 @@ fun EditAccountScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Foto Profil di tengah
+        // UI untuk Foto Profil
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -79,10 +161,22 @@ fun EditAccountScreen(
             Box(
                 modifier = Modifier
                     .size(100.dp)
-                    .background(Color(0xFFE1F5FE), CircleShape),
+                    .background(Color(0xFFE1F5FE), CircleShape)
+                    .border(2.dp, Color(0xFF008E9B), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
+                profileImageUri?.let { uri: Uri? ->
+                    AsyncImage(
+                        model = uri,
+                        contentDescription = "Foto Profil",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .background(Color.Gray),
+                        placeholder = painterResource(id = R.drawable.ic_image_placeholder),
+                        contentScale = ContentScale.Crop
+                    )
+                } ?: Icon(
                     imageVector = Icons.Default.AccountCircle,
                     contentDescription = "Foto Profil",
                     modifier = Modifier.size(80.dp),
@@ -91,75 +185,78 @@ fun EditAccountScreen(
             }
         }
 
-        // Form Input
+        TextButton(
+            onClick = {
+                imagePickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(8.dp)
+        ) {
+            Text(
+                text = "Ganti Foto Profil",
+                color = Color(0xFF008E9B)
+            )
+        }
+
+        // Kolom untuk input Nama Lengkap Baru dan Bio Baru
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Menampilkan Nama Lengkap dari profil yang sudah ada
             TextField(
                 value = name,
-                onValueChange = { name = it },
+                onValueChange = {},
                 label = { Text("Nama Lengkap") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = false
             )
 
+            // Kolom untuk memperbarui Nama Lengkap
             TextField(
-                value = email,
+                value = newName,
+                onValueChange = { newName = it },
+                label = { Text("Nama Lengkap Baru") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            // Kolom untuk memperbarui Bio
+            TextField(
+                value = bio,
                 onValueChange = {},
-                label = { Text("Email") },
+                label = { Text("Bio") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 enabled = false
             )
 
             TextField(
-                value = phone,
-                onValueChange = { phone = it },
-                label = { Text("Nomor Telepon") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            TextField(
-                value = password,
-                onValueChange = {},
-                label = { Text("Password") },
-                singleLine = true,
+                value = newBio,
+                onValueChange = { newBio = it },
+                label = { Text("Bio Baru") },
+                singleLine = false,
                 modifier = Modifier.fillMaxWidth(),
-                enabled = false,
-                visualTransformation = PasswordVisualTransformation()
-            )
-
-            TextField(
-                value = newPassword,
-                onValueChange = { newPassword = it },
-                label = { Text("Password Baru") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = if (passwordVisible) "Sembunyikan Password" else "Tampilkan Password"
-                        )
-                    }
-                }
+                maxLines = 3,
+                placeholder = { Text("Ceritakan sedikit tentang dirimu...") }
             )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Tombol Simpan Perubahan
+        // Tombol untuk menyimpan perubahan
         Button(
             onClick = {
-                onSaveClick(name, phone, newPassword)
+                profileViewModel.updateProfile(context, profileImageUri, newName, newBio)
                 navController.popBackStack()
             },
-            enabled = name.isNotBlank() && phone.isNotBlank(),
+            enabled = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),

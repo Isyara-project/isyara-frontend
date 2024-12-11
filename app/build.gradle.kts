@@ -27,7 +27,17 @@ android {
             buildConfigField(
                 "String",
                 "BASE_URL",
-                "\"https://user-dot-project-isyara.et.r.appspot.com/\""
+                "\"https://isyara-backend-main-480373187876.asia-southeast2.run.app/\""
+            )
+            buildConfigField(
+                "String",
+                "DICTIONARY_URL",
+                "\"https://storage.googleapis.com/\""
+            )
+            buildConfigField(
+                "String",
+                "OPENAI_API_KEY",
+                "\"${project.properties["openai.api.key"] ?: ""}\""
             )
         }
         release {
@@ -37,7 +47,21 @@ android {
                 "proguard-rules.pro"
             )
 
-            buildConfigField("String", "BASE_URL", "\"https://user-dot-project-isyara.et.r.appspot.com/\"")
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://isyara-backend-main-480373187876.asia-southeast2.run.app/\""
+            )
+            buildConfigField(
+                "String",
+                "DICTIONARY_URL",
+                "\"https://storage.googleapis.com/\""
+            )
+            buildConfigField(
+                "String",
+                "OPENAI_API_KEY",
+                "\"${project.properties["openai.api.key"]}\""
+            )
         }
     }
     compileOptions {
@@ -74,6 +98,7 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.androidx.compose.ui.ui.tooling)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.espresso.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -89,8 +114,9 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-    implementation (libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.retrofit)
+    implementation(libs.okhttp)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
     implementation(libs.androidx.room.runtime)
@@ -107,6 +133,21 @@ dependencies {
     implementation(libs.lottie.compose)
     implementation(libs.timber)
     implementation(libs.androidx.datastore.preferences)
-    implementation (libs.androidx.datastore)
+    implementation(libs.androidx.datastore)
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.ui)
+    implementation(libs.accompanist.swiperefresh)
+
+    implementation(libs.tasks.vision)
+    implementation(libs.litert)
+    implementation(libs.litert.gpu)
+    implementation(libs.litert.support)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.dash)
+    implementation(libs.androidx.media3.ui)
 
 }

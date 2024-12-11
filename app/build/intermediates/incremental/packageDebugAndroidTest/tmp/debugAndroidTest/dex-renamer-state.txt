@@ -1,8 +1,8 @@
-#Sat Dec 07 03:18:10 WIB 2024
-base.0=C\:\\isyara\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeExtDexDebugAndroidTest\\classes.dex
-base.1=C\:\\isyara\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
-base.2=C\:\\isyara\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\15\\classes.dex
-base.3=C\:\\isyara\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\6\\classes.dex
+#Thu Dec 12 01:39:41 WIB 2024
+base.0=D\:\\isyara\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeExtDexDebugAndroidTest\\classes.dex
+base.1=D\:\\isyara\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
+base.2=D\:\\isyara\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\15\\classes.dex
+base.3=D\:\\isyara\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\6\\classes.dex
 path.0=classes.dex
 path.1=0/classes.dex
 path.2=15/classes.dex

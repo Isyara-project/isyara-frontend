@@ -4,7 +4,7 @@
             "outputFile": "com.application.isyara.test.app-mergeDebugAndroidTestResources-35:/values-v18/values-v18.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\7f20f347335d209e0823357dc8f997c9\\transformed\\core-1.6.1\\res\\values-v18\\values.xml",
+                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\b76fb88cf3d14c57942fd97d6111ab9c\\transformed\\core-1.6.1\\res\\values-v18\\values.xml",
                     "from": {
                         "startLines": "4,12",
                         "startColumns": "0,0",

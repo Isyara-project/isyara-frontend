@@ -1,29 +1,43 @@
 package com.application.isyara.ui.auth
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import com.application.isyara.utils.state.Result
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.application.isyara.R
-import com.application.isyara.utils.auth.CustomInputField
-import com.application.isyara.utils.auth.Result
-import com.application.isyara.viewmodel.auth.AuthViewModel
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.application.isyara.data.model.ResetPasswordRequest
 import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.auth.AppHeaderAuth
+import com.application.isyara.utils.auth.CustomInputField
+import com.application.isyara.viewmodel.auth.ResetPasswordViewModel
 
 @Composable
 fun ResetPasswordScreen(
     navController: NavHostController,
-    authViewModel: AuthViewModel = hiltViewModel(),
-    token: String
+    token: String,
+    resetPasswordViewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
     var otp by remember { mutableStateOf("") }
     var otpError by remember { mutableStateOf<String?>(null) }
@@ -31,10 +45,10 @@ fun ResetPasswordScreen(
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    val resetPasswordState by authViewModel.resetPasswordState.collectAsState()
-    val isLoading by authViewModel.loadingState.collectAsState()
+    var isLoading by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
+    val resetPasswordState by resetPasswordViewModel.resetPasswordState.collectAsState()
 
     // Handle OTP verification
     fun handleOtpVerification() {
@@ -50,52 +64,70 @@ fun ResetPasswordScreen(
     fun handleResetPassword() {
         // Reset error message
         errorMessage = null
+        isLoading = true
 
         // Validation checks
         when {
             password.isBlank() || confirmPassword.isBlank() -> {
                 errorMessage = "Kata sandi tidak boleh kosong!"
             }
+
             password != confirmPassword -> {
                 errorMessage = "Kata sandi dan konfirmasi kata sandi tidak cocok!"
             }
+
             password.length < 8 || password.length > 16 -> {
                 errorMessage = "Kata sandi harus memiliki panjang 8-16 karakter!"
             }
+
             !password.matches(Regex("^(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&#])[A-Za-z\\d@\$!%*?&#]+$")) -> {
-                errorMessage = "Kata sandi harus mengandung 1 huruf besar, 1 angka, dan 1 karakter spesial!"
+                errorMessage =
+                    "Kata sandi harus mengandung 1 huruf besar, 1 angka, dan 1 karakter spesial!"
             }
+
             token.isBlank() -> {
                 errorMessage = "Token tidak valid!"
             }
+
             else -> {
-                // Proceed with password reset logic
-                authViewModel.resetPassword(resetPasswordRequest = ResetPasswordRequest(password), token = token)
+                resetPasswordViewModel.resetPassword(token, password)
+                navController.navigate(NavRoute.Login.route)
             }
         }
+        isLoading = false
     }
 
-    // Effect to show Toast on success or error state
+    // Observe the state of password reset
     LaunchedEffect(resetPasswordState) {
         when (resetPasswordState) {
-            is Result.Success -> {
-                Toast.makeText(context, "Password berhasil diatur ulang!", Toast.LENGTH_SHORT).show()
+            is Result.Loading -> {
+                isLoading = true
+            }
 
-                // Navigate to LoginScreen after resetting password
+            is Result.Success -> {
+                isLoading = false
+                Toast.makeText(context, "Password berhasil diatur ulang!", Toast.LENGTH_SHORT)
+                    .show()
                 navController.navigate(NavRoute.Login.route) {
-                    // Clear the back stack to ensure user can't go back to reset screen
                     popUpTo(NavRoute.ResetPassword.route) { inclusive = true }
                     launchSingleTop = true
                 }
             }
+
             is Result.Error -> {
-                Toast.makeText(
-                    context,
-                    (resetPasswordState as Result.Error).message ?: "Gagal mereset kata sandi",
-                    Toast.LENGTH_SHORT
-                ).show()
+                isLoading = false
+                errorMessage = "Terjadi kesalahan. Silakan coba lagi."
             }
-            else -> {}
+
+            else -> {
+                isLoading = false
+            }
+        }
+    }
+
+    LaunchedEffect(isLoading) {
+        if (!isLoading && errorMessage != null) {
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -108,7 +140,6 @@ fun ResetPasswordScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Reset Password Content
         Column(
             modifier = Modifier
                 .fillMaxWidth()

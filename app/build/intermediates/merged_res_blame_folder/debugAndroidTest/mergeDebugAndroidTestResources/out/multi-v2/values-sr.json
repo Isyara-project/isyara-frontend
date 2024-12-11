@@ -4,7 +4,7 @@
             "outputFile": "com.application.isyara.test.app-mergeDebugAndroidTestResources-35:/values-sr/values-sr.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\042c842cf45253a8ce13280a4410942f\\transformed\\core-1.15.0\\res\\values-sr\\values-sr.xml",
+                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\62001aab6b969e880053b8eeebed6865\\transformed\\core-1.15.0\\res\\values-sr\\values-sr.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\d2bf134e3326c2569ff888940780c547\\transformed\\ui-release\\res\\values-sr\\values-sr.xml",
+                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\dd633095a1eff40625efbd7d83809fc5\\transformed\\ui-release\\res\\values-sr\\values-sr.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",

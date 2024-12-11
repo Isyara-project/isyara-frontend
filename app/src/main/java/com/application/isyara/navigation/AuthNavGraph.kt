@@ -23,11 +23,22 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         RegisterScreen(navController)
     }
 
-    composable(NavRoute.Otp.route) {
-        OtpScreen(navController, token = "token")
+    composable(
+        route = "${NavRoute.Otp.route}/{token}",
+        arguments = listOf(
+            navArgument("token") {
+                type = NavType.StringType
+                nullable = false
+            }
+        )
+    ) { backStackEntry ->
+        val token = backStackEntry.arguments?.getString("token")
+        if (token != null) {
+            OtpScreen(navController, token = token)
+        } else {
+            navController.popBackStack()
+        }
     }
-
-
 
     // Forgot password screen
     composable(NavRoute.ForgotPassword.route) {
@@ -40,7 +51,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         arguments = listOf(
             navArgument("token") {
                 type = NavType.StringType
-                nullable = false // Token tidak boleh null
+                nullable = false
             }
         )
     ) { backStackEntry ->
@@ -48,7 +59,6 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         if (token != null) {
             ResetPasswordScreen(navController, token = token)
         } else {
-            // Handle jika token tidak ada, misalnya navigasi kembali atau tampilkan pesan error
             navController.popBackStack()
         }
     }

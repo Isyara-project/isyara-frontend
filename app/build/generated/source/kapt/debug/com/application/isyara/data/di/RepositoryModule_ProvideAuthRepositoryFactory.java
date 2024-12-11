@@ -12,7 +12,7 @@ import javax.annotation.processing.Generated;
 import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
-@QualifierMetadata
+@QualifierMetadata("com.application.isyara.data.di.RetrofitMain")
 @DaggerGenerated
 @Generated(
     value = "dagger.internal.codegen.ComponentProcessor",

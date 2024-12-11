@@ -26,7 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.application.isyara.utils.main.AppHeaderMain
 import com.application.isyara.viewmodel.auth.AuthViewModel
 import com.application.isyara.data.model.FeedbackRequest
-import com.application.isyara.utils.auth.Result
+import com.application.isyara.utils.state.Result
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable

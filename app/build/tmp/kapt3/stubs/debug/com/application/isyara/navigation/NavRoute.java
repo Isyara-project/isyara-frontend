@@ -1,6 +1,6 @@
 package com.application.isyara.navigation;
 
-@kotlin.Metadata(mv = {1, 9, 0}, k = 1, xi = 48, d1 = {"\u0000t\n\u0002\u0018\u0002\n\u0002\u0010\u0000\n\u0000\n\u0002\u0010\u000e\n\u0002\b\u001b\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0000\b7\u0018\u00002\u00020\u0001:\u0018\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001eB\u000f\b\u0004\u0012\u0006\u0010\u0002\u001a\u00020\u0003\u00a2\u0006\u0002\u0010\u0004R\u0011\u0010\u0002\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b\u0005\u0010\u0006\u0082\u0001\u0018\u001f !\"#$%&\'()*+,-./0123456\u00a8\u00067"}, d2 = {"Lcom/application/isyara/navigation/NavRoute;", "", "route", "", "(Ljava/lang/String;)V", "getRoute", "()Ljava/lang/String;", "About", "BISINDO", "ChangePassword", "Dashboard", "Dictionary", "EditAccount", "Feedback", "ForgotPassword", "History", "LanguageSettings", "Login", "Notification", "Onboarding", "Otp", "PrivacyPolicy", "Register", "SIBI", "Search", "Settings", "Splash", "ThemeSettings", "TipsBelajar", "Translate", "TranslateGuide", "Lcom/application/isyara/navigation/NavRoute$About;", "Lcom/application/isyara/navigation/NavRoute$BISINDO;", "Lcom/application/isyara/navigation/NavRoute$ChangePassword;", "Lcom/application/isyara/navigation/NavRoute$Dashboard;", "Lcom/application/isyara/navigation/NavRoute$Dictionary;", "Lcom/application/isyara/navigation/NavRoute$EditAccount;", "Lcom/application/isyara/navigation/NavRoute$Feedback;", "Lcom/application/isyara/navigation/NavRoute$ForgotPassword;", "Lcom/application/isyara/navigation/NavRoute$History;", "Lcom/application/isyara/navigation/NavRoute$LanguageSettings;", "Lcom/application/isyara/navigation/NavRoute$Login;", "Lcom/application/isyara/navigation/NavRoute$Notification;", "Lcom/application/isyara/navigation/NavRoute$Onboarding;", "Lcom/application/isyara/navigation/NavRoute$Otp;", "Lcom/application/isyara/navigation/NavRoute$PrivacyPolicy;", "Lcom/application/isyara/navigation/NavRoute$Register;", "Lcom/application/isyara/navigation/NavRoute$SIBI;", "Lcom/application/isyara/navigation/NavRoute$Search;", "Lcom/application/isyara/navigation/NavRoute$Settings;", "Lcom/application/isyara/navigation/NavRoute$Splash;", "Lcom/application/isyara/navigation/NavRoute$ThemeSettings;", "Lcom/application/isyara/navigation/NavRoute$TipsBelajar;", "Lcom/application/isyara/navigation/NavRoute$Translate;", "Lcom/application/isyara/navigation/NavRoute$TranslateGuide;", "app_debug"})
+@kotlin.Metadata(mv = {1, 9, 0}, k = 1, xi = 48, d1 = {"\u0000x\n\u0002\u0018\u0002\n\u0002\u0010\u0000\n\u0000\n\u0002\u0010\u000e\n\u0002\b\u001c\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0000\b7\u0018\u00002\u00020\u0001:\u0019\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001fB\u000f\b\u0004\u0012\u0006\u0010\u0002\u001a\u00020\u0003\u00a2\u0006\u0002\u0010\u0004R\u0011\u0010\u0002\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b\u0005\u0010\u0006\u0082\u0001\u0019 !\"#$%&\'()*+,-./012345678\u00a8\u00069"}, d2 = {"Lcom/application/isyara/navigation/NavRoute;", "", "route", "", "(Ljava/lang/String;)V", "getRoute", "()Ljava/lang/String;", "About", "ChangePassword", "Dashboard", "Dictionary", "EditAccount", "Feedback", "ForgotPassword", "History", "LanguageSettings", "Login", "Notification", "Onboarding", "Otp", "PrivacyPolicy", "Register", "ResetPassword", "SIBI", "Search", "Settings", "Splash", "ThemeSettings", "TipsBelajar", "Translate", "TranslateGuide", "VideoPlayer", "Lcom/application/isyara/navigation/NavRoute$About;", "Lcom/application/isyara/navigation/NavRoute$ChangePassword;", "Lcom/application/isyara/navigation/NavRoute$Dashboard;", "Lcom/application/isyara/navigation/NavRoute$Dictionary;", "Lcom/application/isyara/navigation/NavRoute$EditAccount;", "Lcom/application/isyara/navigation/NavRoute$Feedback;", "Lcom/application/isyara/navigation/NavRoute$ForgotPassword;", "Lcom/application/isyara/navigation/NavRoute$History;", "Lcom/application/isyara/navigation/NavRoute$LanguageSettings;", "Lcom/application/isyara/navigation/NavRoute$Login;", "Lcom/application/isyara/navigation/NavRoute$Notification;", "Lcom/application/isyara/navigation/NavRoute$Onboarding;", "Lcom/application/isyara/navigation/NavRoute$Otp;", "Lcom/application/isyara/navigation/NavRoute$PrivacyPolicy;", "Lcom/application/isyara/navigation/NavRoute$Register;", "Lcom/application/isyara/navigation/NavRoute$ResetPassword;", "Lcom/application/isyara/navigation/NavRoute$SIBI;", "Lcom/application/isyara/navigation/NavRoute$Search;", "Lcom/application/isyara/navigation/NavRoute$Settings;", "Lcom/application/isyara/navigation/NavRoute$Splash;", "Lcom/application/isyara/navigation/NavRoute$ThemeSettings;", "Lcom/application/isyara/navigation/NavRoute$TipsBelajar;", "Lcom/application/isyara/navigation/NavRoute$Translate;", "Lcom/application/isyara/navigation/NavRoute$TranslateGuide;", "Lcom/application/isyara/navigation/NavRoute$VideoPlayer;", "app_debug"})
 public abstract class NavRoute {
     @org.jetbrains.annotations.NotNull()
     private final java.lang.String route = null;
@@ -20,15 +20,6 @@ public abstract class NavRoute {
         public static final com.application.isyara.navigation.NavRoute.About INSTANCE = null;
         
         private About() {
-        }
-    }
-    
-    @kotlin.Metadata(mv = {1, 9, 0}, k = 1, xi = 48, d1 = {"\u0000\f\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0002\b\u00c7\u0002\u0018\u00002\u00020\u0001B\u0007\b\u0002\u00a2\u0006\u0002\u0010\u0002\u00a8\u0006\u0003"}, d2 = {"Lcom/application/isyara/navigation/NavRoute$BISINDO;", "Lcom/application/isyara/navigation/NavRoute;", "()V", "app_debug"})
-    public static final class BISINDO extends com.application.isyara.navigation.NavRoute {
-        @org.jetbrains.annotations.NotNull()
-        public static final com.application.isyara.navigation.NavRoute.BISINDO INSTANCE = null;
-        
-        private BISINDO() {
         }
     }
     
@@ -158,6 +149,15 @@ public abstract class NavRoute {
         }
     }
     
+    @kotlin.Metadata(mv = {1, 9, 0}, k = 1, xi = 48, d1 = {"\u0000\f\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0002\b\u00c7\u0002\u0018\u00002\u00020\u0001B\u0007\b\u0002\u00a2\u0006\u0002\u0010\u0002\u00a8\u0006\u0003"}, d2 = {"Lcom/application/isyara/navigation/NavRoute$ResetPassword;", "Lcom/application/isyara/navigation/NavRoute;", "()V", "app_debug"})
+    public static final class ResetPassword extends com.application.isyara.navigation.NavRoute {
+        @org.jetbrains.annotations.NotNull()
+        public static final com.application.isyara.navigation.NavRoute.ResetPassword INSTANCE = null;
+        
+        private ResetPassword() {
+        }
+    }
+    
     @kotlin.Metadata(mv = {1, 9, 0}, k = 1, xi = 48, d1 = {"\u0000\f\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0002\b\u00c7\u0002\u0018\u00002\u00020\u0001B\u0007\b\u0002\u00a2\u0006\u0002\u0010\u0002\u00a8\u0006\u0003"}, d2 = {"Lcom/application/isyara/navigation/NavRoute$SIBI;", "Lcom/application/isyara/navigation/NavRoute;", "()V", "app_debug"})
     public static final class SIBI extends com.application.isyara.navigation.NavRoute {
         @org.jetbrains.annotations.NotNull()
@@ -227,6 +227,21 @@ public abstract class NavRoute {
         public static final com.application.isyara.navigation.NavRoute.TranslateGuide INSTANCE = null;
         
         private TranslateGuide() {
+        }
+    }
+    
+    @kotlin.Metadata(mv = {1, 9, 0}, k = 1, xi = 48, d1 = {"\u0000\u0014\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0010\u000e\n\u0002\b\u0002\b\u00c7\u0002\u0018\u00002\u00020\u0001B\u0007\b\u0002\u00a2\u0006\u0002\u0010\u0002J\u000e\u0010\u0003\u001a\u00020\u00042\u0006\u0010\u0005\u001a\u00020\u0004\u00a8\u0006\u0006"}, d2 = {"Lcom/application/isyara/navigation/NavRoute$VideoPlayer;", "Lcom/application/isyara/navigation/NavRoute;", "()V", "createRoute", "", "videoUrl", "app_debug"})
+    public static final class VideoPlayer extends com.application.isyara.navigation.NavRoute {
+        @org.jetbrains.annotations.NotNull()
+        public static final com.application.isyara.navigation.NavRoute.VideoPlayer INSTANCE = null;
+        
+        private VideoPlayer() {
+        }
+        
+        @org.jetbrains.annotations.NotNull()
+        public final java.lang.String createRoute(@org.jetbrains.annotations.NotNull()
+        java.lang.String videoUrl) {
+            return null;
         }
     }
 }

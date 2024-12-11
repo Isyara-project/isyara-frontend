@@ -1,40 +1,55 @@
 package com.application.isyara.ui.auth
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.application.isyara.R
+import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.auth.AppHeaderAuth
 import com.application.isyara.utils.auth.CustomInputField
-import com.application.isyara.viewmodel.auth.AuthViewModel
-import com.application.isyara.data.model.ForgotPasswordRequest
-import com.application.isyara.utils.auth.Result
+import com.application.isyara.utils.state.Result
+import com.application.isyara.viewmodel.auth.ForgotPasswordViewModel
+import com.application.isyara.viewmodel.auth.ResetPasswordViewModel
 
 @Composable
-fun ForgotPasswordScreen(navController: NavHostController, authViewModel: AuthViewModel = hiltViewModel()) {
+fun ForgotPasswordScreen(
+    navController: NavHostController,
+    forgotPasswordViewModel: ForgotPasswordViewModel = hiltViewModel()
+) {
+    val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf<String?>(null) }
     var isOtpFieldVisible by remember { mutableStateOf(false) }
     var otp by remember { mutableStateOf("") }
     var otpError by remember { mutableStateOf<String?>(null) }
+    val forgotPasswordState = forgotPasswordViewModel.forgotPasswordState.collectAsState().value
+    var token by remember { mutableStateOf<String?>(null) }
 
-    // State untuk menampilkan loading atau notifikasi
-    val loadingState = authViewModel.loadingState.collectAsState().value
-    val forgotPasswordState = authViewModel.forgotPasswordState.collectAsState().value
-
-    val context = LocalContext.current
-
-    // Handler untuk kirim email
     fun handleForgotPassword() {
         if (email.isBlank()) {
             emailError = "Email harus diisi!"
@@ -42,8 +57,7 @@ fun ForgotPasswordScreen(navController: NavHostController, authViewModel: AuthVi
             emailError = "Format email tidak valid!"
         } else {
             emailError = null
-            val forgotPasswordRequest = ForgotPasswordRequest(email)
-            authViewModel.forgotPassword(forgotPasswordRequest) // Panggil fungsi forgotPassword dari ViewModel
+            forgotPasswordViewModel.forgotPassword(email)
         }
     }
 
@@ -51,14 +65,24 @@ fun ForgotPasswordScreen(navController: NavHostController, authViewModel: AuthVi
     LaunchedEffect(forgotPasswordState) {
         when (forgotPasswordState) {
             is Result.Success -> {
-                // Tampilkan pesan sukses jika berhasil
-                Toast.makeText(context, "Link reset kata sandi telah dikirim ke email", Toast.LENGTH_SHORT).show()
-                isOtpFieldVisible = true
+                // Asumsikan token dikirim dalam response API
+                token = forgotPasswordState.data.token
+                Toast.makeText(
+                    context,
+                    "Link reset kata sandi telah dikirim ke email",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                // Navigasi ke ResetPasswordScreen dengan token
+                token?.let {
+                    navController.navigate("${NavRoute.ResetPassword.route}/$it")
+                }
             }
+
             is Result.Error -> {
-                // Tampilkan error jika ada masalah
                 Toast.makeText(context, forgotPasswordState.message, Toast.LENGTH_SHORT).show()
             }
+
             else -> {}
         }
     }
@@ -102,12 +126,11 @@ fun ForgotPasswordScreen(navController: NavHostController, authViewModel: AuthVi
                     Text(text = "Kirim")
                 }
 
-                // Menampilkan progress bar saat loading
-                if (loadingState) {
+                // Menampilkan progress bar hanya ketika sedang loading
+                if (forgotPasswordState is Result.Loading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
             } else {
-                // Input OTP
                 Text(
                     text = "Masukkan kode OTP yang telah dikirim ke email Anda",
                     style = MaterialTheme.typography.bodyMedium,
@@ -127,14 +150,15 @@ fun ForgotPasswordScreen(navController: NavHostController, authViewModel: AuthVi
                     errorMessage = otpError
                 )
 
-                // Tombol Verifikasi OTP
                 Button(
                     onClick = {
                         if (otp.isBlank()) {
                             otpError = "Kode OTP harus diisi!"
                         } else {
                             otpError = null
-                            // Verifikasi OTP atau reset password
+                            token?.let {
+                                navController.navigate("resetPasswordScreen?token=$it")
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth()
@@ -144,10 +168,4 @@ fun ForgotPasswordScreen(navController: NavHostController, authViewModel: AuthVi
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ForgotPasswordScreenPreview() {
-    ForgotPasswordScreen(navController = NavHostController(LocalContext.current))
 }

@@ -46,7 +46,7 @@ import com.application.isyara.R
 import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.auth.AppHeaderAuth
 import com.application.isyara.utils.auth.CustomInputField
-import com.application.isyara.utils.auth.Result
+import com.application.isyara.utils.state.Result
 import com.application.isyara.viewmodel.auth.LoginViewModel
 
 @Composable

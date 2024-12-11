@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.application.isyara.app-mergeDebugResources-69:/values-port/values-port.xml",
+            "outputFile": "com.application.isyara.app-mergeDebugResources-81:/values-port/values-port.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\261730777e9dc05a6b39a54060ad93d1\\transformed\\appcompat-1.6.1\\res\\values-port\\values-port.xml",
+                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\557d0a7511d48ee2fc9f8daad4f0c7e4\\transformed\\appcompat-1.6.1\\res\\values-port\\values-port.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

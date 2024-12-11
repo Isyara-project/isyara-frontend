@@ -1,12 +1,13 @@
 package com.application.isyara.viewmodel.auth
 
+import androidx.compose.ui.Alignment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.application.isyara.data.local.SessionManager
 import com.application.isyara.data.model.LoginRequest
 import com.application.isyara.data.model.LoginResponse
 import com.application.isyara.data.repository.AuthRepository
-import com.application.isyara.utils.auth.Result
+import com.application.isyara.utils.state.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +40,10 @@ class LoginViewModel @Inject constructor(
                 _loadingState.value = false
 
                 when (result) {
+                    is Result.Idle -> {
+                        _loginState.value = Result.Idle
+                    }
+
                     is Result.Loading -> {
                         _loginState.value = Result.Loading
                     }
