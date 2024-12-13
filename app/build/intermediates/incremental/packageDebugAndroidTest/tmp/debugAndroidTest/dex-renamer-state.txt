@@ -1,4 +1,4 @@
-#Fri Dec 13 09:03:26 WIB 2024
+#Fri Dec 13 09:50:05 WIB 2024
 base.0=C\:\\isyara-frontend\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeExtDexDebugAndroidTest\\classes.dex
 base.1=C\:\\isyara-frontend\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
 base.2=C\:\\isyara-frontend\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\15\\classes.dex

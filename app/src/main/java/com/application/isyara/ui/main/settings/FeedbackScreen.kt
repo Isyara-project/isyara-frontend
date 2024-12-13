@@ -1,11 +1,13 @@
 package com.application.isyara.ui.main.settings
 
 import android.widget.Toast
+import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -24,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.application.isyara.utils.main.AppHeaderMain
-import com.application.isyara.viewmodel.auth.AuthViewModel
 import com.application.isyara.data.model.FeedbackRequest
 import com.application.isyara.utils.state.Result
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,15 +34,29 @@ import com.application.isyara.viewmodel.settings.FeedbackViewModel
 @Composable
 fun FeedbackScreen(
     navController: NavController,
-    authViewModel: FeedbackViewModel = hiltViewModel()
+    feedbackViewModel: FeedbackViewModel = hiltViewModel()
 ) {
-    // State untuk input email dan deskripsi
     var email by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-
-    // State untuk menampilkan status loading dan feedback response
-    val feedbackState = authViewModel.feedbackState.collectAsStateWithLifecycle().value
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var descriptionError by remember { mutableStateOf<String?>(null) }
+    val feedbackState = feedbackViewModel.feedbackState.collectAsStateWithLifecycle().value
     val context = LocalContext.current
+
+    // Validasi Email dan Deskripsi
+    fun validateFields(): Boolean {
+        emailError = when {
+            email.isBlank() -> "Email tidak boleh kosong"
+            !Patterns.EMAIL_ADDRESS.matcher(email)
+                .matches() || !email.endsWith("@gmail.com") -> "Email tidak valid. Pastikan menggunakan @gmail.com"
+
+            else -> null
+        }
+
+        descriptionError = if (description.isBlank()) "Deskripsi tidak boleh kosong" else null
+
+        return emailError == null && descriptionError == null
+    }
 
     // Menangani feedback pengiriman
     when (feedbackState) {
@@ -51,6 +66,7 @@ fun FeedbackScreen(
 
         is Result.Success -> {
             Toast.makeText(context, "Feedback berhasil terkirim!", Toast.LENGTH_SHORT).show()
+            navController.popBackStack()
         }
 
         is Result.Error -> {
@@ -58,7 +74,6 @@ fun FeedbackScreen(
         }
 
         else -> {
-
         }
     }
 
@@ -81,8 +96,7 @@ fun FeedbackScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Kolom Email
             TextField(
@@ -90,46 +104,59 @@ fun FeedbackScreen(
                 onValueChange = { email = it },
                 label = { Text("Email Anda") },
                 singleLine = true,
+                isError = emailError != null,
                 modifier = Modifier.fillMaxWidth()
             )
+            emailError?.let {
+                Text(text = it, color = Color.Red, fontSize = 12.sp)
+            }
 
             // Kolom Deskripsi
             TextField(
                 value = description,
                 onValueChange = { description = it },
                 label = { Text("Deskripsi Masukan atau Keluhan") },
+                isError = descriptionError != null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
+            descriptionError?.let {
+                Text(text = it, color = Color.Red, fontSize = 12.sp)
+            }
 
             // Tombol Kirim
             Button(
                 onClick = {
-                    val feedbackRequest = FeedbackRequest(email, description)
-                    authViewModel.sendFeedback(feedbackRequest)
-                    navController.popBackStack()
+                    if (validateFields()) {
+                        val feedbackRequest = FeedbackRequest(email, description)
+                        feedbackViewModel.sendFeedback(feedbackRequest)
+                    }
                 },
-                enabled = email.isNotBlank() && description.isNotBlank(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF008E9B))
+                enabled = validateFields() && feedbackState !is Result.Loading,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (feedbackState is Result.Loading) Color.Gray else Color(
+                        0xFF008E9B
+                    )
+                )
             ) {
-                Text(text = "Kirim", fontSize = 16.sp, color = Color.White)
+                if (feedbackState is Result.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp
+                    )
+                    Text(
+                        text = "Memproses",
+                        fontSize = 16.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                } else {
+                    Text(text = "Kirim", fontSize = 16.sp, color = Color.White)
+                }
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun FeedbackScreenPreview() {
-    FeedbackScreen(
-        navController = NavController(LocalContext.current),
-        authViewModel = hiltViewModel()
-    )
 }

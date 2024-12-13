@@ -444,52 +444,52 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel";
-
-      static String com_application_isyara_viewmodel_auth_AuthViewModel = "com.application.isyara.viewmodel.auth.AuthViewModel";
-
-      static String com_application_isyara_viewmodel_history_HistoryViewModel = "com.application.isyara.viewmodel.history.HistoryViewModel";
-
-      static String com_application_isyara_viewmodel_settings_FeedbackViewModel = "com.application.isyara.viewmodel.settings.FeedbackViewModel";
-
-      static String com_application_isyara_viewmodel_settings_ChangePasswordViewModel = "com.application.isyara.viewmodel.settings.ChangePasswordViewModel";
+      static String com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryPictureViewModel";
 
       static String com_application_isyara_viewmodel_auth_ResetPasswordViewModel = "com.application.isyara.viewmodel.auth.ResetPasswordViewModel";
 
-      static String com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryPictureViewModel";
+      static String com_application_isyara_viewmodel_settings_FeedbackViewModel = "com.application.isyara.viewmodel.settings.FeedbackViewModel";
 
-      static String com_application_isyara_viewmodel_translate_TranslateViewModel = "com.application.isyara.viewmodel.translate.TranslateViewModel";
+      static String com_application_isyara_viewmodel_auth_AuthViewModel = "com.application.isyara.viewmodel.auth.AuthViewModel";
 
       static String com_application_isyara_viewmodel_auth_ForgotPasswordViewModel = "com.application.isyara.viewmodel.auth.ForgotPasswordViewModel";
 
+      static String com_application_isyara_viewmodel_history_HistoryViewModel = "com.application.isyara.viewmodel.history.HistoryViewModel";
+
+      static String com_application_isyara_viewmodel_translate_TranslateViewModel = "com.application.isyara.viewmodel.translate.TranslateViewModel";
+
+      static String com_application_isyara_viewmodel_settings_ChangePasswordViewModel = "com.application.isyara.viewmodel.settings.ChangePasswordViewModel";
+
+      static String com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel";
+
       static String com_application_isyara_viewmodel_main_ProfileViewModel = "com.application.isyara.viewmodel.main.ProfileViewModel";
-
-      @KeepFieldType
-      DictionaryVideoViewModel com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel2;
-
-      @KeepFieldType
-      AuthViewModel com_application_isyara_viewmodel_auth_AuthViewModel2;
-
-      @KeepFieldType
-      HistoryViewModel com_application_isyara_viewmodel_history_HistoryViewModel2;
-
-      @KeepFieldType
-      FeedbackViewModel com_application_isyara_viewmodel_settings_FeedbackViewModel2;
-
-      @KeepFieldType
-      ChangePasswordViewModel com_application_isyara_viewmodel_settings_ChangePasswordViewModel2;
-
-      @KeepFieldType
-      ResetPasswordViewModel com_application_isyara_viewmodel_auth_ResetPasswordViewModel2;
 
       @KeepFieldType
       DictionaryPictureViewModel com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel2;
 
       @KeepFieldType
-      TranslateViewModel com_application_isyara_viewmodel_translate_TranslateViewModel2;
+      ResetPasswordViewModel com_application_isyara_viewmodel_auth_ResetPasswordViewModel2;
+
+      @KeepFieldType
+      FeedbackViewModel com_application_isyara_viewmodel_settings_FeedbackViewModel2;
+
+      @KeepFieldType
+      AuthViewModel com_application_isyara_viewmodel_auth_AuthViewModel2;
 
       @KeepFieldType
       ForgotPasswordViewModel com_application_isyara_viewmodel_auth_ForgotPasswordViewModel2;
+
+      @KeepFieldType
+      HistoryViewModel com_application_isyara_viewmodel_history_HistoryViewModel2;
+
+      @KeepFieldType
+      TranslateViewModel com_application_isyara_viewmodel_translate_TranslateViewModel2;
+
+      @KeepFieldType
+      ChangePasswordViewModel com_application_isyara_viewmodel_settings_ChangePasswordViewModel2;
+
+      @KeepFieldType
+      DictionaryVideoViewModel com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel2;
 
       @KeepFieldType
       ProfileViewModel com_application_isyara_viewmodel_main_ProfileViewModel2;
@@ -564,28 +564,28 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_application_isyara_viewmodel_settings_FeedbackViewModel = "com.application.isyara.viewmodel.settings.FeedbackViewModel";
+      static String com_application_isyara_viewmodel_settings_ChangePasswordViewModel = "com.application.isyara.viewmodel.settings.ChangePasswordViewModel";
 
       static String com_application_isyara_viewmodel_translate_TranslateViewModel = "com.application.isyara.viewmodel.translate.TranslateViewModel";
 
       static String com_application_isyara_viewmodel_auth_AuthViewModel = "com.application.isyara.viewmodel.auth.AuthViewModel";
 
-      static String com_application_isyara_viewmodel_history_HistoryViewModel = "com.application.isyara.viewmodel.history.HistoryViewModel";
-
-      static String com_application_isyara_viewmodel_auth_ResetPasswordViewModel = "com.application.isyara.viewmodel.auth.ResetPasswordViewModel";
-
-      static String com_application_isyara_viewmodel_settings_ChangePasswordViewModel = "com.application.isyara.viewmodel.settings.ChangePasswordViewModel";
-
       static String com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryPictureViewModel";
-
-      static String com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel";
 
       static String com_application_isyara_viewmodel_auth_ForgotPasswordViewModel = "com.application.isyara.viewmodel.auth.ForgotPasswordViewModel";
 
+      static String com_application_isyara_viewmodel_auth_ResetPasswordViewModel = "com.application.isyara.viewmodel.auth.ResetPasswordViewModel";
+
+      static String com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel";
+
       static String com_application_isyara_viewmodel_main_ProfileViewModel = "com.application.isyara.viewmodel.main.ProfileViewModel";
 
+      static String com_application_isyara_viewmodel_history_HistoryViewModel = "com.application.isyara.viewmodel.history.HistoryViewModel";
+
+      static String com_application_isyara_viewmodel_settings_FeedbackViewModel = "com.application.isyara.viewmodel.settings.FeedbackViewModel";
+
       @KeepFieldType
-      FeedbackViewModel com_application_isyara_viewmodel_settings_FeedbackViewModel2;
+      ChangePasswordViewModel com_application_isyara_viewmodel_settings_ChangePasswordViewModel2;
 
       @KeepFieldType
       TranslateViewModel com_application_isyara_viewmodel_translate_TranslateViewModel2;
@@ -594,25 +594,25 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
       AuthViewModel com_application_isyara_viewmodel_auth_AuthViewModel2;
 
       @KeepFieldType
-      HistoryViewModel com_application_isyara_viewmodel_history_HistoryViewModel2;
-
-      @KeepFieldType
-      ResetPasswordViewModel com_application_isyara_viewmodel_auth_ResetPasswordViewModel2;
-
-      @KeepFieldType
-      ChangePasswordViewModel com_application_isyara_viewmodel_settings_ChangePasswordViewModel2;
-
-      @KeepFieldType
       DictionaryPictureViewModel com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel2;
-
-      @KeepFieldType
-      DictionaryVideoViewModel com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel2;
 
       @KeepFieldType
       ForgotPasswordViewModel com_application_isyara_viewmodel_auth_ForgotPasswordViewModel2;
 
       @KeepFieldType
+      ResetPasswordViewModel com_application_isyara_viewmodel_auth_ResetPasswordViewModel2;
+
+      @KeepFieldType
+      DictionaryVideoViewModel com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel2;
+
+      @KeepFieldType
       ProfileViewModel com_application_isyara_viewmodel_main_ProfileViewModel2;
+
+      @KeepFieldType
+      HistoryViewModel com_application_isyara_viewmodel_history_HistoryViewModel2;
+
+      @KeepFieldType
+      FeedbackViewModel com_application_isyara_viewmodel_settings_FeedbackViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
