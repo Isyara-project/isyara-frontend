@@ -48,10 +48,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.main.AppHeaderMain
-import com.application.isyara.viewmodel.auth.LoginViewModel
+import com.application.isyara.viewmodel.auth.AuthViewModel
 
 @Composable
-fun SettingsScreen(navController: NavController, loginViewModel: LoginViewModel = hiltViewModel()) {
+fun SettingsScreen(navController: NavController, viewModel: AuthViewModel= hiltViewModel()) {
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -121,7 +121,7 @@ fun SettingsScreen(navController: NavController, loginViewModel: LoginViewModel 
     if (showLogoutDialog) {
         LogoutConfirmationDialog(
             onConfirm = {
-                loginViewModel.logout()
+                viewModel.logout()
                 navController.navigate(NavRoute.Onboarding.route) {
                     popUpTo(NavRoute.Settings.route) { inclusive = true }
                 }

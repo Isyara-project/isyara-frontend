@@ -133,6 +133,7 @@ dependencies {
     implementation(libs.lottie.compose)
     implementation(libs.timber)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.security.crypto)
     implementation(libs.androidx.datastore)
     implementation(libs.coil.compose)
     implementation(libs.androidx.camera.core)
@@ -149,5 +150,6 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.dash)
     implementation(libs.androidx.media3.ui)
-
+    implementation(libs.accompanist.placeholder.material)
+    implementation(libs.kotlinx.serialization.json)
 }

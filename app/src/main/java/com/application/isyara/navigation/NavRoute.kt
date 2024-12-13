@@ -15,7 +15,6 @@ sealed class NavRoute(val route: String) {
 
     // Bottom Navigation Screens
     object Dashboard : NavRoute("dashboard")
-    object Dictionary : NavRoute("dictionary")
     object Translate : NavRoute("translate")
     object History : NavRoute("history")
     object Settings : NavRoute("settings")
@@ -26,10 +25,15 @@ sealed class NavRoute(val route: String) {
     object TipsBelajar : NavRoute("tips_belajar")
 
     // Dictionary
-    object SIBI : NavRoute("sibi")
+    object Dictionary : NavRoute("dictionary")
+    object SibiPicture : NavRoute("sibi_picture/{url}"){
+        fun createRoute(url: String) = "sibi_picture/$url"
+    }
+    object SibiVideo : NavRoute("sibi_video")
     object VideoPlayer : NavRoute("videoPlayer/{videoUrl}") {
         fun createRoute(videoUrl: String) = "videoPlayer/${Uri.encode(videoUrl)}"
     }
+
 
     // Translate
     object TranslateGuide : NavRoute("translate_guide")

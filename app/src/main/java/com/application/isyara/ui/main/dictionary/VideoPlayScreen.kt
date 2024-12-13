@@ -38,7 +38,7 @@ import androidx.navigation.NavController
 import com.application.isyara.utils.dictionary.NetworkUtils
 import com.application.isyara.utils.dictionary.capitalizeWords
 import com.application.isyara.utils.main.AppHeaderMain
-import com.application.isyara.viewmodel.main.DictionaryViewModel
+import com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel
 import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 import androidx.compose.ui.graphics.Color as ComposeColor
@@ -49,7 +49,7 @@ import androidx.compose.ui.graphics.Color as ComposeColor
 fun VideoPlayerScreen(
     navController: NavController,
     videoUrl: String,
-    viewModel: DictionaryViewModel = hiltViewModel()
+    viewModel: DictionaryVideoViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     var localPath by remember { mutableStateOf<String?>(null) }

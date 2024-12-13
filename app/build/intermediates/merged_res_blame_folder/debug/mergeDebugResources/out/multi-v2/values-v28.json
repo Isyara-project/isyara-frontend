@@ -1,10 +1,21 @@
 {
     "logs": [
         {
-            "outputFile": "com.application.isyara.app-mergeDebugResources-81:/values-v28/values-v28.xml",
+            "outputFile": "com.application.isyara.app-mergeDebugResources-82:/values-v28/values-v28.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\b76fb88cf3d14c57942fd97d6111ab9c\\transformed\\core-1.6.1\\res\\values-v28\\values.xml",
+                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\53c7174db535359e7655cca3a64675b1\\transformed\\appcompat-1.6.1\\res\\values-v28\\values-v28.xml",
+                    "from": {
+                        "startLines": "2,3,4,8",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "55,130,217,397",
+                        "endLines": "2,3,7,11",
+                        "endColumns": "74,86,12,12",
+                        "endOffsets": "125,212,392,584"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\3ef671b70c5c73cf69d1e8aaceb2bebf\\transformed\\core-1.6.1\\res\\values-v28\\values.xml",
                     "from": {
                         "startLines": "4,13",
                         "startColumns": "0,0",
@@ -20,17 +31,6 @@
                         "endLines": "20,29",
                         "endColumns": "8,8",
                         "endOffsets": "1067,1548"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\557d0a7511d48ee2fc9f8daad4f0c7e4\\transformed\\appcompat-1.6.1\\res\\values-v28\\values-v28.xml",
-                    "from": {
-                        "startLines": "2,3,4,8",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "55,130,217,397",
-                        "endLines": "2,3,7,11",
-                        "endColumns": "74,86,12,12",
-                        "endOffsets": "125,212,392,584"
                     }
                 }
             ]

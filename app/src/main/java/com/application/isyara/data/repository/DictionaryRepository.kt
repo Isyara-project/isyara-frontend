@@ -2,7 +2,6 @@ package com.application.isyara.data.repository
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.application.isyara.data.remote.ApiService
 import com.application.isyara.utils.state.Result
 import com.application.isyara.data.di.RetrofitDictionary
@@ -33,19 +32,8 @@ class DictionaryRepository @Inject constructor(
     fun getVideoList(): Flow<Result<List<String>>> = flow {
         emit(Result.Loading)
         try {
-            val videoList = apiService.getVideoList()
+            val videoList = apiService.getDictionaryVideo()
             emit(Result.Success(videoList))
-        } catch (e: Exception) {
-            emit(Result.Error(e.message ?: "Terjadi kesalahan"))
-        }
-    }
-
-    fun searchVideoList(query: String): Flow<Result<List<String>>> = flow {
-        emit(Result.Loading)
-        try {
-            val videoList = apiService.getVideoList()
-            val filteredList = videoList.filter { it.contains(query, ignoreCase = true) }
-            emit(Result.Success(filteredList))
         } catch (e: Exception) {
             emit(Result.Error(e.message ?: "Terjadi kesalahan"))
         }
@@ -55,9 +43,6 @@ class DictionaryRepository @Inject constructor(
         return downloadedDictionaryDao.getAllDownloadedItems()
     }
 
-    suspend fun isItemDownloaded(url: String): Boolean {
-        return downloadedDictionaryDao.getDownloadedItemByUrl(url) != null
-    }
 
     suspend fun downloadItem(url: String, title: String): Boolean {
         return withContext(Dispatchers.IO) {
@@ -123,42 +108,6 @@ class DictionaryRepository @Inject constructor(
                 Timber.e("No downloaded item found for URL: $url")
             }
             false
-        }
-    }
-
-    suspend fun downloadImage(url: String, title: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val request = Request.Builder().url(url).build()
-                val response = client.newCall(request).execute()
-                if (!response.isSuccessful) return@withContext false
-
-                val inputStream = response.body?.byteStream()
-                if (inputStream != null) {
-                    val fileName = Uri.parse(url).lastPathSegment ?: "image.jpg"
-                    val file = File(context.filesDir, fileName)
-                    val outputStream = FileOutputStream(file)
-                    inputStream.use { input ->
-                        outputStream.use { output ->
-                            input.copyTo(output)
-                        }
-                    }
-                    val downloadedItem = DownloadedDictionary(
-                        url = url,
-                        title = title,
-                        localPath = file.absolutePath,
-                        imageUrl = url,
-                        localImagePath = file.absolutePath
-                    )
-                    downloadedDictionaryDao.insertDownloadedItem(downloadedItem)
-                    true
-                } else {
-                    false
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-                false
-            }
         }
     }
 

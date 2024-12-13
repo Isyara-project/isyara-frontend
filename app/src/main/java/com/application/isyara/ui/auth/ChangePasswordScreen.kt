@@ -1,6 +1,12 @@
 package com.application.isyara.ui.auth
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -8,7 +14,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -20,30 +31,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.application.isyara.R
 import com.application.isyara.utils.auth.AppHeaderAuth
 import com.application.isyara.utils.auth.CustomInputField
-import com.application.isyara.viewmodel.auth.AuthViewModel
-import com.application.isyara.utils.auth.Result
+import com.application.isyara.utils.state.Result
+import com.application.isyara.viewmodel.settings.ChangePasswordViewModel
 
 
 @Composable
 fun ChangePasswordScreen(
     onBackClick: () -> Unit,
     onPasswordChangeSuccess: () -> Unit,
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: ChangePasswordViewModel = hiltViewModel()
 ) {
-    // Variables for UI input
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isConfirmPasswordVisible by remember { mutableStateOf(false) }
-
-    // Variables for validation errors
     var oldPasswordError by remember { mutableStateOf<String?>(null) }
     var newPasswordError by remember { mutableStateOf<String?>(null) }
     var confirmPasswordError by remember { mutableStateOf<String?>(null) }
-
-    // UI error and loading states from ViewModel
     val changePasswordState by viewModel.changePasswordState.collectAsState()
     val loadingState by viewModel.loadingState.collectAsState()
 
@@ -181,21 +186,14 @@ fun ChangePasswordScreen(
                 is Result.Error -> {
                     Text(text = result.message ?: "Gagal mengubah kata sandi", color = Color.Red)
                 }
+
                 is Result.Success -> {
                     onPasswordChangeSuccess()
                     Text(text = result.data.message ?: "Password changed successfully.")
                 }
+
                 else -> {}
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ChangePasswordScreenPreview() {
-    ChangePasswordScreen(
-        onBackClick = {},
-        onPasswordChangeSuccess = {}
-    )
 }

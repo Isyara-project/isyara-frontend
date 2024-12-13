@@ -1,200 +1,129 @@
 package com.application.isyara.data.repository
 
 import com.application.isyara.data.di.RetrofitMain
-import com.application.isyara.data.local.SessionManager
-import com.application.isyara.data.model.FeedbackHistoryResponse
-import com.application.isyara.data.model.FeedbackRequest
-import com.application.isyara.data.model.FeedbackResponse
-import com.application.isyara.data.model.LoginRequest
-import com.application.isyara.data.model.LoginResponse
-import com.application.isyara.data.model.OtpRequest
-import com.application.isyara.data.model.OtpResponse
-import com.application.isyara.data.model.RegisterRequest
-import com.application.isyara.data.model.RegisterResponse
-import com.application.isyara.data.model.ResendOtpResponse
-import com.application.isyara.data.model.ResetPasswordRequest
-import com.application.isyara.data.model.ResetPasswordResponse
+import com.application.isyara.data.model.*
 import com.application.isyara.data.remote.ApiService
+import com.application.isyara.utils.auth.ISessionManager
+import com.application.isyara.utils.auth.IUserPreferences
 import com.application.isyara.utils.state.Result
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.google.gson.Gson
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class AuthRepository @Inject constructor(
     @RetrofitMain private val apiService: ApiService,
-    private val sessionManager: SessionManager
+    private val sessionManager: ISessionManager,
+    private val userPreferences: IUserPreferences
 ) {
+    private val gson = Gson()
 
-    suspend fun registerUser(registerRequest: RegisterRequest): Flow<Result<RegisterResponse>> =
-        flow {
-            try {
-                emit(Result.Loading)
-                val response = apiService.registerUser(registerRequest)
-                emit(Result.Success(response))
-            } catch (e: HttpException) {
-                emit(Result.Error("Terjadi kesalahan pada server"))
-            } catch (e: IOException) {
-                emit(Result.Error("Tidak dapat terhubung ke server"))
-            }
-        }
-
-
-    suspend fun verifyOtp(token: String, otpRequest: OtpRequest): Flow<Result<OtpResponse>> = flow {
+    private fun <T> safeApiCall(apiCall: suspend () -> T): Flow<Result<T>> = flow {
         emit(Result.Loading)
         try {
-            val response = apiService.verifyOtp(token, otpRequest)
-            if (response.message.isNotEmpty()) {
-                emit(Result.Success(response))
-            } else {
-                emit(Result.Error("OTP tidak valid atau sudah kadaluarsa"))
-            }
+            val response = apiCall()
+            emit(Result.Success(response))
         } catch (e: HttpException) {
-            emit(Result.Error("Terjadi kesalahan pada server: ${e.message}"))
+            Timber.e(e, "HTTP Exception: ${e.message}")
+            val errorBody = e.response()?.errorBody()?.string()
+            val errorResponse = try {
+                gson.fromJson(errorBody, ErrorResponse::class.java)
+            } catch (ex: Exception) {
+                null
+            }
+            val errorMessage = when (e.code()) {
+                400 -> {
+                    if (errorResponse?.message?.contains("OTP salah", ignoreCase = true) == true) {
+                        "Kode OTP salah."
+                    } else {
+                        "Permintaan tidak valid."
+                    }
+                }
+
+                409 -> {
+                    if (errorResponse?.message?.contains(
+                            "User already exists",
+                            ignoreCase = true
+                        ) == true
+                    ) {
+                        "Email atau username sudah terdaftar."
+                    } else {
+                        "Terjadi konflik saat memproses permintaan."
+                    }
+                }
+
+                401 -> "Token tidak valid atau sudah kadaluarsa."
+                else -> "Terjadi kesalahan, siilahkan coba lagi!"
+            }
+            emit(Result.Error(errorMessage))
         } catch (e: IOException) {
-            emit(Result.Error("Tidak dapat terhubung ke server: ${e.message}"))
+            Timber.e(e, "IO Exception: ${e.message}")
+            emit(Result.Error("Tidak dapat terhubung ke server. Periksa koneksi internet Anda."))
         } catch (e: Exception) {
-            emit(Result.Error("Terjadi kesalahan: ${e.message}"))
+            Timber.e(e, "Unknown Exception: ${e.message}")
+            emit(Result.Error("Terjadi kesalahan yang tidak terduga."))
         }
     }
 
 
+    fun registerUser(registerRequest: RegisterRequest): Flow<Result<RegisterResponse>> =
+        safeApiCall { apiService.registerUser(registerRequest) }
+            .map { result ->
+                when (result) {
+                    is Result.Success -> {
+                        userPreferences.setLastRegistrationAttempt(System.currentTimeMillis())
+                        result
+                    }
 
-    suspend fun loginUser(loginRequest: LoginRequest): Flow<Result<LoginResponse>> {
-        return flow {
-            emit(Result.Loading)
+                    is Result.Error -> {
+                        userPreferences.setLastRegistrationAttempt(System.currentTimeMillis())
+                        result
+                    }
 
-            try {
-                val response: LoginResponse = apiService.loginUser(loginRequest)
-                Timber.d("Login Response: ${response.message}")
-                val token = response.access_token
-                if (token.isEmpty()) {
-                    Timber.e("Token is null or empty in response")
-                    emit(Result.Error("Login failed: Token is null or empty"))
-                } else {
-                    Timber.d("Token received: $token")
-                    sessionManager.saveToken(token)
-                    Timber.d("Token saved successfully, current token: ${sessionManager.getToken()}")
-                    emit(Result.Success(response))
+                    else -> result
                 }
-            } catch (e: IOException) {
-                Timber.e("Network error: ${e.message}")
-                emit(Result.Error("Network error: ${e.message}"))
-            } catch (e: Exception) {
-                Timber.e("Login failed: ${e.message}")
-                emit(Result.Error("Login failed: ${e.message}"))
             }
-        }
-    }
 
-    // Fungsi Kirim Ulang OTP
-    suspend fun resendOtp(token: String): Flow<Result<ResendOtpResponse>> = flow {
-        emit(Result.Loading)
-        try {
-            val response = apiService.resendOtp(token, mapOf())
-            emit(Result.Success(response))
-        } catch (e: Exception) {
-            emit(Result.Error(e.message ?: "Unknown Error"))
+    fun verifyOtp(token: String, otpRequest: OtpRequest): Flow<Result<OtpResponse>> =
+        safeApiCall {
+            Timber.d("Verifying OTP with token: $token and otp: ${otpRequest.otp}")
+            apiService.verifyOtp(token, otpRequest)
         }
-    }
 
-    // Fungsi Reset Password
-    suspend fun resetPassword(
-        resetPasswordRequest: ResetPasswordRequest,
-        token: String
-    ): Flow<Result<ResetPasswordResponse>> = flow {
-        emit(Result.Loading)
-        try {
-            val response: ResetPasswordResponse =
-                apiService.resetPassword(token, resetPasswordRequest)
-            emit(Result.Success(response))
-        } catch (e: Exception) {
-            emit(Result.Error("Reset password failed: ${e.message}"))
+    fun resendOtp(token: String): Flow<Result<ResendOtpResponse>> =
+        safeApiCall {
+            Timber.d("Resend OTP called with token: $token")
+            apiService.resendOtp(token)
         }
-    }
 
-    suspend fun sendFeedback(feedbackRequest: FeedbackRequest): Flow<Result<FeedbackResponse>> =
-        flow {
-            emit(Result.Loading)
-            try {
-                val response = apiService.sendFeedback(feedbackRequest)
-                emit(Result.Success(response))
-            } catch (e: Exception) {
-                emit(Result.Error(e.message ?: "Unknown Error"))
+
+    fun loginUser(loginRequest: LoginRequest): Flow<Result<LoginResponse>> =
+        safeApiCall { apiService.loginUser(loginRequest) }
+            .map { result ->
+                when (result) {
+                    is Result.Success -> {
+                        val token = result.data.access_token
+                        if (token.isBlank()) {
+                            Timber.e("Token is null or empty in response")
+                            Result.Error("Login gagal: Token tidak tersedia.")
+                        } else {
+                            Timber.d("Token received: $token")
+                            sessionManager.saveToken(token)
+                            Timber.d("Token disimpan berhasil, token saat ini: ${sessionManager.getToken()}")
+                            Result.Success(result.data)
+                        }
+                    }
+
+                    is Result.Error -> result
+                    is Result.Loading -> result
+                    is Result.Idle -> result
+                }
             }
-        }
 
-    suspend fun getFeedbackHistories(): Flow<Result<FeedbackHistoryResponse>> = flow {
-        emit(Result.Loading)
-        try {
-            val response = apiService.getFeedbackHistories()
-            emit(Result.Success(response))
-        } catch (e: Exception) {
-            emit(Result.Error(e.message ?: "Unknown Error"))
-        }
-    }
-
-
-    Fungsi untuk mengubah password
-    suspend fun changePassword(oldPass: String, newPass: String): Flow<Result<ChangePasswordResponse>> {
-        return flow {
-            try {
-                val token = sessionManager.getToken()
-                if (token.isNullOrEmpty()) {
-                    emit(Result.Error("No token found. Please log in again."))
-                    return@flow
-                }
-
-                val response = apiService.changePassword(
-                    token = "Bearer $token",
-                    changePasswordRequest = ChangePasswordRequest(oldPass, newPass)
-                )
-
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        emit(Result.Success(it))
-                    } ?: emit(Result.Error("Empty response from server."))
-                } else {
-                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                    emit(Result.Error("Failed to change password: $errorMessage"))
-                }
-            } catch (e: HttpException) {
-                emit(Result.Error("HTTP error: ${e.message}"))
-            } catch (e: Exception) {
-                emit(Result.Error("Unexpected error: ${e.message}"))
-            }
-        }
-    }
-      // Fungsi untuk mengubah password
-    suspend fun changePassword(oldPass: String, newPass: String): Flow<Result<ChangePasswordResponse>> {
-        return flow {
-            try {
-                val token = sessionManager.getToken()
-                if (token.isNullOrEmpty()) {
-                    emit(Result.Error("No token found. Please log in again."))
-                    return@flow
-                }
-
-                val response = apiService.changePassword(
-                    token = "Bearer $token",
-                    changePasswordRequest = ChangePasswordRequest(oldPass, newPass)
-                )
-
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        emit(Result.Success(it))
-                    } ?: emit(Result.Error("Empty response from server."))
-                } else {
-                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                    emit(Result.Error("Failed to change password: $errorMessage"))
-                }
-            } catch (e: HttpException) {
-                emit(Result.Error("HTTP error: ${e.message}"))
-            } catch (e: Exception) {
-                emit(Result.Error("Unexpected error: ${e.message}"))
-            }
-        }
-    }
+    fun getProfile(token: String): Flow<Result<ProfileResponse>> =
+        safeApiCall { apiService.getProfile("Bearer $token") }
 }

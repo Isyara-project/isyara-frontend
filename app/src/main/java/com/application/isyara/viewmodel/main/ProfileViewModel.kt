@@ -1,18 +1,16 @@
 package com.application.isyara.viewmodel.main
 
-import android.content.Context
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.application.isyara.data.model.ProfileData
-import com.application.isyara.data.model.ProfileUpdateResponse
+import com.application.isyara.data.model.UpdateProfileResponse
 import com.application.isyara.data.repository.ProfileRepository
 import com.application.isyara.utils.state.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,26 +18,33 @@ class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
-    private val _profile = MutableStateFlow<Result<ProfileData>>(Result.Loading)
-    val profile: StateFlow<Result<ProfileData>> get() = _profile
-    private val _updateProfileState =
-        MutableStateFlow<Result<ProfileUpdateResponse>>(Result.Loading)
-    val updateProfileState: StateFlow<Result<ProfileUpdateResponse>> get() = _updateProfileState
+    private val _profileState = MutableStateFlow<Result<ProfileData>>(Result.Idle)
+    val profileState: StateFlow<Result<ProfileData>> = _profileState
+
+    private val _updateProfileState = MutableStateFlow<Result<UpdateProfileResponse>>(Result.Idle)
+    val updateProfileState: StateFlow<Result<UpdateProfileResponse>> = _updateProfileState
 
     fun fetchProfile() {
         viewModelScope.launch {
-            profileRepository.getProfile().collectLatest { result ->
-                _profile.value = result
+            profileRepository.getProfile().collect { result ->
+                _profileState.value = result
             }
         }
     }
 
-    fun updateProfile(context: Context, fileUri: Uri?, fullname: String, bio: String) {
+    fun updateProfile(
+        file: MultipartBody.Part?,
+        fullname: String,
+        bio: String
+    ) {
         viewModelScope.launch {
-            profileRepository.updateProfile(context, fileUri, fullname, bio)
-                .collectLatest { result ->
-                    _updateProfileState.value = result
-                }
+            profileRepository.updateProfile(file, fullname, bio).collect { result ->
+                _updateProfileState.value = result
+            }
         }
+    }
+
+    fun resetUpdateProfileState() {
+        _updateProfileState.value = Result.Idle
     }
 }

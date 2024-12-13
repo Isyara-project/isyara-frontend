@@ -40,27 +40,16 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         }
     }
 
-    // Forgot password screen
     composable(NavRoute.ForgotPassword.route) {
-        ForgotPasswordScreen(navController)
+        ForgotPasswordScreen(navController = navController)
     }
 
-    // Reset password screen
     composable(
         route = "${NavRoute.ResetPassword.route}/{token}",
-        arguments = listOf(
-            navArgument("token") {
-                type = NavType.StringType
-                nullable = false
-            }
-        )
+        arguments = listOf(navArgument("token") { type = NavType.StringType })
     ) { backStackEntry ->
-        val token = backStackEntry.arguments?.getString("token")
-        if (token != null) {
-            ResetPasswordScreen(navController, token = token)
-        } else {
-            navController.popBackStack()
-        }
+        val token = backStackEntry.arguments?.getString("token") ?: ""
+        ResetPasswordScreen(token = token, navController = navController)
     }
 
 }

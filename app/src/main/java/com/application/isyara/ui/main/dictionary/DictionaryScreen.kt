@@ -20,10 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -33,7 +31,8 @@ import com.application.isyara.utils.main.AppHeaderMain
 
 @Composable
 fun DictionaryScreen(
-    navController: NavController) {
+    navController: NavController
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,10 +60,19 @@ fun DictionaryScreen(
             ) {
                 DictionaryOptionCard(
                     iconRes = R.drawable.ic_sibi,
-                    label = "SIBI",
+                    label = "Kamus Sibi Video",
                     backgroundColor = Color(0xFFFFD54F),
                     onClick = {
-                        navController.navigate(NavRoute.SIBI.route)
+                        navController.navigate(NavRoute.SibiVideo.route)
+                    }
+                )
+
+                DictionaryOptionCard(
+                    iconRes = R.drawable.ic_bisindo,
+                    label = "Kamus Sibi Huruf",
+                    backgroundColor = Color(0xFF4CAF50),
+                    onClick = {
+                        navController.navigate(NavRoute.SibiPicture.route)
                     }
                 )
             }
@@ -82,7 +90,7 @@ fun DictionaryOptionCard(
     Card(
         modifier = Modifier
             .fillMaxWidth(0.8f)
-            .height(120.dp)
+            .height(150.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = backgroundColor)

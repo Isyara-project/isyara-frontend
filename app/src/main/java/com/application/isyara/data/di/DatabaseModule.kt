@@ -3,9 +3,11 @@ package com.application.isyara.data.di
 import android.content.Context
 import androidx.room.Room
 import com.application.isyara.data.local.AppDatabase
+import com.application.isyara.data.local.DownloadDictionaryPictureDao
 import com.application.isyara.data.local.DownloadedDictionaryDao
 import com.application.isyara.data.local.TranslatedTextDao
 import com.application.isyara.data.remote.ApiService
+import com.application.isyara.data.repository.DictionaryPictureRepository
 import com.application.isyara.data.repository.DictionaryRepository
 import com.application.isyara.data.repository.TranslatedTextRepository
 import dagger.Module
@@ -44,6 +46,12 @@ object DatabaseModule {
         return database.translatedTextDao()
     }
 
+    @Singleton
+    @Provides
+    fun provideDownloadDictionaryPictureDao(database: AppDatabase): DownloadDictionaryPictureDao {
+        return database.downloadDictionaryPictureDao()
+    }
+
     @Provides
     @Singleton
     fun provideTranslatedTextRepository(
@@ -63,5 +71,12 @@ object DatabaseModule {
         return DictionaryRepository(apiService, context, downloadedDictionaryDao)
     }
 
-
+    @Provides
+    @Singleton
+    fun provideDictionaryPictureRepository(
+        @RetrofitDictionary apiService: ApiService,
+        downloadDictionaryPictureDao: DownloadDictionaryPictureDao
+    ): DictionaryPictureRepository {
+        return DictionaryPictureRepository(apiService, downloadDictionaryPictureDao)
+    }
 }

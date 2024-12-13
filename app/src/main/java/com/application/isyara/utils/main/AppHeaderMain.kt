@@ -5,7 +5,14 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
@@ -47,16 +54,15 @@ fun AppHeaderMain(
     paddingStart: Dp = 16.dp,
     paddingEnd: Dp = 16.dp,
     isTopLevelPage: Boolean = false
-
 ) {
-
     val alphaAnim by animateFloatAsState(
         targetValue = 1f,
         animationSpec = tween(
             durationMillis = 500,
             easing = FastOutSlowInEasing
-        ), label = "animations"
+        ), label = ""
     )
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -66,59 +72,64 @@ fun AppHeaderMain(
             .alpha(alphaAnim),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (onBackClick != null && !isTopLevelPage) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
-                }
+        when {
+            onBackClick != null && !isTopLevelPage -> {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White
+                        )
+                    }
 
-                if (!showDashboardElements) {
-                    Text(
-                        text = title,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        textAlign = TextAlign.Start
-                    )
+                    if (!showDashboardElements) {
+                        Text(
+                            text = title,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            textAlign = TextAlign.Start
+                        )
+                    }
                 }
             }
-        } else if (isTopLevelPage) {
-            Text(
-                text = title,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                textAlign = TextAlign.Start
-            )
-        } else if (showDashboardElements) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.isyara_putih),
-                    contentDescription = "Logo Isyara",
-                    modifier = Modifier.size(32.dp)
-                )
+
+            isTopLevelPage -> {
                 Text(
-                    text = "Isyara",
-                    fontSize = 24.sp,
+                    text = title,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = Color.White,
+                    textAlign = TextAlign.Start
                 )
+            }
+
+            showDashboardElements -> {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.isyara_putih),
+                        contentDescription = "Logo Isyara",
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Text(
+                        text = "Isyara",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Elemen Khusus Dashboard
         if (showDashboardElements) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 IconButton(onClick = { onSearchClick?.invoke() }) {
@@ -145,28 +156,30 @@ fun AppHeaderMain(
             }
         }
 
-        // Tombol Help di Kanan (opsional)
-        if (onHelpClick != null) {
-            IconButton(
-                onClick = onHelpClick,
-                modifier = Modifier.padding(end = if (trailingContent != null) 48.dp else 16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.HelpOutline,
-                    contentDescription = "Help",
-                    tint = Color.White
-                )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            if (onHelpClick != null) {
+                IconButton(
+                    onClick = onHelpClick,
+                    modifier = Modifier.padding(end = if (trailingContent != null) 48.dp else 16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.HelpOutline,
+                        contentDescription = "Help",
+                        tint = Color.White
+                    )
+                }
             }
-        }
 
-        // Konten Tambahan di Kanan (opsional)
-        if (trailingContent != null) {
-            Box(
-                modifier = Modifier.align(Alignment.CenterVertically)
-            ) {
-                trailingContent()
+            trailingContent?.let {
+                Box(
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                ) {
+                    it()
+                }
             }
         }
     }
 }
-

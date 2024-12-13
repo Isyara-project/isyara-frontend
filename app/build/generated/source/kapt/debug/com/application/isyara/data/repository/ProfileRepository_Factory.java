@@ -2,6 +2,7 @@ package com.application.isyara.data.repository;
 
 import com.application.isyara.data.local.SessionManager;
 import com.application.isyara.data.remote.ApiService;
+import com.google.gson.Gson;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.QualifierMetadata;
@@ -29,24 +30,27 @@ public final class ProfileRepository_Factory implements Factory<ProfileRepositor
 
   private final Provider<SessionManager> sessionManagerProvider;
 
+  private final Provider<Gson> gsonProvider;
+
   public ProfileRepository_Factory(Provider<ApiService> apiServiceProvider,
-      Provider<SessionManager> sessionManagerProvider) {
+      Provider<SessionManager> sessionManagerProvider, Provider<Gson> gsonProvider) {
     this.apiServiceProvider = apiServiceProvider;
     this.sessionManagerProvider = sessionManagerProvider;
+    this.gsonProvider = gsonProvider;
   }
 
   @Override
   public ProfileRepository get() {
-    return newInstance(apiServiceProvider.get(), sessionManagerProvider.get());
+    return newInstance(apiServiceProvider.get(), sessionManagerProvider.get(), gsonProvider.get());
   }
 
   public static ProfileRepository_Factory create(Provider<ApiService> apiServiceProvider,
-      Provider<SessionManager> sessionManagerProvider) {
-    return new ProfileRepository_Factory(apiServiceProvider, sessionManagerProvider);
+      Provider<SessionManager> sessionManagerProvider, Provider<Gson> gsonProvider) {
+    return new ProfileRepository_Factory(apiServiceProvider, sessionManagerProvider, gsonProvider);
   }
 
-  public static ProfileRepository newInstance(ApiService apiService,
-      SessionManager sessionManager) {
-    return new ProfileRepository(apiService, sessionManager);
+  public static ProfileRepository newInstance(ApiService apiService, SessionManager sessionManager,
+      Gson gson) {
+    return new ProfileRepository(apiService, sessionManager, gson);
   }
 }

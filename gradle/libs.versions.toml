@@ -2,12 +2,12 @@
 accompanistPager = "0.36.0"
 accompanistSwiperefresh = "0.29.0-alpha"
 agp = "8.6.1"
-cameraCamera2 = "1.4.0"
+cameraCamera2 = "1.4.1"
 coilCompose = "2.3.0"
 compiler = "4.16.0"
 converterGson = "2.11.0"
 datastorePreferences = "1.1.1"
-foundation = "1.7.5"
+foundation = "1.7.6"
 glide = "4.16.0"
 hiltAndroid = "2.52"
 hiltNavigationCompose = "1.2.0"
@@ -19,6 +19,7 @@ espressoCore = "3.6.1"
 kotlinxCoroutinesAndroid = "1.9.0"
 kotlinxCoroutinesCore = "1.9.0"
 kotlinxCoroutinesFlow = "1.6.4"
+kotlinxSerializationJson = "1.5.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.11.00"
@@ -27,23 +28,25 @@ litertGpu = "1.0.1"
 litertSupport = "1.0.1"
 loggingInterceptor = "5.0.0-alpha.14"
 lottieCompose = "6.6.0"
-material = "1.7.5"
-materialIconsCore = "1.7.5"
-materialIconsExtended = "1.7.5"
+material = "1.7.6"
+materialIconsCore = "1.7.6"
+materialIconsExtended = "1.7.6"
 media3Exoplayer = "1.5.0"
-navigationCompose = "2.8.4"
+navigationCompose = "2.8.5"
 okhttp = "4.12.0"
 retrofit = "2.11.0"
 roomRuntime = "2.6.1"
+securityCrypto = "1.1.0-alpha06"
 tasksVision = "0.20230731"
 timber = "5.0.1"
-ui = "1.7.5"
-uiTooling = "1.7.5"
+ui = "1.7.6"
+uiTooling = "1.7.6"
 
 [libraries]
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistPager" }
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanistPager" }
+accompanist-placeholder-material = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanistPager" }
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanistSwiperefresh" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistPager" }
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2" }
@@ -66,6 +69,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
@@ -88,6 +92,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-flow = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-flow", version.ref = "kotlinxCoroutinesFlow" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 litert = { module = "com.google.ai.edge.litert:litert", version.ref = "litert" }
 litert-gpu = { module = "com.google.ai.edge.litert:litert-gpu", version.ref = "litertGpu" }
 litert-support = { module = "com.google.ai.edge.litert:litert-support", version.ref = "litertSupport" }

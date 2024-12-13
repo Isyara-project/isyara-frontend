@@ -7,11 +7,13 @@ import com.application.isyara.data.di.SharedPreferencesModule;
 import com.application.isyara.ui.MainActivity_GeneratedInjector;
 import com.application.isyara.viewmodel.auth.AuthViewModel_HiltModules;
 import com.application.isyara.viewmodel.auth.ForgotPasswordViewModel_HiltModules;
-import com.application.isyara.viewmodel.auth.LoginViewModel_HiltModules;
 import com.application.isyara.viewmodel.auth.ResetPasswordViewModel_HiltModules;
+import com.application.isyara.viewmodel.dictionary.DictionaryPictureViewModel_HiltModules;
+import com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel_HiltModules;
 import com.application.isyara.viewmodel.history.HistoryViewModel_HiltModules;
-import com.application.isyara.viewmodel.main.DictionaryViewModel_HiltModules;
 import com.application.isyara.viewmodel.main.ProfileViewModel_HiltModules;
+import com.application.isyara.viewmodel.settings.ChangePasswordViewModel_HiltModules;
+import com.application.isyara.viewmodel.settings.FeedbackViewModel_HiltModules;
 import com.application.isyara.viewmodel.translate.TranslateViewModel_HiltModules;
 import dagger.Binds;
 import dagger.Component;
@@ -168,12 +170,14 @@ public final class MyApplication_HiltComponents {
   @Subcomponent(
       modules = {
           AuthViewModel_HiltModules.KeyModule.class,
-          DictionaryViewModel_HiltModules.KeyModule.class,
+          ChangePasswordViewModel_HiltModules.KeyModule.class,
+          DictionaryPictureViewModel_HiltModules.KeyModule.class,
+          DictionaryVideoViewModel_HiltModules.KeyModule.class,
+          FeedbackViewModel_HiltModules.KeyModule.class,
           ForgotPasswordViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
           HiltWrapper_SavedStateHandleModule.class,
           HistoryViewModel_HiltModules.KeyModule.class,
-          LoginViewModel_HiltModules.KeyModule.class,
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
           ProfileViewModel_HiltModules.KeyModule.class,
@@ -215,11 +219,13 @@ public final class MyApplication_HiltComponents {
   @Subcomponent(
       modules = {
           AuthViewModel_HiltModules.BindsModule.class,
-          DictionaryViewModel_HiltModules.BindsModule.class,
+          ChangePasswordViewModel_HiltModules.BindsModule.class,
+          DictionaryPictureViewModel_HiltModules.BindsModule.class,
+          DictionaryVideoViewModel_HiltModules.BindsModule.class,
+          FeedbackViewModel_HiltModules.BindsModule.class,
           ForgotPasswordViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
           HistoryViewModel_HiltModules.BindsModule.class,
-          LoginViewModel_HiltModules.BindsModule.class,
           ProfileViewModel_HiltModules.BindsModule.class,
           ResetPasswordViewModel_HiltModules.BindsModule.class,
           TranslateViewModel_HiltModules.BindsModule.class
