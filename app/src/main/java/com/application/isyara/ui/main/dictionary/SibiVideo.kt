@@ -96,7 +96,7 @@ fun AlphabetScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         // SearchBar
-        SearchBar { query ->
+        SearchBarVideo { query ->
             viewModel.onSearchQueryChange(query)
         }
 
@@ -256,7 +256,7 @@ fun InfoCard(title: String, description: String) {
 }
 
 @Composable
-fun SearchBar(onSearch: (String) -> Unit) {
+fun SearchBarVideo(onSearch: (String) -> Unit) {
     var query by remember { mutableStateOf("") }
 
     OutlinedTextField(

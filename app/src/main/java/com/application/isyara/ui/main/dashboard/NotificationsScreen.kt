@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,8 +47,8 @@ fun NotificationsScreen(
             onBackClick = onBackClick,
             backgroundColor = Brush.horizontalGradient(
                 colors = listOf(
-                    Color(0xFF008E9B),
-                    Color(0xFF00B4D8)
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary
                 )
             )
         )

@@ -42,6 +42,7 @@ fun CameraPreview(
             try {
                 val cameraProvider = cameraProviderFuture.get()
                 val preview = Preview.Builder()
+                    .setTargetResolution(Size(1280,720))
                     .build()
                     .also {
                         it.surfaceProvider = view.surfaceProvider
@@ -53,6 +54,7 @@ fun CameraPreview(
                     CameraSelector.DEFAULT_BACK_CAMERA
                 }
                 val imageAnalysis = ImageAnalysis.Builder()
+                    .setTargetResolution(Size(1280,720))
                     .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()

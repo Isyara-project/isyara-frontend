@@ -111,7 +111,6 @@ class DictionaryVideoViewModel @Inject constructor(
                 }
 
                 is Result.Error -> {
-
                     val filteredDownloaded =
                         downloadedList.filter { it.title.contains(query, ignoreCase = true) }
                     if (filteredDownloaded.isNotEmpty()) {
@@ -155,6 +154,7 @@ class DictionaryVideoViewModel @Inject constructor(
     private fun loadVideos() {
         viewModelScope.launch {
             combinedVideos.collect {
+                // Handle any additional logic if needed
             }
         }
     }

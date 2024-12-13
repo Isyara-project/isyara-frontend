@@ -25,6 +25,7 @@ import java.util.concurrent.Callable;
 import javax.annotation.processing.Generated;
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
+import kotlinx.coroutines.flow.Flow;
 
 @Generated("androidx.room.RoomProcessor")
 @SuppressWarnings({"unchecked", "deprecation"})
@@ -35,33 +36,25 @@ public final class DownloadDictionaryPictureDao_Impl implements DownloadDictiona
 
   private final SharedSQLiteStatement __preparedStmtOfDeleteDownloadedPictureByUrl;
 
+  private final SharedSQLiteStatement __preparedStmtOfDeleteAllPictures;
+
   public DownloadDictionaryPictureDao_Impl(@NonNull final RoomDatabase __db) {
     this.__db = __db;
     this.__insertionAdapterOfDownloadedDictionaryPicture = new EntityInsertionAdapter<DownloadedDictionaryPicture>(__db) {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR REPLACE INTO `downloaded_dictionary_pictures` (`id`,`word`,`imageUrl`,`definition`) VALUES (nullif(?, 0),?,?,?)";
+        return "INSERT OR IGNORE INTO `downloaded_dictionary_pictures` (`id`,`url`) VALUES (nullif(?, 0),?)";
       }
 
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final DownloadedDictionaryPicture entity) {
         statement.bindLong(1, entity.getId());
-        if (entity.getWord() == null) {
+        if (entity.getUrl() == null) {
           statement.bindNull(2);
         } else {
-          statement.bindString(2, entity.getWord());
-        }
-        if (entity.getImageUrl() == null) {
-          statement.bindNull(3);
-        } else {
-          statement.bindString(3, entity.getImageUrl());
-        }
-        if (entity.getDefinition() == null) {
-          statement.bindNull(4);
-        } else {
-          statement.bindString(4, entity.getDefinition());
+          statement.bindString(2, entity.getUrl());
         }
       }
     };
@@ -69,33 +62,22 @@ public final class DownloadDictionaryPictureDao_Impl implements DownloadDictiona
       @Override
       @NonNull
       public String createQuery() {
-        final String _query = "DELETE FROM downloaded_dictionary_pictures WHERE imageUrl = ?";
+        final String _query = "DELETE FROM downloaded_dictionary_pictures WHERE url = ?";
+        return _query;
+      }
+    };
+    this.__preparedStmtOfDeleteAllPictures = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM downloaded_dictionary_pictures";
         return _query;
       }
     };
   }
 
   @Override
-  public Object insertDownloadedPicture(final DownloadedDictionaryPicture picture,
-      final Continuation<? super Unit> $completion) {
-    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
-      @Override
-      @NonNull
-      public Unit call() throws Exception {
-        __db.beginTransaction();
-        try {
-          __insertionAdapterOfDownloadedDictionaryPicture.insert(picture);
-          __db.setTransactionSuccessful();
-          return Unit.INSTANCE;
-        } finally {
-          __db.endTransaction();
-        }
-      }
-    }, $completion);
-  }
-
-  @Override
-  public Object insertPictures(final List<DownloadedDictionaryPicture> pictures,
+  public Object insertAll(final List<DownloadedDictionaryPicture> pictures,
       final Continuation<? super Unit> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
@@ -144,60 +126,71 @@ public final class DownloadDictionaryPictureDao_Impl implements DownloadDictiona
   }
 
   @Override
-  public Object getAllDownloadedPictures(
-      final Continuation<? super List<DownloadedDictionaryPicture>> $completion) {
-    final String _sql = "SELECT * FROM downloaded_dictionary_pictures";
-    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
-    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
-    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<DownloadedDictionaryPicture>>() {
+  public Object deleteAllPictures(final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       @NonNull
-      public List<DownloadedDictionaryPicture> call() throws Exception {
-        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteAllPictures.acquire();
         try {
-          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
-          final int _cursorIndexOfWord = CursorUtil.getColumnIndexOrThrow(_cursor, "word");
-          final int _cursorIndexOfImageUrl = CursorUtil.getColumnIndexOrThrow(_cursor, "imageUrl");
-          final int _cursorIndexOfDefinition = CursorUtil.getColumnIndexOrThrow(_cursor, "definition");
-          final List<DownloadedDictionaryPicture> _result = new ArrayList<DownloadedDictionaryPicture>(_cursor.getCount());
-          while (_cursor.moveToNext()) {
-            final DownloadedDictionaryPicture _item;
-            final long _tmpId;
-            _tmpId = _cursor.getLong(_cursorIndexOfId);
-            final String _tmpWord;
-            if (_cursor.isNull(_cursorIndexOfWord)) {
-              _tmpWord = null;
-            } else {
-              _tmpWord = _cursor.getString(_cursorIndexOfWord);
-            }
-            final String _tmpImageUrl;
-            if (_cursor.isNull(_cursorIndexOfImageUrl)) {
-              _tmpImageUrl = null;
-            } else {
-              _tmpImageUrl = _cursor.getString(_cursorIndexOfImageUrl);
-            }
-            final String _tmpDefinition;
-            if (_cursor.isNull(_cursorIndexOfDefinition)) {
-              _tmpDefinition = null;
-            } else {
-              _tmpDefinition = _cursor.getString(_cursorIndexOfDefinition);
-            }
-            _item = new DownloadedDictionaryPicture(_tmpId,_tmpWord,_tmpImageUrl,_tmpDefinition);
-            _result.add(_item);
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
           }
-          return _result;
         } finally {
-          _cursor.close();
-          _statement.release();
+          __preparedStmtOfDeleteAllPictures.release(_stmt);
         }
       }
     }, $completion);
   }
 
   @Override
+  public Flow<List<DownloadedDictionaryPicture>> getAllPictures() {
+    final String _sql = "SELECT * FROM downloaded_dictionary_pictures";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"downloaded_dictionary_pictures"}, new Callable<List<DownloadedDictionaryPicture>>() {
+      @Override
+      @NonNull
+      public List<DownloadedDictionaryPicture> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfUrl = CursorUtil.getColumnIndexOrThrow(_cursor, "url");
+          final List<DownloadedDictionaryPicture> _result = new ArrayList<DownloadedDictionaryPicture>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final DownloadedDictionaryPicture _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final String _tmpUrl;
+            if (_cursor.isNull(_cursorIndexOfUrl)) {
+              _tmpUrl = null;
+            } else {
+              _tmpUrl = _cursor.getString(_cursorIndexOfUrl);
+            }
+            _item = new DownloadedDictionaryPicture(_tmpId,_tmpUrl);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
+  }
+
+  @Override
   public Object getDownloadedPictureByUrl(final String url,
       final Continuation<? super DownloadedDictionaryPicture> $completion) {
-    final String _sql = "SELECT * FROM downloaded_dictionary_pictures WHERE imageUrl = ?";
+    final String _sql = "SELECT * FROM downloaded_dictionary_pictures WHERE url = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
     if (url == null) {
@@ -213,32 +206,18 @@ public final class DownloadDictionaryPictureDao_Impl implements DownloadDictiona
         final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
         try {
           final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
-          final int _cursorIndexOfWord = CursorUtil.getColumnIndexOrThrow(_cursor, "word");
-          final int _cursorIndexOfImageUrl = CursorUtil.getColumnIndexOrThrow(_cursor, "imageUrl");
-          final int _cursorIndexOfDefinition = CursorUtil.getColumnIndexOrThrow(_cursor, "definition");
+          final int _cursorIndexOfUrl = CursorUtil.getColumnIndexOrThrow(_cursor, "url");
           final DownloadedDictionaryPicture _result;
           if (_cursor.moveToFirst()) {
             final long _tmpId;
             _tmpId = _cursor.getLong(_cursorIndexOfId);
-            final String _tmpWord;
-            if (_cursor.isNull(_cursorIndexOfWord)) {
-              _tmpWord = null;
+            final String _tmpUrl;
+            if (_cursor.isNull(_cursorIndexOfUrl)) {
+              _tmpUrl = null;
             } else {
-              _tmpWord = _cursor.getString(_cursorIndexOfWord);
+              _tmpUrl = _cursor.getString(_cursorIndexOfUrl);
             }
-            final String _tmpImageUrl;
-            if (_cursor.isNull(_cursorIndexOfImageUrl)) {
-              _tmpImageUrl = null;
-            } else {
-              _tmpImageUrl = _cursor.getString(_cursorIndexOfImageUrl);
-            }
-            final String _tmpDefinition;
-            if (_cursor.isNull(_cursorIndexOfDefinition)) {
-              _tmpDefinition = null;
-            } else {
-              _tmpDefinition = _cursor.getString(_cursorIndexOfDefinition);
-            }
-            _result = new DownloadedDictionaryPicture(_tmpId,_tmpWord,_tmpImageUrl,_tmpDefinition);
+            _result = new DownloadedDictionaryPicture(_tmpId,_tmpUrl);
           } else {
             _result = null;
           }

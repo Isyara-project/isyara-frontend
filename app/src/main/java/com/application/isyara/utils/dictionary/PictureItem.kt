@@ -1,19 +1,14 @@
-@file:OptIn(FlowPreview::class)
-
 package com.application.isyara.utils.dictionary
 
+import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Download
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,9 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.application.isyara.navigation.NavRoute
 import com.application.isyara.viewmodel.dictionary.DictionaryPictureViewModel
-import com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel
-import kotlinx.coroutines.FlowPreview
 
 @Composable
 fun PictureItem(
@@ -36,16 +30,17 @@ fun PictureItem(
     viewModel: DictionaryPictureViewModel,
     isDownloading: Boolean,
     onDownloadClick: (String) -> Unit,
-    onDeleteClick: (String) -> Unit,
-    imageName: String
+    onDeleteClick: (String) -> Unit
 ) {
-    val isDownloaded = isDownloading
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .padding(horizontal = 8.dp, vertical = 4.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .clickable {
+                val encodedUrl = Uri.encode(image.url)
+                navController.navigate("${NavRoute.PictureDetail.route}/$encodedUrl")
+            },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
@@ -56,87 +51,73 @@ fun PictureItem(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
+            // Gambar Thumbnail
+            Image(
+                painter = rememberImagePainter(data = image.url),
+                contentDescription = image.name,
                 modifier = Modifier
                     .size(100.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.LightGray),
-                contentAlignment = Alignment.Center
-            ) {
-                // Menampilkan gambar menggunakan URL
-                Image(
-                    painter = rememberImagePainter(image.url),
-                    contentDescription = "Image for ${imageName}",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop
-                )
-            }
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop
+            )
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Informasi gambar
+            // Informasi Gambar
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {
-                // Menampilkan nama gambar yang diekstrak
                 Text(
-                    text = imageName.capitalizeWords(),
+                    text = image.name.capitalizeWords(),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.Black
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Isyarat untuk ${imageName.capitalizeWords()}",
+                    text = "Deskripsi untuk ${image.name.capitalizeWords()}",
                     fontSize = 14.sp,
                     color = Color.DarkGray
                 )
             }
 
-            // Tombol untuk Download atau Delete
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween
+            // Tombol Download/Hapus
+            IconButton(
+                onClick = {
+                    if (!image.isDownloaded) {
+                        onDownloadClick(image.url)
+                    } else {
+                        onDeleteClick(image.url)
+                    }
+                },
+                modifier = Modifier.size(28.dp)
             ) {
-                IconButton(
-                    onClick = {
-                        if (!isDownloaded && !isDownloading) {
-                            onDownloadClick(image.url)
-                        } else if (isDownloaded) {
-                            onDeleteClick(image.url)
-                        }
-                    },
-                    modifier = Modifier.size(28.dp)
-                ) {
-                    when {
-                        isDownloading -> {
-                            ShimmerPlaceholderButton()
-                        }
+                when {
+                    isDownloading -> {
+                        CircularProgressIndicator(
+                            color = Color(0xFF008E9B),
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
 
-                        isDownloaded -> {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = "Downloaded",
-                                tint = Color.Green,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
+                    image.isDownloaded -> {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = "Hapus",
+                            tint = Color.Green,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
 
-                        else -> {
-                            // Menampilkan icon download jika belum diunduh
-                            Icon(
-                                imageVector = Icons.Default.Download,
-                                contentDescription = "Download Image",
-                                tint = Color.Gray,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
+                    else -> {
+                        Icon(
+                            imageVector = Icons.Default.Download,
+                            contentDescription = "Download",
+                            tint = Color.Gray,
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                 }
             }

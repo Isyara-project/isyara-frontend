@@ -3,19 +3,10 @@ package com.application.isyara.ui.main.dictionary
 import android.net.Uri
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -35,7 +26,7 @@ import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
-import com.application.isyara.utils.dictionary.NetworkUtils
+import com.application.isyara.utils.NetworkUtils
 import com.application.isyara.utils.dictionary.capitalizeWords
 import com.application.isyara.utils.main.AppHeaderMain
 import com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel
@@ -155,7 +146,7 @@ fun VideoPlayerScreen(
                         colors = listOf(ComposeColor(0xFF008E9B), ComposeColor(0xFF00B4D8))
                     ),
                     onBackClick = { navController.popBackStack() },
-                    isTopLevelPage = false
+                    isTopLevelPage = false // Sesuaikan dengan implementasi AppHeaderMain
                 )
 
                 // Video Player

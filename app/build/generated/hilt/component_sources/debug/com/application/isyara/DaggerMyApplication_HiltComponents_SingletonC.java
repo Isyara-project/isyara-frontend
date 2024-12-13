@@ -11,6 +11,7 @@ import com.application.isyara.data.di.DatabaseModule_ProvideDictionaryPictureRep
 import com.application.isyara.data.di.DatabaseModule_ProvideDictionaryRepositoryFactory;
 import com.application.isyara.data.di.DatabaseModule_ProvideDownloadDictionaryPictureDaoFactory;
 import com.application.isyara.data.di.DatabaseModule_ProvideDownloadedDictionaryDaoFactory;
+import com.application.isyara.data.di.DatabaseModule_ProvideNetworkHelperFactory;
 import com.application.isyara.data.di.DatabaseModule_ProvideTranslatedTextDaoFactory;
 import com.application.isyara.data.di.DatabaseModule_ProvideTranslatedTextRepositoryFactory;
 import com.application.isyara.data.di.NetworkModule_ProvideApiServiceDictionaryFactory;
@@ -40,6 +41,7 @@ import com.application.isyara.data.repository.PasswordRepository;
 import com.application.isyara.data.repository.ProfileRepository;
 import com.application.isyara.data.repository.TranslatedTextRepository;
 import com.application.isyara.ui.MainActivity;
+import com.application.isyara.utils.dictionary.NetworkHelper;
 import com.application.isyara.viewmodel.auth.AuthViewModel;
 import com.application.isyara.viewmodel.auth.AuthViewModel_HiltModules;
 import com.application.isyara.viewmodel.auth.ForgotPasswordViewModel;
@@ -444,34 +446,25 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryPictureViewModel";
-
-      static String com_application_isyara_viewmodel_auth_ResetPasswordViewModel = "com.application.isyara.viewmodel.auth.ResetPasswordViewModel";
-
-      static String com_application_isyara_viewmodel_settings_FeedbackViewModel = "com.application.isyara.viewmodel.settings.FeedbackViewModel";
-
       static String com_application_isyara_viewmodel_auth_AuthViewModel = "com.application.isyara.viewmodel.auth.AuthViewModel";
 
       static String com_application_isyara_viewmodel_auth_ForgotPasswordViewModel = "com.application.isyara.viewmodel.auth.ForgotPasswordViewModel";
 
+      static String com_application_isyara_viewmodel_translate_TranslateViewModel = "com.application.isyara.viewmodel.translate.TranslateViewModel";
+
       static String com_application_isyara_viewmodel_history_HistoryViewModel = "com.application.isyara.viewmodel.history.HistoryViewModel";
 
-      static String com_application_isyara_viewmodel_translate_TranslateViewModel = "com.application.isyara.viewmodel.translate.TranslateViewModel";
+      static String com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryPictureViewModel";
 
       static String com_application_isyara_viewmodel_settings_ChangePasswordViewModel = "com.application.isyara.viewmodel.settings.ChangePasswordViewModel";
 
-      static String com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel";
+      static String com_application_isyara_viewmodel_auth_ResetPasswordViewModel = "com.application.isyara.viewmodel.auth.ResetPasswordViewModel";
 
       static String com_application_isyara_viewmodel_main_ProfileViewModel = "com.application.isyara.viewmodel.main.ProfileViewModel";
 
-      @KeepFieldType
-      DictionaryPictureViewModel com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel2;
+      static String com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel";
 
-      @KeepFieldType
-      ResetPasswordViewModel com_application_isyara_viewmodel_auth_ResetPasswordViewModel2;
-
-      @KeepFieldType
-      FeedbackViewModel com_application_isyara_viewmodel_settings_FeedbackViewModel2;
+      static String com_application_isyara_viewmodel_settings_FeedbackViewModel = "com.application.isyara.viewmodel.settings.FeedbackViewModel";
 
       @KeepFieldType
       AuthViewModel com_application_isyara_viewmodel_auth_AuthViewModel2;
@@ -480,19 +473,28 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
       ForgotPasswordViewModel com_application_isyara_viewmodel_auth_ForgotPasswordViewModel2;
 
       @KeepFieldType
+      TranslateViewModel com_application_isyara_viewmodel_translate_TranslateViewModel2;
+
+      @KeepFieldType
       HistoryViewModel com_application_isyara_viewmodel_history_HistoryViewModel2;
 
       @KeepFieldType
-      TranslateViewModel com_application_isyara_viewmodel_translate_TranslateViewModel2;
+      DictionaryPictureViewModel com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel2;
 
       @KeepFieldType
       ChangePasswordViewModel com_application_isyara_viewmodel_settings_ChangePasswordViewModel2;
 
       @KeepFieldType
-      DictionaryVideoViewModel com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel2;
+      ResetPasswordViewModel com_application_isyara_viewmodel_auth_ResetPasswordViewModel2;
 
       @KeepFieldType
       ProfileViewModel com_application_isyara_viewmodel_main_ProfileViewModel2;
+
+      @KeepFieldType
+      DictionaryVideoViewModel com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel2;
+
+      @KeepFieldType
+      FeedbackViewModel com_application_isyara_viewmodel_settings_FeedbackViewModel2;
     }
   }
 
@@ -564,55 +566,55 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_application_isyara_viewmodel_settings_ChangePasswordViewModel = "com.application.isyara.viewmodel.settings.ChangePasswordViewModel";
-
-      static String com_application_isyara_viewmodel_translate_TranslateViewModel = "com.application.isyara.viewmodel.translate.TranslateViewModel";
-
-      static String com_application_isyara_viewmodel_auth_AuthViewModel = "com.application.isyara.viewmodel.auth.AuthViewModel";
-
-      static String com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryPictureViewModel";
+      static String com_application_isyara_viewmodel_main_ProfileViewModel = "com.application.isyara.viewmodel.main.ProfileViewModel";
 
       static String com_application_isyara_viewmodel_auth_ForgotPasswordViewModel = "com.application.isyara.viewmodel.auth.ForgotPasswordViewModel";
 
+      static String com_application_isyara_viewmodel_history_HistoryViewModel = "com.application.isyara.viewmodel.history.HistoryViewModel";
+
+      static String com_application_isyara_viewmodel_auth_AuthViewModel = "com.application.isyara.viewmodel.auth.AuthViewModel";
+
       static String com_application_isyara_viewmodel_auth_ResetPasswordViewModel = "com.application.isyara.viewmodel.auth.ResetPasswordViewModel";
 
-      static String com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel";
-
-      static String com_application_isyara_viewmodel_main_ProfileViewModel = "com.application.isyara.viewmodel.main.ProfileViewModel";
-
-      static String com_application_isyara_viewmodel_history_HistoryViewModel = "com.application.isyara.viewmodel.history.HistoryViewModel";
+      static String com_application_isyara_viewmodel_settings_ChangePasswordViewModel = "com.application.isyara.viewmodel.settings.ChangePasswordViewModel";
 
       static String com_application_isyara_viewmodel_settings_FeedbackViewModel = "com.application.isyara.viewmodel.settings.FeedbackViewModel";
 
-      @KeepFieldType
-      ChangePasswordViewModel com_application_isyara_viewmodel_settings_ChangePasswordViewModel2;
+      static String com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel";
 
-      @KeepFieldType
-      TranslateViewModel com_application_isyara_viewmodel_translate_TranslateViewModel2;
+      static String com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel = "com.application.isyara.viewmodel.dictionary.DictionaryPictureViewModel";
 
-      @KeepFieldType
-      AuthViewModel com_application_isyara_viewmodel_auth_AuthViewModel2;
-
-      @KeepFieldType
-      DictionaryPictureViewModel com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel2;
-
-      @KeepFieldType
-      ForgotPasswordViewModel com_application_isyara_viewmodel_auth_ForgotPasswordViewModel2;
-
-      @KeepFieldType
-      ResetPasswordViewModel com_application_isyara_viewmodel_auth_ResetPasswordViewModel2;
-
-      @KeepFieldType
-      DictionaryVideoViewModel com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel2;
+      static String com_application_isyara_viewmodel_translate_TranslateViewModel = "com.application.isyara.viewmodel.translate.TranslateViewModel";
 
       @KeepFieldType
       ProfileViewModel com_application_isyara_viewmodel_main_ProfileViewModel2;
 
       @KeepFieldType
+      ForgotPasswordViewModel com_application_isyara_viewmodel_auth_ForgotPasswordViewModel2;
+
+      @KeepFieldType
       HistoryViewModel com_application_isyara_viewmodel_history_HistoryViewModel2;
 
       @KeepFieldType
+      AuthViewModel com_application_isyara_viewmodel_auth_AuthViewModel2;
+
+      @KeepFieldType
+      ResetPasswordViewModel com_application_isyara_viewmodel_auth_ResetPasswordViewModel2;
+
+      @KeepFieldType
+      ChangePasswordViewModel com_application_isyara_viewmodel_settings_ChangePasswordViewModel2;
+
+      @KeepFieldType
       FeedbackViewModel com_application_isyara_viewmodel_settings_FeedbackViewModel2;
+
+      @KeepFieldType
+      DictionaryVideoViewModel com_application_isyara_viewmodel_dictionary_DictionaryVideoViewModel2;
+
+      @KeepFieldType
+      DictionaryPictureViewModel com_application_isyara_viewmodel_dictionary_DictionaryPictureViewModel2;
+
+      @KeepFieldType
+      TranslateViewModel com_application_isyara_viewmodel_translate_TranslateViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -770,6 +772,8 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
 
     private Provider<DownloadDictionaryPictureDao> provideDownloadDictionaryPictureDaoProvider;
 
+    private Provider<NetworkHelper> provideNetworkHelperProvider;
+
     private Provider<DictionaryPictureRepository> provideDictionaryPictureRepositoryProvider;
 
     private Provider<DownloadedDictionaryDao> provideDownloadedDictionaryDaoProvider;
@@ -806,14 +810,15 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
       this.provideApiServiceDictionaryProvider = DoubleCheck.provider(new SwitchingProvider<ApiService>(singletonCImpl, 8));
       this.provideDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<AppDatabase>(singletonCImpl, 12));
       this.provideDownloadDictionaryPictureDaoProvider = DoubleCheck.provider(new SwitchingProvider<DownloadDictionaryPictureDao>(singletonCImpl, 11));
+      this.provideNetworkHelperProvider = DoubleCheck.provider(new SwitchingProvider<NetworkHelper>(singletonCImpl, 13));
       this.provideDictionaryPictureRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<DictionaryPictureRepository>(singletonCImpl, 7));
-      this.provideDownloadedDictionaryDaoProvider = DoubleCheck.provider(new SwitchingProvider<DownloadedDictionaryDao>(singletonCImpl, 14));
-      this.provideDictionaryRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<DictionaryRepository>(singletonCImpl, 13));
-      this.provideFeedbackRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<FeedbackRepository>(singletonCImpl, 15));
-      this.providePasswordRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<PasswordRepository>(singletonCImpl, 16));
-      this.provideTranslatedTextDaoProvider = DoubleCheck.provider(new SwitchingProvider<TranslatedTextDao>(singletonCImpl, 18));
-      this.provideTranslatedTextRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<TranslatedTextRepository>(singletonCImpl, 17));
-      this.provideGsonProvider = DoubleCheck.provider(new SwitchingProvider<Gson>(singletonCImpl, 19));
+      this.provideDownloadedDictionaryDaoProvider = DoubleCheck.provider(new SwitchingProvider<DownloadedDictionaryDao>(singletonCImpl, 15));
+      this.provideDictionaryRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<DictionaryRepository>(singletonCImpl, 14));
+      this.provideFeedbackRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<FeedbackRepository>(singletonCImpl, 16));
+      this.providePasswordRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<PasswordRepository>(singletonCImpl, 17));
+      this.provideTranslatedTextDaoProvider = DoubleCheck.provider(new SwitchingProvider<TranslatedTextDao>(singletonCImpl, 19));
+      this.provideTranslatedTextRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<TranslatedTextRepository>(singletonCImpl, 18));
+      this.provideGsonProvider = DoubleCheck.provider(new SwitchingProvider<Gson>(singletonCImpl, 20));
     }
 
     @Override
@@ -871,7 +876,7 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
           return (T) RepositoryModule_ProvideChangePasswordRepositoryFactory.provideChangePasswordRepository(singletonCImpl.provideApiServiceMainAPIProvider.get());
 
           case 7: // com.application.isyara.data.repository.DictionaryPictureRepository 
-          return (T) DatabaseModule_ProvideDictionaryPictureRepositoryFactory.provideDictionaryPictureRepository(singletonCImpl.provideApiServiceDictionaryProvider.get(), singletonCImpl.provideDownloadDictionaryPictureDaoProvider.get());
+          return (T) DatabaseModule_ProvideDictionaryPictureRepositoryFactory.provideDictionaryPictureRepository(singletonCImpl.provideApiServiceDictionaryProvider.get(), singletonCImpl.provideDownloadDictionaryPictureDaoProvider.get(), singletonCImpl.provideNetworkHelperProvider.get());
 
           case 8: // @com.application.isyara.data.di.RetrofitDictionary com.application.isyara.data.remote.ApiService 
           return (T) NetworkModule_ProvideApiServiceDictionaryFactory.provideApiServiceDictionary(singletonCImpl.provideRetrofitDictionaryProvider.get());
@@ -888,25 +893,28 @@ public final class DaggerMyApplication_HiltComponents_SingletonC {
           case 12: // com.application.isyara.data.local.AppDatabase 
           return (T) DatabaseModule_ProvideDatabaseFactory.provideDatabase(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 13: // com.application.isyara.data.repository.DictionaryRepository 
+          case 13: // com.application.isyara.utils.dictionary.NetworkHelper 
+          return (T) DatabaseModule_ProvideNetworkHelperFactory.provideNetworkHelper(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 14: // com.application.isyara.data.repository.DictionaryRepository 
           return (T) DatabaseModule_ProvideDictionaryRepositoryFactory.provideDictionaryRepository(singletonCImpl.provideApiServiceDictionaryProvider.get(), ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.provideDownloadedDictionaryDaoProvider.get());
 
-          case 14: // com.application.isyara.data.local.DownloadedDictionaryDao 
+          case 15: // com.application.isyara.data.local.DownloadedDictionaryDao 
           return (T) DatabaseModule_ProvideDownloadedDictionaryDaoFactory.provideDownloadedDictionaryDao(singletonCImpl.provideDatabaseProvider.get());
 
-          case 15: // com.application.isyara.data.repository.FeedbackRepository 
+          case 16: // com.application.isyara.data.repository.FeedbackRepository 
           return (T) RepositoryModule_ProvideFeedbackRepositoryFactory.provideFeedbackRepository(singletonCImpl.provideApiServiceMainAPIProvider.get());
 
-          case 16: // com.application.isyara.data.repository.PasswordRepository 
+          case 17: // com.application.isyara.data.repository.PasswordRepository 
           return (T) RepositoryModule_ProvidePasswordRepositoryFactory.providePasswordRepository(singletonCImpl.provideApiServiceMainAPIProvider.get());
 
-          case 17: // com.application.isyara.data.repository.TranslatedTextRepository 
+          case 18: // com.application.isyara.data.repository.TranslatedTextRepository 
           return (T) DatabaseModule_ProvideTranslatedTextRepositoryFactory.provideTranslatedTextRepository(singletonCImpl.provideTranslatedTextDaoProvider.get(), ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 18: // com.application.isyara.data.local.TranslatedTextDao 
+          case 19: // com.application.isyara.data.local.TranslatedTextDao 
           return (T) DatabaseModule_ProvideTranslatedTextDaoFactory.provideTranslatedTextDao(singletonCImpl.provideDatabaseProvider.get());
 
-          case 19: // com.google.gson.Gson 
+          case 20: // com.google.gson.Gson 
           return (T) RepositoryModule_ProvideGsonFactory.provideGson();
 
           default: throw new AssertionError(id);

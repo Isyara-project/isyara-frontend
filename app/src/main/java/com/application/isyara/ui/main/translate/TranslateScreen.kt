@@ -31,6 +31,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -141,7 +142,10 @@ fun TranslateScreen(
                 }
             },
             backgroundColor = Brush.horizontalGradient(
-                colors = listOf(Color(0xFF008E9B), Color(0xFF00B4D8))
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary
+                )
             ),
             showDashboardElements = false,
             isTopLevelPage = true

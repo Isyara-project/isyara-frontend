@@ -24,31 +24,29 @@ class ProfileRepository @Inject constructor(
     private val gson: Gson
 ) {
 
+    /**
+     * Mendapatkan profil pengguna.
+     *
+     * @return [Flow] yang mengemisi [Result] dengan [ProfileData].
+     */
     fun getProfile(): Flow<Result<ProfileData>> = flow {
+        emit(Result.Loading)
         try {
             val token = sessionManager.getToken()
             if (token.isNullOrEmpty()) {
                 emit(Result.Error("Token tidak ditemukan."))
                 return@flow
             }
-            emit(Result.Loading)
+
             val profileResponse = apiService.getProfile("Bearer $token")
-            if (profileResponse.data != null) {
-                emit(Result.Success(profileResponse.data))
-            } else {
+            profileResponse.data?.let {
+                emit(Result.Success(it))
+            } ?: run {
                 emit(Result.Error("Gagal mengambil profil pengguna."))
             }
         } catch (e: HttpException) {
             Timber.e(e, "HTTP Exception: ${e.message()}")
-            val errorBody = e.response()?.errorBody()?.string()
-            val errorResponse = errorBody?.let {
-                try {
-                    gson.fromJson(it, ErrorResponse::class.java)
-                } catch (ex: Exception) {
-                    null
-                }
-            }
-            val errorMessage = errorResponse?.message ?: "Terjadi kesalahan HTTP: ${e.code()}"
+            val errorMessage = parseError(e)
             emit(Result.Error(errorMessage))
         } catch (e: IOException) {
             Timber.e(e, "IO Exception: ${e.message}")
@@ -59,36 +57,40 @@ class ProfileRepository @Inject constructor(
         }
     }
 
+    /**
+     * Memperbarui profil pengguna.
+     *
+     * @param file File gambar profil (opsional).
+     * @param fullname Nama lengkap pengguna.
+     * @param bio Biografi pengguna.
+     * @return [Flow] yang mengemisi [Result] dengan [UpdateProfileResponse].
+     */
     fun updateProfile(
         file: MultipartBody.Part?,
         fullname: String,
         bio: String
     ): Flow<Result<UpdateProfileResponse>> = flow {
+        emit(Result.Loading)
         try {
             val token = sessionManager.getToken()
             if (token.isNullOrEmpty()) {
                 emit(Result.Error("Token tidak ditemukan."))
                 return@flow
             }
-            emit(Result.Loading)
+
+            val fullnameRequest = fullname.toRequestBody("text/plain".toMediaTypeOrNull())
+            val bioRequest = bio.toRequestBody("text/plain".toMediaTypeOrNull())
+
             val updateResponse = apiService.updateProfile(
                 "Bearer $token",
                 file,
-                fullname.toRequestBody("text/plain".toMediaTypeOrNull()),
-                bio.toRequestBody("text/plain".toMediaTypeOrNull())
+                fullnameRequest,
+                bioRequest
             )
             emit(Result.Success(updateResponse))
         } catch (e: HttpException) {
             Timber.e(e, "HTTP Exception: ${e.message()}")
-            val errorBody = e.response()?.errorBody()?.string()
-            val errorResponse = errorBody?.let {
-                try {
-                    gson.fromJson(it, ErrorResponse::class.java)
-                } catch (ex: Exception) {
-                    null
-                }
-            }
-            val errorMessage = errorResponse?.message ?: "Terjadi kesalahan HTTP: ${e.code()}"
+            val errorMessage = parseError(e)
             emit(Result.Error(errorMessage))
         } catch (e: IOException) {
             Timber.e(e, "IO Exception: ${e.message}")
@@ -96,6 +98,24 @@ class ProfileRepository @Inject constructor(
         } catch (e: Exception) {
             Timber.e(e, "Unknown Exception: ${e.localizedMessage}")
             emit(Result.Error("Terjadi kesalahan yang tidak terduga: ${e.localizedMessage}"))
+        }
+    }
+
+    /**
+     * Menguraikan pesan kesalahan dari [HttpException].
+     *
+     * @param exception [HttpException] yang dilemparkan.
+     * @return Pesan kesalahan yang diuraikan.
+     */
+    private fun parseError(exception: HttpException): String {
+        return try {
+            val errorBody = exception.response()?.errorBody()?.string()
+            val errorResponse = errorBody?.let {
+                gson.fromJson(it, ErrorResponse::class.java)
+            }
+            errorResponse?.message ?: "Terjadi kesalahan HTTP: ${exception.code()}"
+        } catch (e: Exception) {
+            "Terjadi kesalahan saat memproses kesalahan: ${e.localizedMessage}"
         }
     }
 }

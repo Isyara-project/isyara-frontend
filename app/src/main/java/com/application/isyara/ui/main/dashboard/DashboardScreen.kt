@@ -2,6 +2,7 @@ package com.application.isyara.ui.main.dashboard
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,8 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material.icons.filled.Translate
@@ -55,17 +54,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.application.isyara.R
 import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.state.Result
 import com.application.isyara.utils.main.AppHeaderMain
@@ -86,23 +91,33 @@ fun DashboardScreen(
     val scrollState = rememberScrollState()
     val profileState by profileViewModel.profileState.collectAsState()
     val scrollThreshold = 50
+
     val isScrolled by remember {
         derivedStateOf { scrollState.value > scrollThreshold }
     }
     val headerBackgroundColor by animateColorAsState(
         targetValue = if (isScrolled) Color.White else Color.Transparent,
-        animationSpec = tween(durationMillis = 1000), label = "colorAnimation"
+        animationSpec = tween(durationMillis = 500),
+        label = "colorAnimation"
     )
     var isProfileCardClicked by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         profileViewModel.fetchProfile()
     }
+
     val fullName = when (profileState) {
         is Result.Idle -> null
         is Result.Loading -> null
         is Result.Success -> (profileState as Result.Success).data.fullname
         is Result.Error -> null
     }
+
+    val logoColor by animateColorAsState(
+        targetValue = if (isScrolled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary,
+        animationSpec = tween(durationMillis = 500), label = ""
+    )
+
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -147,19 +162,9 @@ fun DashboardScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Quick Access Card
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-            ) {
-                QuickAccessCard(
-                    screenWidth = screenWidth,
-                    navController = navController
-                )
-            }
+            QuickAccessCard(
+                navController = navController
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -176,7 +181,10 @@ fun DashboardScreen(
                 .offset { IntOffset(x = 0, y = -scrollState.value) }
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color(0xFF008E9B), Color(0xFF00B4D8))
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.secondary
+                        )
                     )
                 )
                 .zIndex(-1f)
@@ -197,7 +205,8 @@ fun DashboardScreen(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .fillMaxWidth()
-                .zIndex(2f)
+                .zIndex(2f),
+            logoColor = logoColor
         )
 
         if (isProfileCardClicked) {
@@ -241,7 +250,7 @@ fun ProfileCardSmall(
                 modifier = Modifier
                     .size(72.dp)
                     .background(Color(0xFFE1F5FE), CircleShape)
-                    .border(2.dp, Color(0xFF008E9B), CircleShape),
+                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 IconButton(
@@ -270,7 +279,7 @@ fun ProfileCardSmall(
                     .padding(top = 16.dp)
                     .height(36.dp)
                     .fillMaxWidth(0.6f),
-                colors = ButtonDefaults.buttonColors(Color(0xFF008E9B))
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
             ) {
                 Text(
                     text = "Logout",
@@ -326,9 +335,15 @@ fun LogoutConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
 @Composable
 fun HotNewsCarousel() {
     val newsItems = listOf(
-        "Hot News: Pelatihan Bahasa Isyarat Gratis",
-        "Hot News: Fitur Baru di Isyara",
-        "Hot News: Komunitas Tuna Rungu Berkembang"
+        "",
+        "",
+        ""
+    )
+
+    val imageResources = listOf(
+        R.drawable.hot_news_1,
+        R.drawable.hot_news_2,
+        R.drawable.hot_news_3
     )
 
     var currentIndex by remember { mutableIntStateOf(0) }
@@ -351,16 +366,32 @@ fun HotNewsCarousel() {
                 .fillMaxWidth()
                 .height(200.dp)
                 .offset { IntOffset(offsetX.roundToInt(), 0) }
-                .background(Color(0xFFFFCCCB), RoundedCornerShape(12.dp)),
+                .clip(RoundedCornerShape(12.dp)),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = newsItems[currentIndex],
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            Image(
+                painter = painterResource(id = imageResources[currentIndex]),
+                contentDescription = "Hot News Image",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+            ) {
+                Text(
+                    text = newsItems[currentIndex],
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(16.dp)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -386,14 +417,18 @@ fun UsageStatistics() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
-            .padding(16.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFF1F1F1))
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Row(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxWidth()
+                .heightIn(min = 120.dp)
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -413,66 +448,124 @@ fun StatisticItem(title: String, value: String) {
             text = value,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.titleLarge
         )
         Text(
             text = title,
             fontSize = 14.sp,
-            color = Color.Gray
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
 
+
 @Composable
-fun QuickAccessCard(screenWidth: Int, navController: NavController) {
-    val columns = if (screenWidth > 400) 4 else 3
+fun QuickAccessCard(navController: NavController) {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
+    val columns = when {
+        screenWidth > 600 -> 5
+        screenWidth > 400 -> 4
+        else -> 3
+    }
 
     val quickAccessItems = listOf(
-        QuickAccessItem(Icons.Default.Translate, "Translate"),
-        QuickAccessItem(Icons.Default.Book, "Dictionary"),
-        QuickAccessItem(Icons.Default.TipsAndUpdates, "Tips Belajar"),
-        QuickAccessItem(Icons.Default.Language, "SIBI"),
-        QuickAccessItem(Icons.Default.MoreHoriz, "Lainnya")
+        QuickAccessItem(
+            imageVector = Icons.Default.Translate,
+            label = "Translate",
+            backgroundColor = Color(0xFF1E88E5),
+            contentDescription = "Terjemahkan teks"
+        ),
+        QuickAccessItem(
+            imageVector = Icons.Default.TipsAndUpdates,
+            label = "Tips Belajar",
+            backgroundColor = Color(0xFFFB8C00),
+            contentDescription = "Tips dan Pembaruan"
+        ),
+        QuickAccessItem(
+            painter = painterResource(id = R.drawable.ic_sibi_huruf),
+            label = "Sibi Gambar",
+            backgroundColor = Color(0xFF587FC0),
+            contentDescription = "Gambar SIBI"
+        ),
+        QuickAccessItem(
+            painter = painterResource(id = R.drawable.ic_sibi),
+            label = "Sibi Video",
+            backgroundColor = Color(0xFF5387E1),
+            contentDescription = "Video SIBI"
+        ),
+        QuickAccessItem(
+            imageVector = Icons.Default.MoreHoriz,
+            label = "Lainnya",
+            backgroundColor = Color(0xFF757575),
+            contentDescription = "Opsi Lainnya"
+        )
     )
 
-    Box(
+    var showMoreDialog by remember { mutableStateOf(false) }
+
+    if (showMoreDialog) {
+        AlertDialog(
+            onDismissRequest = { showMoreDialog = false },
+            title = { Text("Lainnya") },
+            text = {
+                Column {
+                    TextButton(onClick = {
+                        showMoreDialog = false
+                        navController.navigate(NavRoute.Settings.route)
+                    }) {
+                        Text("Settings")
+                    }
+                    TextButton(onClick = {
+                        showMoreDialog = false
+                    }) {
+                        Text("Help & Support")
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showMoreDialog = false }) {
+                    Text("Tutup")
+                }
+            }
+        )
+    }
+
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFF1F1F1))
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .heightIn(min = 120.dp, max = 200.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .heightIn(min = 200.dp, max = 350.dp)
+                .padding(16.dp)
         ) {
             items(quickAccessItems) { item ->
                 QuickAccessIcon(
-                    icon = item.icon,
+                    imageVector = item.imageVector,
+                    painter = item.painter,
                     label = item.label,
+                    backgroundColor = item.backgroundColor,
+                    contentDescription = item.contentDescription,
                     onClick = {
                         when (item.label) {
-                            "Translate" -> {
-                                navController.navigate(NavRoute.Translate.route)
-                            }
-
-                            "Dictionary" -> {
-                                navController.navigate(NavRoute.Dictionary.route)
-                            }
-
-                            "Tips Belajar" -> {
-                                navController.navigate(NavRoute.TipsBelajar.route)
-                            }
-
-                            "SIBI" -> {
-                                navController.navigate(NavRoute.SibiVideo.route)
-                            }
-
-                            "Lainnya" -> {}
+                            "Translate" -> navController.navigate(NavRoute.Translate.route)
+                            "Tips Belajar" -> navController.navigate(NavRoute.TipsBelajar.route)
+                            "Sibi Gambar" -> navController.navigate(NavRoute.SibiPicture.route)
+                            "Sibi Video" -> navController.navigate(NavRoute.SibiVideo.route)
+                            "Lainnya" -> showMoreDialog = true
                         }
                     }
                 )
@@ -481,31 +574,65 @@ fun QuickAccessCard(screenWidth: Int, navController: NavController) {
     }
 }
 
-
 @Composable
-fun QuickAccessIcon(icon: ImageVector, label: String, onClick: () -> Unit) {
+fun QuickAccessIcon(
+    imageVector: ImageVector?,
+    painter: Painter?,
+    label: String,
+    backgroundColor: Color,
+    contentDescription: String,
+    onClick: () -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier.width(80.dp)
     ) {
         Box(
             modifier = Modifier
                 .size(60.dp)
-                .background(Color(0xFFFF5733), CircleShape)
-                .clickable { onClick() },
+                .background(backgroundColor, CircleShape)
+                .clickable(onClick = onClick)
+                .shadow(4.dp, CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = label,
-                tint = Color.White
-            )
+            when {
+                imageVector != null -> {
+                    Icon(
+                        imageVector = imageVector,
+                        contentDescription = contentDescription,
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+
+                painter != null -> {
+                    Image(
+                        painter = painter,
+                        contentDescription = contentDescription,
+                        modifier = Modifier.size(30.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+
+                else -> {
+                    Icon(
+                        imageVector = Icons.Default.MoreHoriz,
+                        contentDescription = "Placeholder",
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            }
         }
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = label,
             fontSize = 12.sp,
-            color = Color.Black
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.width(80.dp)
         )
     }
 }

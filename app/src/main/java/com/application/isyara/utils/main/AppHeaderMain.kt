@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,7 +54,8 @@ fun AppHeaderMain(
     trailingContent: @Composable (() -> Unit)? = null,
     paddingStart: Dp = 16.dp,
     paddingEnd: Dp = 16.dp,
-    isTopLevelPage: Boolean = false
+    isTopLevelPage: Boolean = false,
+    logoColor: Color = MaterialTheme.colorScheme.onPrimary
 ) {
     val alphaAnim by animateFloatAsState(
         targetValue = 1f,
@@ -116,13 +118,14 @@ fun AppHeaderMain(
                     Image(
                         painter = painterResource(R.drawable.isyara_putih),
                         contentDescription = "Logo Isyara",
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(32.dp),
+                        colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(logoColor)
                     )
                     Text(
                         text = "Isyara",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = logoColor
                     )
                 }
             }
@@ -136,21 +139,21 @@ fun AppHeaderMain(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search",
-                        tint = Color.Black
+                        tint = logoColor
                     )
                 }
                 IconButton(onClick = { onNotificationClick?.invoke() }) {
                     Icon(
                         imageVector = Icons.Default.Notifications,
                         contentDescription = "Notifications",
-                        tint = Color.Black
+                        tint = logoColor
                     )
                 }
                 IconButton(onClick = { onProfileClick?.invoke() }) {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
                         contentDescription = "Profile",
-                        tint = Color.Black
+                        tint = logoColor
                     )
                 }
             }

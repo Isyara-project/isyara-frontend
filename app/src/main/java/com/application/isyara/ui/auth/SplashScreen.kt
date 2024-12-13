@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,7 +46,7 @@ fun SplashScreen(navController: NavHostController, viewModel: AuthViewModel = hi
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xFF0077EE)
+        color = MaterialTheme.colorScheme.primary
     ) {
         Box(
             contentAlignment = Alignment.Center,

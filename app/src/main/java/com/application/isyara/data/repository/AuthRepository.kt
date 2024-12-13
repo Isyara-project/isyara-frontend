@@ -3,6 +3,7 @@ package com.application.isyara.data.repository
 import com.application.isyara.data.di.RetrofitMain
 import com.application.isyara.data.model.*
 import com.application.isyara.data.remote.ApiService
+import com.application.isyara.utils.auth.ApiType
 import com.application.isyara.utils.auth.ISessionManager
 import com.application.isyara.utils.auth.IUserPreferences
 import com.application.isyara.utils.state.Result
@@ -22,7 +23,10 @@ class AuthRepository @Inject constructor(
 ) {
     private val gson = Gson()
 
-    private fun <T> safeApiCall(apiCall: suspend () -> T): Flow<Result<T>> = flow {
+    private fun <T> safeApiCall(
+        apiCall: suspend () -> T,
+        apiType: ApiType = ApiType.DEFAULT
+    ): Flow<Result<T>> = flow {
         emit(Result.Loading)
         try {
             val response = apiCall()
@@ -56,8 +60,14 @@ class AuthRepository @Inject constructor(
                     }
                 }
 
-                401 -> "Token tidak valid atau sudah kadaluarsa."
-                else -> "Terjadi kesalahan, siilahkan coba lagi!"
+                401 -> {
+                    when (apiType) {
+                        ApiType.LOGIN -> "Periksa kembali email dan password."
+                        else -> "Token tidak valid atau sudah kadaluarsa."
+                    }
+                }
+
+                else -> "Terjadi kesalahan, silahkan coba lagi!"
             }
             emit(Result.Error(errorMessage))
         } catch (e: IOException) {
@@ -71,7 +81,10 @@ class AuthRepository @Inject constructor(
 
 
     fun registerUser(registerRequest: RegisterRequest): Flow<Result<RegisterResponse>> =
-        safeApiCall { apiService.registerUser(registerRequest) }
+        safeApiCall(
+            apiCall = { apiService.registerUser(registerRequest) },
+            apiType = ApiType.REGISTER
+        )
             .map { result ->
                 when (result) {
                     is Result.Success -> {
@@ -89,29 +102,38 @@ class AuthRepository @Inject constructor(
             }
 
     fun verifyOtp(token: String, otpRequest: OtpRequest): Flow<Result<OtpResponse>> =
-        safeApiCall {
-            Timber.d("Verifying OTP with token: $token and otp: ${otpRequest.otp}")
-            apiService.verifyOtp(token, otpRequest)
-        }
+        safeApiCall(
+            apiCall = {
+                Timber.d("Verifying OTP with token: $token and otp: ${otpRequest.otp}")
+                apiService.verifyOtp(token, otpRequest)
+            },
+            apiType = ApiType.VERIFY_OTP
+        )
 
     fun resendOtp(token: String): Flow<Result<ResendOtpResponse>> =
-        safeApiCall {
-            Timber.d("Resend OTP called with token: $token")
-            apiService.resendOtp(token)
-        }
+        safeApiCall(
+            apiCall = {
+                Timber.d("Resend OTP called with token: $token")
+                apiService.resendOtp(token)
+            },
+            apiType = ApiType.VERIFY_OTP
+        )
 
 
     fun loginUser(loginRequest: LoginRequest): Flow<Result<LoginResponse>> =
-        safeApiCall { apiService.loginUser(loginRequest) }
+        safeApiCall(
+            apiCall = { apiService.loginUser(loginRequest) },
+            apiType = ApiType.LOGIN
+        )
             .map { result ->
                 when (result) {
                     is Result.Success -> {
                         val token = result.data.access_token
                         if (token.isBlank()) {
-                            Timber.e("Token is null or empty in response")
+                            Timber.e("Token is null atau kosong dalam response")
                             Result.Error("Login gagal: Token tidak tersedia.")
                         } else {
-                            Timber.d("Token received: $token")
+                            Timber.d("Token diterima: $token")
                             sessionManager.saveToken(token)
                             Timber.d("Token disimpan berhasil, token saat ini: ${sessionManager.getToken()}")
                             Result.Success(result.data)
@@ -124,6 +146,10 @@ class AuthRepository @Inject constructor(
                 }
             }
 
+
     fun getProfile(token: String): Flow<Result<ProfileResponse>> =
-        safeApiCall { apiService.getProfile("Bearer $token") }
+        safeApiCall(
+            apiCall = { apiService.getProfile("Bearer $token") },
+            apiType = ApiType.DEFAULT
+        )
 }

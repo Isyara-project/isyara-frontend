@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +39,7 @@ import com.application.isyara.ui.main.dashboard.NotificationsScreen
 import com.application.isyara.ui.main.dashboard.SearchScreen
 import com.application.isyara.ui.main.dashboard.TipsScreen
 import com.application.isyara.ui.main.dictionary.DictionaryScreen
+import com.application.isyara.ui.main.dictionary.PictureDetailScreen
 import com.application.isyara.ui.main.dictionary.SibiVideoScreen
 import com.application.isyara.ui.main.dictionary.SibiPictureScreen
 import com.application.isyara.ui.main.dictionary.VideoPlayerScreen
@@ -140,9 +142,7 @@ fun AppMainNavGraph(navController: NavHostController) {
                 composable(NavRoute.SibiVideo.route) {
                     SibiVideoScreen(navController = navController)
                 }
-                composable(NavRoute.SibiPicture.route) {
-                    SibiPictureScreen(navController = navController)
-                }
+
                 composable(
                     route = NavRoute.VideoPlayer.route,
                     arguments = listOf(navArgument("videoUrl") { type = NavType.StringType })
@@ -153,6 +153,19 @@ fun AppMainNavGraph(navController: NavHostController) {
                         VideoPlayerScreen(navController = navController, videoUrl = it)
                     }
                 }
+
+                composable(NavRoute.SibiPicture.route) {
+                    SibiPictureScreen(navController = navController)
+                }
+
+                composable(
+                    route = "${NavRoute.PictureDetail.route}/{imageUrl}",
+                    arguments = listOf(navArgument("imageUrl") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val imageUrl = backStackEntry.arguments?.getString("imageUrl") ?: ""
+                    PictureDetailScreen(navController = navController, imageUrl = imageUrl)
+                }
+
 
                 composable(NavRoute.TranslateGuide.route) {
                     TranslateGuideScreen(
@@ -248,14 +261,14 @@ fun CustomBottomNavigationBar(navController: NavHostController) {
                         imageVector = item.icon,
                         contentDescription = item.label,
                         modifier = Modifier.scale(if (currentRoute == item.route) 1.2f else 1f),
-                        tint = if (currentRoute == item.route) Color.Blue else Color.Black
+                        tint = if (currentRoute == item.route) MaterialTheme.colorScheme.primary else Color.Black
                     )
                 },
                 label = {
                     Text(
                         text = item.label,
                         fontSize = 10.sp,
-                        color = if (currentRoute == item.route) Color.Blue else Color.Black
+                        color = if (currentRoute == item.route) MaterialTheme.colorScheme.primary else Color.Black
                     )
                 },
                 alwaysShowLabel = true

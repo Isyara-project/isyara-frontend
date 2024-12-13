@@ -4,22 +4,23 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DownloadDictionaryPictureDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDownloadedPicture(picture: DownloadedDictionaryPicture)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPictures(pictures: List<DownloadedDictionaryPicture>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(pictures: List<DownloadedDictionaryPicture>)
 
     @Query("SELECT * FROM downloaded_dictionary_pictures")
-    suspend fun getAllDownloadedPictures(): List<DownloadedDictionaryPicture>
+    fun getAllPictures(): Flow<List<DownloadedDictionaryPicture>>
 
-    @Query("SELECT * FROM downloaded_dictionary_pictures WHERE imageUrl = :url")
+    @Query("SELECT * FROM downloaded_dictionary_pictures WHERE url = :url LIMIT 1")
     suspend fun getDownloadedPictureByUrl(url: String): DownloadedDictionaryPicture?
 
-    @Query("DELETE FROM downloaded_dictionary_pictures WHERE imageUrl = :url")
+    @Query("DELETE FROM downloaded_dictionary_pictures WHERE url = :url")
     suspend fun deleteDownloadedPictureByUrl(url: String)
+
+    @Query("DELETE FROM downloaded_dictionary_pictures")
+    suspend fun deleteAllPictures()
 }
