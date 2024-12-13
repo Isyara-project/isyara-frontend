@@ -26,9 +26,8 @@ sealed class NavRoute(val route: String) {
 
     // Dictionary
     object Dictionary : NavRoute("dictionary")
-    object SibiPicture : NavRoute("sibi_picture/{url}"){
-        fun createRoute(url: String) = "sibi_picture/$url"
-    }
+    object SibiPicture : NavRoute("sibi_picture")
+    object PictureDetail : NavRoute("picture_detail/{imageUrl}")
     object SibiVideo : NavRoute("sibi_video")
     object VideoPlayer : NavRoute("videoPlayer/{videoUrl}") {
         fun createRoute(videoUrl: String) = "videoPlayer/${Uri.encode(videoUrl)}"

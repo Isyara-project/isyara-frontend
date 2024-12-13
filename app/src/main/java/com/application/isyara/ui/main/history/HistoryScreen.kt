@@ -26,6 +26,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -75,8 +76,8 @@ fun HistoryScreen(
             title = "Histori Aktivitas",
             backgroundColor = Brush.horizontalGradient(
                 colors = listOf(
-                    Color(0xFF008E9B),
-                    Color(0xFF00B4D8)
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary
                 )
             ),
             trailingContent = {

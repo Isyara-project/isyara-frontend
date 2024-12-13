@@ -28,6 +28,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -63,7 +64,10 @@ fun SettingsScreen(navController: NavController, viewModel: AuthViewModel= hiltV
             title = "Pengaturan",
             onBackClick = { navController.popBackStack() },
             backgroundColor = Brush.horizontalGradient(
-                colors = listOf(Color(0xFF008E9B), Color(0xFF00B4D8))
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary
+                )
             ),
             showDashboardElements = false,
             isTopLevelPage = true

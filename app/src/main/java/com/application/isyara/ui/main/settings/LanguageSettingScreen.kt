@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -43,7 +44,10 @@ fun LanguageSettingsScreen(
             title = "Bahasa Aplikasi",
             onBackClick = { navController.popBackStack() },
             backgroundColor = Brush.horizontalGradient(
-                colors = listOf(Color(0xFF008E9B), Color(0xFF00B4D8))
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary
+                )
             )
         )
 

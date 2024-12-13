@@ -3,6 +3,7 @@ package com.application.isyara.data.di;
 import com.application.isyara.data.local.DownloadDictionaryPictureDao;
 import com.application.isyara.data.remote.ApiService;
 import com.application.isyara.data.repository.DictionaryPictureRepository;
+import com.application.isyara.utils.dictionary.NetworkHelper;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Preconditions;
@@ -31,26 +32,32 @@ public final class DatabaseModule_ProvideDictionaryPictureRepositoryFactory impl
 
   private final Provider<DownloadDictionaryPictureDao> downloadDictionaryPictureDaoProvider;
 
+  private final Provider<NetworkHelper> networkHelperProvider;
+
   public DatabaseModule_ProvideDictionaryPictureRepositoryFactory(
       Provider<ApiService> apiServiceProvider,
-      Provider<DownloadDictionaryPictureDao> downloadDictionaryPictureDaoProvider) {
+      Provider<DownloadDictionaryPictureDao> downloadDictionaryPictureDaoProvider,
+      Provider<NetworkHelper> networkHelperProvider) {
     this.apiServiceProvider = apiServiceProvider;
     this.downloadDictionaryPictureDaoProvider = downloadDictionaryPictureDaoProvider;
+    this.networkHelperProvider = networkHelperProvider;
   }
 
   @Override
   public DictionaryPictureRepository get() {
-    return provideDictionaryPictureRepository(apiServiceProvider.get(), downloadDictionaryPictureDaoProvider.get());
+    return provideDictionaryPictureRepository(apiServiceProvider.get(), downloadDictionaryPictureDaoProvider.get(), networkHelperProvider.get());
   }
 
   public static DatabaseModule_ProvideDictionaryPictureRepositoryFactory create(
       Provider<ApiService> apiServiceProvider,
-      Provider<DownloadDictionaryPictureDao> downloadDictionaryPictureDaoProvider) {
-    return new DatabaseModule_ProvideDictionaryPictureRepositoryFactory(apiServiceProvider, downloadDictionaryPictureDaoProvider);
+      Provider<DownloadDictionaryPictureDao> downloadDictionaryPictureDaoProvider,
+      Provider<NetworkHelper> networkHelperProvider) {
+    return new DatabaseModule_ProvideDictionaryPictureRepositoryFactory(apiServiceProvider, downloadDictionaryPictureDaoProvider, networkHelperProvider);
   }
 
   public static DictionaryPictureRepository provideDictionaryPictureRepository(
-      ApiService apiService, DownloadDictionaryPictureDao downloadDictionaryPictureDao) {
-    return Preconditions.checkNotNullFromProvides(DatabaseModule.INSTANCE.provideDictionaryPictureRepository(apiService, downloadDictionaryPictureDao));
+      ApiService apiService, DownloadDictionaryPictureDao downloadDictionaryPictureDao,
+      NetworkHelper networkHelper) {
+    return Preconditions.checkNotNullFromProvides(DatabaseModule.INSTANCE.provideDictionaryPictureRepository(apiService, downloadDictionaryPictureDao, networkHelper));
   }
 }

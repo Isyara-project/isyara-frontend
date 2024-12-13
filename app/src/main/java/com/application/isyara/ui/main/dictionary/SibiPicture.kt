@@ -1,9 +1,5 @@
-@file:Suppress("PackageDirectoryMismatch")
-@file:OptIn(FlowPreview::class)
-
 package com.application.isyara.ui.main.dictionary
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,14 +12,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import com.application.isyara.utils.state.Result
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -32,28 +33,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.application.isyara.data.model.DictionaryPicture
-import com.application.isyara.ui.main.dashboard.SearchBar
+import com.application.isyara.data.model.DictionaryPictureItem
 import com.application.isyara.utils.dictionary.ImageItems
 import com.application.isyara.utils.dictionary.PictureItem
 import com.application.isyara.utils.dictionary.ShimmerPlaceholderCard
 import com.application.isyara.utils.dictionary.capitalizeWords
 import com.application.isyara.utils.main.AppHeaderMain
+import com.application.isyara.utils.state.Result
 import com.application.isyara.viewmodel.dictionary.DictionaryPictureViewModel
-import kotlinx.coroutines.FlowPreview
 
 @Composable
 fun SibiPictureScreen(
     navController: NavController,
     viewModel: DictionaryPictureViewModel = hiltViewModel()
 ) {
-
-    // Fetch dictionary pictures when screen is loaded
-    LaunchedEffect(Unit) {
-        viewModel.fetchDictionaryPictures()
-    }
-
-    // Call the AlphabetScreen with the necessary parameters
     AlphabetScreen(
         title = "Sibi Dictionary",
         descriptionTitle = "Apa itu Sibi?",
@@ -71,12 +64,12 @@ fun AlphabetScreen(
     description: String,
     alphabetTitle: String,
     navController: NavController,
-    viewModel: DictionaryPictureViewModel = hiltViewModel()
+    viewModel: DictionaryPictureViewModel
 ) {
     val context = LocalContext.current
-    val state = viewModel.state.collectAsState().value
-    val searchQuery = viewModel.searchQuery.collectAsState().value
-    val downloadState = viewModel.downloadState.collectAsState().value
+    val state by viewModel.dictionaryPictures.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val downloadState by viewModel.downloadState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -103,13 +96,12 @@ fun AlphabetScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         // SearchBar for filtering images
-        SearchBar(query = searchQuery) { query ->
+        SearchBarPicture(query = searchQuery) { query ->
             viewModel.updateSearchQuery(query)
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Handle different states (Loading, Success, Error)
         when (state) {
             is Result.Idle -> {
                 Text(
@@ -131,7 +123,7 @@ fun AlphabetScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(5) {
-                        ShimmerPlaceholderCard()  // Display loading shimmer effect
+                        ShimmerPlaceholderCard()
                     }
                 }
             }
@@ -145,7 +137,7 @@ fun AlphabetScreen(
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp)
                 )
 
-                if (state.data.isEmpty()) {
+                if ((state as Result.Success<List<DictionaryPictureItem>>).data.isEmpty()) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -166,19 +158,22 @@ fun AlphabetScreen(
                             .padding(horizontal = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(state.data) { image ->
-                            val imageItem = mapToImageItems(image)  // Map to ImageItems
+                        items(
+                            items = (state as Result.Success<List<DictionaryPictureItem>>).data,
+                            key = { it.url }
+                        ) { dictionaryPictureItem ->
+                            val imageItem = mapToImageItems(dictionaryPictureItem)
 
                             PictureItem(
                                 image = imageItem,
                                 navController = navController,
                                 viewModel = viewModel,
                                 isDownloading = downloadState[imageItem.url] ?: false,
-                                onDownloadClick = { title ->
-                                    viewModel.downloadPicture(imageItem.url)
+                                onDownloadClick = { url ->
+                                    viewModel.downloadPicture(url)
                                     Toast.makeText(
                                         context,
-                                        "Gambar '${imageItem.name}' berhasil diunduh.",
+                                        "Gambar berhasil diunduh.",
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 },
@@ -189,8 +184,7 @@ fun AlphabetScreen(
                                         "Gambar berhasil dihapus.",
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                },
-                                imageName = imageItem.name
+                                }
                             )
                         }
                     }
@@ -199,7 +193,7 @@ fun AlphabetScreen(
 
             is Result.Error -> {
                 Text(
-                    text = state.message,
+                    text = (state as Result.Error).message,
                     color = Color.Red,
                     fontSize = 16.sp,
                     modifier = Modifier
@@ -214,11 +208,38 @@ fun AlphabetScreen(
     }
 }
 
-fun mapToImageItems(dictionaryPicture: DictionaryPicture): ImageItems {
-    Log.d("DictionaryPicture", "Word: ${dictionaryPicture.word}")
+fun mapToImageItems(picture: DictionaryPictureItem): ImageItems {
+    val imageName = picture.name.capitalizeWords()
     return ImageItems(
-        url = dictionaryPicture.imageUrl,
-        name = dictionaryPicture.word,
-        definition = dictionaryPicture.definition
+        url = picture.url,
+        name = imageName,
+        isDownloaded = picture.isDownloaded
+    )
+}
+
+@Composable
+fun SearchBarPicture(query: String, onSearch: (String) -> Unit) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = { newQuery ->
+            onSearch(newQuery)
+        },
+        leadingIcon = {
+            Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")
+        },
+        placeholder = { Text("Cari isyarat...") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        textStyle = androidx.compose.ui.text.TextStyle(color = Color.Black, fontSize = 16.sp),
+        shape = RoundedCornerShape(8.dp),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            unfocusedBorderColor = Color.Gray,
+            focusedBorderColor = Color(0xFF008E9B),
+            cursorColor = Color(0xFF008E9B),
+            textColor = Color.Black,
+            placeholderColor = Color.Gray,
+            backgroundColor = Color.White
+        )
     )
 }

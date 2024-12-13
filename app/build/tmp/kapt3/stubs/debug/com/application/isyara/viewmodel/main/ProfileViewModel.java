@@ -30,15 +30,28 @@ public final class ProfileViewModel extends androidx.lifecycle.ViewModel {
         return null;
     }
     
+    /**
+     * Mengambil profil pengguna dari repository dan memperbarui state.
+     */
     public final void fetchProfile() {
     }
     
+    /**
+     * Memperbarui profil pengguna melalui repository dan memperbarui state.
+     *
+     * @param file File gambar profil (opsional).
+     * @param fullname Nama lengkap pengguna.
+     * @param bio Biografi pengguna.
+     */
     public final void updateProfile(@org.jetbrains.annotations.Nullable()
     okhttp3.MultipartBody.Part file, @org.jetbrains.annotations.NotNull()
     java.lang.String fullname, @org.jetbrains.annotations.NotNull()
     java.lang.String bio) {
     }
     
+    /**
+     * Mengatur ulang state updateProfile menjadi Idle.
+     */
     public final void resetUpdateProfileState() {
     }
 }

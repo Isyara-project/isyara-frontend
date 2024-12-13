@@ -10,6 +10,7 @@ import com.application.isyara.data.remote.ApiService
 import com.application.isyara.data.repository.DictionaryPictureRepository
 import com.application.isyara.data.repository.DictionaryRepository
 import com.application.isyara.data.repository.TranslatedTextRepository
+import com.application.isyara.utils.dictionary.NetworkHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -63,6 +64,12 @@ object DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideNetworkHelper(@ApplicationContext context: Context): NetworkHelper {
+        return NetworkHelper(context)
+    }
+
+    @Provides
+    @Singleton
     fun provideDictionaryRepository(
         @RetrofitDictionary apiService: ApiService,
         @ApplicationContext context: Context,
@@ -75,8 +82,9 @@ object DatabaseModule {
     @Singleton
     fun provideDictionaryPictureRepository(
         @RetrofitDictionary apiService: ApiService,
-        downloadDictionaryPictureDao: DownloadDictionaryPictureDao
+        downloadDictionaryPictureDao: DownloadDictionaryPictureDao,
+        networkHelper: NetworkHelper
     ): DictionaryPictureRepository {
-        return DictionaryPictureRepository(apiService, downloadDictionaryPictureDao)
+        return DictionaryPictureRepository(apiService, downloadDictionaryPictureDao, networkHelper)
     }
 }

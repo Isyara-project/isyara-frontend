@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -23,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,7 +46,6 @@ import com.application.isyara.utils.state.Result
 import com.application.isyara.viewmodel.auth.AuthViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.Locale
 
 @Composable
@@ -56,16 +56,21 @@ fun OtpScreen(
 ) {
     var otp by remember { mutableStateOf("") }
     var otpError by remember { mutableStateOf<String?>(null) }
-    var resendTimer by remember { mutableStateOf(120) }
+    var resendTimer by remember { mutableIntStateOf(120) }
     var isResendEnabled by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val otpState by viewModel.otpState.collectAsState()
     val resendOtpState by viewModel.resendOtpState.collectAsState()
     val minutes = resendTimer / 60
     val seconds = resendTimer % 60
-    val formattedTime = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+    val formattedTime = String.format(
+        Locale.getDefault(),
+        context.getString(R.string.format_time),
+        minutes,
+        seconds
+    )
     val coroutineScope = rememberCoroutineScope()
-    var isLoading by remember { mutableStateOf(false) }
+    val isLoading by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(resendTimer) {
@@ -74,7 +79,7 @@ fun OtpScreen(
             resendTimer -= 1
         } else if (resendTimer <= 0 && !isResendEnabled) {
             isResendEnabled = true
-            otpError = "Kode OTP anda kadaluarsa, silahkan kirim ulang OTP."
+            otpError = context.getString(R.string.otp_has_expired)
         }
     }
 
@@ -82,7 +87,10 @@ fun OtpScreen(
         when (otpState) {
             is Result.Success -> {
                 coroutineScope.launch {
-                    Toast.makeText(context, "OTP berhasil diverifikasi.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.otp_successfully_verified), Toast.LENGTH_SHORT
+                    ).show()
                     delay(1000L)
                     navController.navigate(NavRoute.Login.route) {
                         popUpTo(NavRoute.Register.route) { inclusive = true }
@@ -97,7 +105,7 @@ fun OtpScreen(
                         "Invalid or expired OTP",
                         ignoreCase = true
                     ) -> {
-                        val message = "Kode OTP salah atau kadaluarsa."
+                        val message = context.getString(R.string.otp_wrong_or_expired)
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         message
                     }
@@ -106,7 +114,7 @@ fun OtpScreen(
                         "User already exists",
                         ignoreCase = true
                     ) -> {
-                        val message = "Username sudah digunakan."
+                        val message = context.getString(R.string.username_or_email_already_exist)
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         message
                     }
@@ -116,7 +124,11 @@ fun OtpScreen(
                         ignoreCase = true
                     ) -> {
                         coroutineScope.launch {
-                            Toast.makeText(context, "Akun sudah diverifikasi.", Toast.LENGTH_SHORT)
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.account_already_verified),
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                             delay(1000L)
                             navController.navigate(NavRoute.Login.route) {
@@ -130,7 +142,7 @@ fun OtpScreen(
                         "kadaluarsa",
                         ignoreCase = true
                     ) -> {
-                        val message = "Kode OTP anda kadaluarsa, silahkan kirim ulang OTP."
+                        val message = context.getString(R.string.otp_expired_resend_otp)
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         message
                     }
@@ -149,20 +161,25 @@ fun OtpScreen(
     LaunchedEffect(resendOtpState) {
         when (resendOtpState) {
             is Result.Success -> {
-                Timber.d("OTP berhasil dikirim ulang.")
                 resendTimer = 120
                 isResendEnabled = false
                 otp = ""
                 otpError = null
-                Toast.makeText(context, "OTP berhasil dikirim ulang.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.otp_success_resend), Toast.LENGTH_SHORT
+                ).show()
             }
 
             is Result.Error -> {
-                Timber.e("Resend OTP gagal: ${(resendOtpState as Result.Error).message}")
                 val errorMsg = (resendOtpState as Result.Error).message
 
                 if (errorMsg.contains("Account has been verified", ignoreCase = true)) {
-                    Toast.makeText(context, "Akun sudah diverifikasi.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.account_already_verified),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     coroutineScope.launch {
                         delay(1000L)
                         navController.navigate(NavRoute.Login.route) {
@@ -187,7 +204,7 @@ fun OtpScreen(
             verticalArrangement = Arrangement.Center
         ) {
             AppHeaderAuth(
-                title = "Verifikasi OTP",
+                title = stringResource(R.string.verify_otp),
                 backgroundDrawable = R.drawable.header_isyara
             )
 
@@ -207,12 +224,12 @@ fun OtpScreen(
                             otpError = null
                         }
                     },
-                    label = "Masukkan Kode OTP",
-                    placeholder = "Masukkan kode OTP",
+                    label = stringResource(R.string.input_otp),
+                    placeholder = stringResource(R.string.input_otp),
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_otp),
-                            contentDescription = "OTP"
+                            contentDescription = stringResource(R.string.verify_otp)
                         )
                     },
                     isError = otpError != null,
@@ -226,8 +243,8 @@ fun OtpScreen(
                 Button(
                     onClick = {
                         otpError = when {
-                            otp.isBlank() -> "Kode OTP harus diisi!"
-                            otp.length != 6 -> "Kode OTP harus 6 digit!"
+                            otp.isBlank() -> context.getString(R.string.otp_must_filled)
+                            otp.length != 6 -> context.getString(R.string.otp_must_6)
                             else -> null
                         }
 
@@ -247,7 +264,11 @@ fun OtpScreen(
                                 .padding(end = 8.dp)
                         )
                     }
-                    Text(text = if (isLoading) "Memproses..." else "Verifikasi Otp")
+                    Text(
+                        text = if (isLoading) context.getString(R.string.process) else context.getString(
+                            R.string.verify_otp
+                        )
+                    )
 
                 }
             }
@@ -260,15 +281,14 @@ fun OtpScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Tidak menerima OTP? ")
+                Text(text = stringResource(R.string.not_receiving_otp))
                 if (isResendEnabled) {
                     Text(
-                        text = "Kirim ulang",
+                        text = stringResource(R.string.resend_otp),
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .padding(start = 4.dp)
                             .clickable {
-                                Timber.d("User clicked Resend OTP dengan token: $token")
                                 viewModel.resendOtp(token)
                                 resendTimer = 120
                                 isResendEnabled = false
@@ -278,7 +298,7 @@ fun OtpScreen(
                     )
                 } else {
                     Text(
-                        text = "Tunggu $formattedTime",
+                        text = stringResource(R.string.wait, formattedTime),
                         color = Color.Gray,
                         modifier = Modifier.padding(start = 4.dp)
                     )

@@ -1,13 +1,7 @@
 package com.application.isyara.data.model
 
-import com.application.isyara.data.local.DownloadedDictionaryPicture
-
-data class DictionaryPicture(
-    val word: String,
-    val imageUrl: String,
-    val definition: String
+data class DictionaryPictureItem(
+    val url: String,
+    val name: String,
+    val isDownloaded: Boolean
 )
-
-fun DownloadedDictionaryPicture.toDictionaryPicture(): DictionaryPicture {
-    return DictionaryPicture(imageUrl, word, definition)
-}

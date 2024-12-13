@@ -1,10 +1,8 @@
 package com.application.isyara.ui.auth
 
-import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -57,16 +56,18 @@ fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel = hil
     var identifier by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
-    var emailError by remember { mutableStateOf<String?>(null) }
+    var emailOrUsernameError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
     val loginState by viewModel.loginState.collectAsState()
     val isLoading = loginState is Result.Loading
-    val errorMessage =
-        if (loginState is Result.Error) (loginState as Result.Error).message else null
+
     LaunchedEffect(loginState) {
         when (loginState) {
             is Result.Success -> {
-                Toast.makeText(context, "Login berhasil.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.success_login), Toast.LENGTH_SHORT
+                ).show()
                 navController.navigate(NavRoute.Dashboard.route) {
                     popUpTo(NavRoute.Login.route) { inclusive = true }
                 }
@@ -89,64 +90,62 @@ fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel = hil
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Header
             AppHeaderAuth(
-                title = "Masuk",
+                title = stringResource(R.string.sign_in),
                 backgroundDrawable = R.drawable.header_isyara
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Konten Login
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // Input Email / Username
                 CustomInputField(
                     value = identifier,
                     onValueChange = {
                         identifier = it
-                        emailError = null
+                        emailOrUsernameError = null
                     },
-                    label = "Email",
-                    placeholder = "Masukkan Email / Username Anda",
+                    label = stringResource(R.string.email_or_username),
+                    placeholder = stringResource(R.string.email_or_username),
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_email),
-                            contentDescription = "Email"
+                            contentDescription = stringResource(R.string.email_or_username)
                         )
                     },
-                    isError = emailError != null,
-                    errorMessage = emailError,
+                    isError = emailOrUsernameError != null,
+                    errorMessage = emailOrUsernameError,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
                     isSingleLine = true
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Input Kata Sandi
                 CustomInputField(
                     value = password,
                     onValueChange = {
                         password = it
                         passwordError = null
                     },
-                    label = "Kata Sandi",
-                    placeholder = "Masukkan kata sandi Anda",
+                    label = context.getString(R.string.password),
+                    placeholder = context.getString(R.string.password),
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_password),
-                            contentDescription = "Kata Sandi"
+                            contentDescription = context.getString(R.string.password)
                         )
                     },
                     trailingIcon = {
                         IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                             Icon(
                                 imageVector = if (isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                contentDescription = if (isPasswordVisible) "Sembunyikan password" else "Tampilkan password"
+                                contentDescription = if (isPasswordVisible) context.getString(R.string.hide_password) else context.getString(
+                                    R.string.show_password
+                                )
                             )
                         }
                     },
@@ -157,10 +156,7 @@ fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel = hil
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Checkbox & Lupa Password
                 LoginCheckboxAndForgotPassword(
-                    rememberMe = false,
-                    onRememberMeChange = { /* Implementasi jika diperlukan */ },
                     onForgotPasswordClick = {
                         navController.navigate(NavRoute.ForgotPassword.route)
                     }
@@ -168,21 +164,15 @@ fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel = hil
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Tombol Masuk
                 Button(
                     onClick = {
-                        // Reset error messages
-                        emailError = null
+                        emailOrUsernameError = null
                         passwordError = null
 
                         val isIdentifierValid = when {
                             identifier.isBlank() -> {
-                                emailError = "Email harus diisi!"
-                                false
-                            }
-
-                            !Patterns.EMAIL_ADDRESS.matcher(identifier).matches() -> {
-                                emailError = "Format email tidak valid!"
+                                emailOrUsernameError =
+                                    context.getString(R.string.email_or_username_must_filled)
                                 false
                             }
 
@@ -191,7 +181,7 @@ fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel = hil
 
                         val isPasswordValid = when {
                             password.isBlank() -> {
-                                passwordError = "Kata sandi harus diisi!"
+                                passwordError = context.getString(R.string.password_must_filled)
                                 false
                             }
 
@@ -213,22 +203,25 @@ fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel = hil
                                 .padding(end = 8.dp)
                         )
                     }
-                    Text(text = if (isLoading) "Memproses..." else "Masuk")
+                    Text(
+                        text = if (isLoading) context.getString(R.string.process) else context.getString(
+                            R.string.sign_in
+                        )
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Navigasi ke Register
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(text = "Belum punya akun? ")
+                    Text(text = stringResource(R.string.dont_have_account))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "Daftar",
+                        text = context.getString(R.string.register),
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.clickable {
                             navController.navigate(NavRoute.Register.route) {
@@ -244,31 +237,21 @@ fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel = hil
 
 @Composable
 fun LoginCheckboxAndForgotPassword(
-    rememberMe: Boolean,
-    onRememberMeChange: (Boolean) -> Unit,
     onForgotPasswordClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Checkbox(
-                checked = rememberMe,
-                onCheckedChange = onRememberMeChange
+            Text(
+                text = "Lupa Kata Sandi?",
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clickable { onForgotPasswordClick() }
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "Ingatkan Saya", style = MaterialTheme.typography.bodyMedium)
         }
-
-        // Lupa Kata Sandi
-        Text(
-            text = "Lupa Kata Sandi?",
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.clickable { onForgotPasswordClick() }
-        )
     }
 }

@@ -1,92 +1,121 @@
+// File: DictionaryPictureRepository.kt
 package com.application.isyara.data.repository
 
-import com.application.isyara.data.di.RetrofitDictionary
+import com.application.isyara.data.di.RetrofitMain
 import com.application.isyara.data.local.DownloadDictionaryPictureDao
 import com.application.isyara.data.local.DownloadedDictionaryPicture
-import com.application.isyara.data.model.DictionaryPicture
-import com.application.isyara.data.model.toDictionaryPicture
+import com.application.isyara.data.model.DictionaryPictureItem
 import com.application.isyara.data.remote.ApiService
+import com.application.isyara.utils.dictionary.NetworkHelper
+import com.application.isyara.utils.dictionary.capitalizeWords
 import com.application.isyara.utils.state.Result
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class DictionaryPictureRepository @Inject constructor(
-    @RetrofitDictionary private val apiService: ApiService,
-    private val downloadDictionaryPictureDao: DownloadDictionaryPictureDao
+    @RetrofitMain private val apiService: ApiService,
+    private val downloadDictionaryPictureDao: DownloadDictionaryPictureDao,
+    private val networkHelper: NetworkHelper
 ) {
 
+    // StateFlow untuk menyimpan data API
+    private val _apiPictures = MutableStateFlow<List<String>>(emptyList())
+    val apiPictures: StateFlow<List<String>> = _apiPictures.asStateFlow()
+
+    init {
+        // Fetch API pictures saat Repository di-initialize jika jaringan tersedia
+        if (networkHelper.isNetworkConnected()) {
+            fetchApiPictures()
+        }
+    }
+
     /**
-     * Mengambil gambar yang sudah diunduh untuk offline, jika tidak ada, ambil dari API.
+     * Fungsi untuk mengambil gambar dari API dan mengupdate _apiPictures
      */
-    suspend fun getDictionaryPictures(): Flow<Result<List<DictionaryPicture>>> = flow {
-        emit(Result.Loading)
-        val cachedPictures = downloadDictionaryPictureDao.getAllDownloadedPictures()
-
-        if (cachedPictures.isNotEmpty()) {
-            emit(Result.Success(cachedPictures.map { it.toDictionaryPicture() }))
-        } else {
+    private fun fetchApiPictures() {
+        // Bisa dijalankan di coroutine scope yang sesuai
+        // Di sini, kita menggunakan GlobalScope untuk kesederhanaan, tetapi disarankan menggunakan CoroutineScope yang lebih terkontrol
+        kotlinx.coroutines.GlobalScope.launch {
             try {
-                val apiPictures = apiService.getDictionaryPicture()
-                if (apiPictures.isNotEmpty()) {
-                    val downloadedPictures = apiPictures.mapIndexed { index, url ->
-                        val imageName = url.split("/").last().split(".")
-                            .first()
-                        DownloadedDictionaryPicture(
-                            word = imageName,
-                            imageUrl = url,
-                            definition = "No definition"
-                        )
-                    }
-                    downloadDictionaryPictureDao.insertPictures(downloadedPictures)
-
-                    emit(Result.Success(apiPictures.map {
-                        val imageName =
-                            it.split("/").last().split(".").first()  // Extract name (A, B, C, etc.)
-                        DictionaryPicture(it, imageName, "No definition")
-                    }))
-                } else {
-                    emit(Result.Error("No pictures found in API"))
-                }
+                val apiPics = apiService.getDictionaryPicture()
+                _apiPictures.value = apiPics
             } catch (e: Exception) {
-                emit(Result.Error(message = e.message ?: "Unknown Error"))
+                Timber.e(e, "Error fetching API pictures: ${e.localizedMessage}")
             }
         }
     }
 
+    /**
+     * Mengambil daftar semua gambar dengan status unduhan secara reaktif.
+     * Menggabungkan data dari API dengan status unduhan dari database lokal.
+     */
+    fun getDictionaryPictures(): Flow<Result<List<DictionaryPictureItem>>> =
+        combine(
+            apiPictures,
+            downloadDictionaryPictureDao.getAllPictures()
+        ) { apiPics, downloadedPics ->
+            if (networkHelper.isNetworkConnected()) {
+                if (apiPics.isNotEmpty()) {
+                    val downloadedUrls = downloadedPics.map { it.url }.toSet()
+                    val pictureItems = apiPics.map { url ->
+                        DictionaryPictureItem(
+                            url = url,
+                            name = url.substringAfterLast("/").substringBeforeLast(".").capitalizeWords(),
+                            isDownloaded = downloadedUrls.contains(url)
+                        )
+                    }
+                    Result.Success(pictureItems)
+                } else {
+                    Result.Error("Tidak ada gambar ditemukan di API")
+                }
+            } else {
+                // Offline mode: hanya tampilkan gambar yang telah diunduh
+                val pictureItems = downloadedPics.map { picture ->
+                    DictionaryPictureItem(
+                        url = picture.url,
+                        name = picture.url.substringAfterLast("/").substringBeforeLast(".").capitalizeWords(),
+                        isDownloaded = true
+                    )
+                }
+                Result.Success(pictureItems)
+            }
+        }
+            .onStart { emit(Result.Loading) }
+            .catch { e ->
+                emit(Result.Error("Gagal mengambil data gambar"))
+            }
 
     /**
      * Mengunduh gambar dari API dan menyimpannya ke dalam database.
      */
-    suspend fun downloadImage(
-        imageUrl: String
-    ): Flow<Result<Boolean>> = flow {
+    fun downloadImage(imageUrl: String): Flow<Result<Boolean>> = flow {
         emit(Result.Loading)
 
         try {
             val existingPicture = downloadDictionaryPictureDao.getDownloadedPictureByUrl(imageUrl)
             if (existingPicture != null) {
-                emit(Result.Success(true))
+                emit(Result.Success(true)) // Sudah diunduh
             } else {
                 val downloadedPicture = DownloadedDictionaryPicture(
-                    word = "Unknown",
-                    imageUrl = imageUrl,
-                    definition = "No definition"
+                    url = imageUrl
                 )
-                downloadDictionaryPictureDao.insertDownloadedPicture(downloadedPicture)
+                downloadDictionaryPictureDao.insertAll(listOf(downloadedPicture))
                 emit(Result.Success(true))
             }
         } catch (e: Exception) {
-            emit(Result.Error(message = e.message ?: "Failed to download image"))
+            Timber.e(e, "Failed to download image: ${e.localizedMessage}")
+            emit(Result.Error(message = e.message ?: "Gagal mengunduh gambar"))
         }
     }
 
     /**
      * Menghapus gambar yang sudah diunduh berdasarkan URL.
      */
-    suspend fun deleteImage(imageUrl: String): Flow<Result<Boolean>> = flow {
+    fun deleteImage(imageUrl: String): Flow<Result<Boolean>> = flow {
         emit(Result.Loading)
 
         try {
@@ -95,10 +124,11 @@ class DictionaryPictureRepository @Inject constructor(
                 downloadDictionaryPictureDao.deleteDownloadedPictureByUrl(imageUrl)
                 emit(Result.Success(true))
             } else {
-                emit(Result.Error("Picture not found"))
+                emit(Result.Error("Gambar tidak ditemukan"))
             }
         } catch (e: Exception) {
-            emit(Result.Error(message = e.message ?: "Failed to delete image"))
+            Timber.e(e, "Failed to delete image: ${e.localizedMessage}")
+            emit(Result.Error(message = e.message ?: "Gagal menghapus gambar"))
         }
     }
 }

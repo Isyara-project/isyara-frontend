@@ -17,4 +17,6 @@ sealed class HistoryItem {
         val localImagePath: String? = null,
         override val timestamp: Long
     ) : HistoryItem()
+
+
 }

@@ -32,11 +32,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.application.isyara.R
 import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.auth.OnboardingPage
 import kotlinx.coroutines.delay
@@ -45,7 +47,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun OnboardingScreen(navController: NavController) {
     val context = LocalContext.current
-    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val pages = OnboardingPage.pages
     val pagerState = rememberPagerState(initialPage = 0) { pages.size }
     val coroutineScope = rememberCoroutineScope()
@@ -81,7 +82,8 @@ fun OnboardingScreen(navController: NavController) {
             ) {
                 Crossfade(
                     targetState = page,
-                    animationSpec = tween(durationMillis = 500), label = ""
+                    animationSpec = tween(durationMillis = 500),
+                    label = ""
                 ) { currentPage ->
                     OnboardingPageContent(page = pages[currentPage])
                 }
@@ -95,7 +97,6 @@ fun OnboardingScreen(navController: NavController) {
             }
         }
 
-        // Navigasi Lanjut untuk halaman pertama
         if (pagerState.currentPage == 0) {
             Button(
                 onClick = {
@@ -107,7 +108,7 @@ fun OnboardingScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text(text = "Lanjut")
+                Text(text = stringResource(R.string.next))
             }
         } else if (pagerState.currentPage == pages.lastIndex) {
             Column(
@@ -118,16 +119,14 @@ fun OnboardingScreen(navController: NavController) {
             ) {
                 Button(
                     onClick = {
-                        // Navigasi ke halaman login
                         navController.navigate(NavRoute.Login.route)
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Masuk")
+                    Text(text = stringResource(R.string.login))
                 }
                 Button(
                     onClick = {
-                        // Navigasi ke halaman register
                         navController.navigate(NavRoute.Register.route)
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -135,7 +134,7 @@ fun OnboardingScreen(navController: NavController) {
                         containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
-                    Text(text = "Belum punya akun? daftar")
+                    Text(text = stringResource(R.string.register))
                 }
             }
         }
@@ -184,12 +183,12 @@ fun PageIndicator(currentPage: Int, pageCount: Int) {
         for (i in 0 until pageCount) {
             val size = animateFloatAsState(
                 targetValue = if (i == currentPage) 12f else 8f,
-                label = "PageIndicatorSize"
+                label = stringResource(R.string.page_indicator_state)
             ).value
 
             val positionOffset = animateDpAsState(
                 targetValue = if (i == currentPage) 0.dp else 4.dp,
-                label = "PageIndicatorPosition"
+                label = stringResource(R.string.page_indicator_position)
             ).value
 
             Box(
@@ -207,10 +206,4 @@ fun PageIndicator(currentPage: Int, pageCount: Int) {
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun OnboardingScreenPreview() {
-    OnboardingScreen(navController = rememberNavController())
 }

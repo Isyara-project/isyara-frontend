@@ -20,8 +20,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -93,7 +92,7 @@ fun RegisterScreen(
         val totalSeconds = millis / 1000
         val minutes = totalSeconds / 60
         val seconds = totalSeconds % 60
-        return String.format("%02d:%02d", minutes, seconds)
+        return String.format(context.getString(R.string.format_time), minutes, seconds)
     }
 
     fun isValidEmail(email: String): Boolean {
@@ -112,21 +111,21 @@ fun RegisterScreen(
     }
 
     fun handleRegister() {
-        nameError = if (name.isBlank()) "Nama harus diisi!" else null
+        nameError = if (name.isBlank()) context.getString(R.string.name_must_filled) else null
         usernameError = when {
-            username.isBlank() -> "Username harus diisi!"
-            username.contains(" ") -> "Username tidak boleh mengandung spasi!"
-            !isValidUsername(username) -> "Username harus mengandung huruf dan angka dengan minimal 6 karakter!"
+            username.isBlank() -> context.getString(R.string.username_must_filled)
+            username.contains(" ") -> context.getString(R.string.username_no_space)
+            !isValidUsername(username) -> context.getString(R.string.username_must_complete)
             else -> null
         }
         emailError = when {
-            email.isBlank() -> "Email harus diisi!"
-            !isValidEmail(email) -> "Format email tidak valid!"
+            email.isBlank() -> context.getString(R.string.email_must_filled)
+            !isValidEmail(email) -> context.getString(R.string.email_not_valid)
             else -> null
         }
         passwordError = when {
-            password.isBlank() -> "Kata sandi harus diisi!"
-            !isValidPassword(password) -> "Password tidak sesuai! (Minimal 8 karakter, mengandung 1 huruf besar, 1 huruf kecil, 1 simbol, dan 1 angka)"
+            password.isBlank() -> context.getString(R.string.password_must_filled)
+            !isValidPassword(password) -> context.getString(R.string.password_must_complete)
             else -> null
         }
 
@@ -150,7 +149,10 @@ fun RegisterScreen(
             is Result.Success -> {
                 isLoading = false
                 val token = (result as Result.Success).data.token
-                Toast.makeText(context, "Registrasi berhasil.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.register_success), Toast.LENGTH_SHORT
+                ).show()
                 navController.navigate("${NavRoute.Otp.route}/$token") {
                     popUpTo(NavRoute.Register.route) { inclusive = true }
                 }
@@ -174,7 +176,7 @@ fun RegisterScreen(
             verticalArrangement = Arrangement.Center
         ) {
             AppHeaderAuth(
-                title = "Daftar",
+                title = context.getString(R.string.register),
                 backgroundDrawable = R.drawable.header_isyara
             )
 
@@ -193,14 +195,14 @@ fun RegisterScreen(
                         name = it
                         nameError = null
                     },
-                    label = "Nama",
+                    label = stringResource(R.string.name),
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_user),
-                            contentDescription = "Nama"
+                            contentDescription = stringResource(R.string.name)
                         )
                     },
-                    placeholder = "Nama kamu",
+                    placeholder = stringResource(R.string.name),
                     isError = nameError != null,
                     errorMessage = nameError
                 )
@@ -212,14 +214,14 @@ fun RegisterScreen(
                         username = it
                         usernameError = null
                     },
-                    label = "Username",
+                    label = stringResource(R.string.username),
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_username),
-                            contentDescription = "Username"
+                            contentDescription = stringResource(R.string.username)
                         )
                     },
-                    placeholder = "Username kamu",
+                    placeholder = stringResource(R.string.username),
                     isError = usernameError != null,
                     errorMessage = usernameError
                 )
@@ -231,14 +233,14 @@ fun RegisterScreen(
                         email = it
                         emailError = null
                     },
-                    label = "Email",
+                    label = stringResource(R.string.email),
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_email),
-                            contentDescription = "Email"
+                            contentDescription = stringResource(R.string.email)
                         )
                     },
-                    placeholder = "Email kamu",
+                    placeholder = stringResource(R.string.email),
                     isError = emailError != null,
                     errorMessage = emailError
                 )
@@ -250,14 +252,14 @@ fun RegisterScreen(
                         password = it
                         passwordError = null
                     },
-                    label = "Kata Sandi",
+                    label = stringResource(R.string.password),
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_password),
-                            contentDescription = "Kata Sandi"
+                            contentDescription = stringResource(R.string.password)
                         )
                     },
-                    placeholder = "Kata sandi kamu",
+                    placeholder = stringResource(R.string.password),
                     isError = passwordError != null,
                     errorMessage = passwordError,
                     visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -267,7 +269,9 @@ fun RegisterScreen(
                         ) {
                             Icon(
                                 imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                contentDescription = if (isPasswordVisible) "Sembunyikan password" else "Tampilkan password"
+                                contentDescription = if (isPasswordVisible) stringResource(R.string.hide_password) else stringResource(
+                                    R.string.show_password
+                                )
                             )
                         }
                     }
@@ -288,14 +292,18 @@ fun RegisterScreen(
                                 .padding(end = 8.dp)
                         )
                     }
-                    Text(text = if (isLoading) "Memproses..." else "Daftar")
+                    Text(
+                        text = if (isLoading) stringResource(R.string.process) else stringResource(
+                            R.string.register
+                        )
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (remainingTime > 0L) {
                     Text(
-                        text = "Silahkan tunggu ${formatTime(remainingTime)} sebelum mencoba kembali.",
+                        text = stringResource(R.string.please_wait, formatTime(remainingTime)),
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -309,9 +317,9 @@ fun RegisterScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Sudah punya akun? ")
+                    Text(text = stringResource(R.string.have_account))
                     Text(
-                        text = "Masuk",
+                        text = context.getString(R.string.login),
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.clickable {
                             navController.navigate(NavRoute.Login.route) {

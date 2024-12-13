@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -226,13 +227,18 @@ fun VideoItem(
 
 @Composable
 fun ShimmerPlaceholderButton() {
-    val shimmerBrush = shimmerBrush()
-
     Box(
         modifier = Modifier
             .size(24.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(shimmerBrush, RoundedCornerShape(12.dp))
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(
+                        Color.LightGray.copy(alpha = 0.3f),
+                        Color.LightGray.copy(alpha = 0.1f)
+                    )
+                ),
+                shape = RoundedCornerShape(12.dp)
+            )
     )
 }
 

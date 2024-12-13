@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,7 +32,10 @@ fun AboutIsyaraScreen(onBackClick: () -> Unit, navController: NavController) {
             title = "Tentang Isyara",
             onBackClick = onBackClick,
             backgroundColor = Brush.horizontalGradient(
-                colors = listOf(Color(0xFF008E9B), Color(0xFF00B4D8))
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary
+                )
             )
         )
 

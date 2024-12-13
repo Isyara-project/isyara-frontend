@@ -16,28 +16,30 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun downloadDictionaryPictureDao(): DownloadDictionaryPictureDao
 
     companion object {
+        const val DATABASE_NAME = "isyara_database"
+
         val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     """
-            CREATE TABLE IF NOT EXISTS translated_texts (
-                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                text TEXT NOT NULL,
-                timestamp INTEGER NOT NULL
-            )
-        """.trimIndent()
+                        CREATE TABLE IF NOT EXISTS downloaded_dictionary_pictures_new (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            url TEXT NOT NULL
+                        )
+                    """.trimIndent()
                 )
 
                 database.execSQL(
                     """
-            CREATE TABLE IF NOT EXISTS downloaded_dictionary_pictures (
-                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                imageUrl TEXT NOT NULL
-            )
-        """.trimIndent()
+                        INSERT INTO downloaded_dictionary_pictures_new (id, url)
+                        SELECT id, imageUrl FROM downloaded_dictionary_pictures
+                    """.trimIndent()
                 )
+
+                database.execSQL("DROP TABLE downloaded_dictionary_pictures")
+
+                database.execSQL("ALTER TABLE downloaded_dictionary_pictures_new RENAME TO downloaded_dictionary_pictures")
             }
         }
-
     }
 }

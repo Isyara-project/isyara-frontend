@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -45,8 +46,8 @@ fun SearchScreen(
             onBackClick = onBackClick,
             backgroundColor = Brush.horizontalGradient(
                 colors = listOf(
-                    Color(0xFF008E9B),
-                    Color(0xFF00B4D8)
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary
                 )
             )
         )

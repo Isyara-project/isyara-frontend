@@ -2,11 +2,11 @@ package com.application.isyara.data.repository
 
 import android.content.Context
 import android.net.Uri
-import com.application.isyara.data.remote.ApiService
-import com.application.isyara.utils.state.Result
 import com.application.isyara.data.di.RetrofitDictionary
 import com.application.isyara.data.local.DownloadedDictionary
 import com.application.isyara.data.local.DownloadedDictionaryDao
+import com.application.isyara.data.remote.ApiService
+import com.application.isyara.utils.state.Result
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -43,7 +43,6 @@ class DictionaryRepository @Inject constructor(
         return downloadedDictionaryDao.getAllDownloadedItems()
     }
 
-
     suspend fun downloadItem(url: String, title: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
@@ -55,27 +54,30 @@ class DictionaryRepository @Inject constructor(
                     return@withContext false
                 }
 
-                val inputStream = response.body.byteStream()
-                run {
-                    val fileName =
-                        Uri.parse(url).lastPathSegment ?: "item_${System.currentTimeMillis()}.mp4"
-                    val file = File(context.filesDir, fileName)
-                    Timber.d("Saving video to ${file.absolutePath}")
-                    val outputStream = FileOutputStream(file)
-                    inputStream.use { input ->
-                        outputStream.use { output ->
-                            input.copyTo(output)
-                        }
-                    }
-                    val downloadedItem = DownloadedDictionary(
-                        url = url,
-                        title = title,
-                        localPath = file.absolutePath
-                    )
-                    downloadedDictionaryDao.insertDownloadedItem(downloadedItem)
-                    Timber.d("Download and save succeeded for $url")
-                    true
+                val inputStream = response.body?.byteStream()
+                if (inputStream == null) {
+                    Timber.e("Response body is null for $url")
+                    return@withContext false
                 }
+
+                val fileName =
+                    Uri.parse(url).lastPathSegment ?: "video_${System.currentTimeMillis()}.mp4"
+                val file = File(context.filesDir, fileName)
+                Timber.d("Saving video to ${file.absolutePath}")
+                val outputStream = FileOutputStream(file)
+                inputStream.use { input ->
+                    outputStream.use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                val downloadedItem = DownloadedDictionary(
+                    url = url,
+                    title = title,
+                    localPath = file.absolutePath
+                )
+                downloadedDictionaryDao.insertDownloadedItem(downloadedItem)
+                Timber.d("Download and save succeeded for $url")
+                true
             } catch (e: IOException) {
                 Timber.e(e, "IOException during download of $url")
                 false

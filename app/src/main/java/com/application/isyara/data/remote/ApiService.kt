@@ -2,7 +2,6 @@ package com.application.isyara.data.remote
 
 import com.application.isyara.data.model.ChangePasswordRequest
 import com.application.isyara.data.model.ChangePasswordResponse
-import com.application.isyara.data.model.DictionaryPicture
 import com.application.isyara.data.model.EmailRequest
 import com.application.isyara.data.model.FeedbackHistoryResponse
 import com.application.isyara.data.model.FeedbackRequest
