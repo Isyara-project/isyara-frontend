@@ -1,19 +1,29 @@
 package com.application.isyara.data.di
 
-import android.content.Context
+import com.application.isyara.utils.auth.ISessionManager
 import com.application.isyara.data.local.SessionManager
+import com.application.isyara.data.local.UserPreferences
+import com.application.isyara.utils.auth.IUserPreferences
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
-object SharedPreferencesModule {
+abstract class SharedPreferencesModule {
 
-    @Provides
-    fun provideSessionManager(@ApplicationContext context: Context): SessionManager {
-        return SessionManager(context)
-    }
+    @Binds
+    @Singleton
+    abstract fun bindSessionManager(
+        sessionManager: SessionManager
+    ): ISessionManager
+
+    @Binds
+    @Singleton
+    abstract fun bindUserPreferences(
+        userPreferences: UserPreferences
+    ): IUserPreferences
 }

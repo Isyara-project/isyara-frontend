@@ -1,6 +1,7 @@
 package com.application.isyara.data.di;
 
 import com.application.isyara.data.local.SessionManager;
+import com.application.isyara.data.local.UserPreferences;
 import com.application.isyara.data.remote.ApiService;
 import com.application.isyara.data.repository.AuthRepository;
 import dagger.internal.DaggerGenerated;
@@ -31,24 +32,29 @@ public final class RepositoryModule_ProvideAuthRepositoryFactory implements Fact
 
   private final Provider<SessionManager> sessionManagerProvider;
 
+  private final Provider<UserPreferences> userPreferencesProvider;
+
   public RepositoryModule_ProvideAuthRepositoryFactory(Provider<ApiService> apiServiceProvider,
-      Provider<SessionManager> sessionManagerProvider) {
+      Provider<SessionManager> sessionManagerProvider,
+      Provider<UserPreferences> userPreferencesProvider) {
     this.apiServiceProvider = apiServiceProvider;
     this.sessionManagerProvider = sessionManagerProvider;
+    this.userPreferencesProvider = userPreferencesProvider;
   }
 
   @Override
   public AuthRepository get() {
-    return provideAuthRepository(apiServiceProvider.get(), sessionManagerProvider.get());
+    return provideAuthRepository(apiServiceProvider.get(), sessionManagerProvider.get(), userPreferencesProvider.get());
   }
 
   public static RepositoryModule_ProvideAuthRepositoryFactory create(
-      Provider<ApiService> apiServiceProvider, Provider<SessionManager> sessionManagerProvider) {
-    return new RepositoryModule_ProvideAuthRepositoryFactory(apiServiceProvider, sessionManagerProvider);
+      Provider<ApiService> apiServiceProvider, Provider<SessionManager> sessionManagerProvider,
+      Provider<UserPreferences> userPreferencesProvider) {
+    return new RepositoryModule_ProvideAuthRepositoryFactory(apiServiceProvider, sessionManagerProvider, userPreferencesProvider);
   }
 
   public static AuthRepository provideAuthRepository(ApiService apiService,
-      SessionManager sessionManager) {
-    return Preconditions.checkNotNullFromProvides(RepositoryModule.INSTANCE.provideAuthRepository(apiService, sessionManager));
+      SessionManager sessionManager, UserPreferences userPreferences) {
+    return Preconditions.checkNotNullFromProvides(RepositoryModule.INSTANCE.provideAuthRepository(apiService, sessionManager, userPreferences));
   }
 }

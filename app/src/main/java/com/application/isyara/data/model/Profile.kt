@@ -12,9 +12,12 @@ data class ProfileData(
     val userId: String
 )
 
-data class ProfileUpdateResponse(
-    val message: String,
-    val fileUrl: String? = null
+data class UpdateProfileRequest(
+    val fullname: String,
+    val bio: String
 )
 
-
+data class UpdateProfileResponse(
+    val message: String,
+    val fileUrl: String
+)

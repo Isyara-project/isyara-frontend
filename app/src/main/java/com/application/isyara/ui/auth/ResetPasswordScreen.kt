@@ -8,14 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import com.application.isyara.utils.state.Result
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -31,6 +32,7 @@ import com.application.isyara.R
 import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.auth.AppHeaderAuth
 import com.application.isyara.utils.auth.CustomInputField
+import com.application.isyara.utils.state.Result
 import com.application.isyara.viewmodel.auth.ResetPasswordViewModel
 
 @Composable
@@ -39,65 +41,76 @@ fun ResetPasswordScreen(
     token: String,
     resetPasswordViewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
+    // State variables
     var otp by remember { mutableStateOf("") }
     var otpError by remember { mutableStateOf<String?>(null) }
-    var isOtpVerified by remember { mutableStateOf(false) }
     var password by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf<String?>(null) }
     var confirmPassword by remember { mutableStateOf("") }
+    var confirmPasswordError by remember { mutableStateOf<String?>(null) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    var isLoading by remember { mutableStateOf(false) }
+    var isOtpVerified by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val resetPasswordState by resetPasswordViewModel.resetPasswordState.collectAsState()
+    var isLoading by remember { mutableStateOf(false) }
 
-    // Handle OTP verification
+    /**
+     * Handle OTP Verification
+     */
     fun handleOtpVerification() {
-        if (otp.isBlank()) {
-            otpError = "Kode OTP harus diisi!"
-        } else {
-            otpError = null
-            isOtpVerified = true
-        }
-    }
-
-    // Handle Reset Password Logic
-    fun handleResetPassword() {
-        // Reset error message
-        errorMessage = null
-        isLoading = true
-
-        // Validation checks
         when {
-            password.isBlank() || confirmPassword.isBlank() -> {
-                errorMessage = "Kata sandi tidak boleh kosong!"
+            otp.isBlank() -> {
+                otpError = "Kode OTP harus diisi!"
             }
-
-            password != confirmPassword -> {
-                errorMessage = "Kata sandi dan konfirmasi kata sandi tidak cocok!"
+            otp.length != 6 || !otp.all { it.isDigit() } -> {
+                otpError = "Kode OTP harus terdiri dari 6 digit angka!"
             }
-
-            password.length < 8 || password.length > 16 -> {
-                errorMessage = "Kata sandi harus memiliki panjang 8-16 karakter!"
-            }
-
-            !password.matches(Regex("^(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&#])[A-Za-z\\d@\$!%*?&#]+$")) -> {
-                errorMessage =
-                    "Kata sandi harus mengandung 1 huruf besar, 1 angka, dan 1 karakter spesial!"
-            }
-
-            token.isBlank() -> {
-                errorMessage = "Token tidak valid!"
-            }
-
             else -> {
-                resetPasswordViewModel.resetPassword(token, password)
-                navController.navigate(NavRoute.Login.route)
+                otpError = null
+                isOtpVerified = true
+                Toast.makeText(context, "OTP berhasil diverifikasi!", Toast.LENGTH_SHORT).show()
             }
         }
-        isLoading = false
     }
 
-    // Observe the state of password reset
+    /**
+     * Handle Reset Password Logic
+     */
+    fun handleResetPassword() {
+        passwordError = null
+        confirmPasswordError = null
+        errorMessage = null
+
+        var isValid = true
+
+        if (password.isBlank()) {
+            passwordError = "Password tidak boleh kosong!"
+            isValid = false
+        } else if (password.length < 8 || password.length > 16) {
+            passwordError = "Password harus memiliki panjang 8-16 karakter!"
+            isValid = false
+        } else if (!password.matches(Regex("^(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&#]).+$"))) {
+            passwordError = "Password harus mengandung 1 huruf besar, 1 angka, dan 1 karakter spesial!"
+            isValid = false
+        }
+
+        if (confirmPassword.isBlank()) {
+            confirmPasswordError = "Konfirmasi password tidak boleh kosong!"
+            isValid = false
+        } else if (password != confirmPassword) {
+            confirmPasswordError = "Kata sandi dan konfirmasi kata sandi tidak cocok!"
+            isValid = false
+        }
+
+        if (isValid) {
+            resetPasswordViewModel.resetPassword(token, password)
+        }
+    }
+
+    /**
+     * Observe Reset Password State
+     */
     LaunchedEffect(resetPasswordState) {
         when (resetPasswordState) {
             is Result.Loading -> {
@@ -106,17 +119,17 @@ fun ResetPasswordScreen(
 
             is Result.Success -> {
                 isLoading = false
-                Toast.makeText(context, "Password berhasil diatur ulang!", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(context, "Password berhasil diatur ulang!", Toast.LENGTH_SHORT).show()
                 navController.navigate(NavRoute.Login.route) {
                     popUpTo(NavRoute.ResetPassword.route) { inclusive = true }
-                    launchSingleTop = true
                 }
+                resetPasswordViewModel.resetState()
             }
 
             is Result.Error -> {
                 isLoading = false
-                errorMessage = "Terjadi kesalahan. Silakan coba lagi."
+                errorMessage = (resetPasswordState as Result.Error).message
+                resetPasswordViewModel.resetState()
             }
 
             else -> {
@@ -125,12 +138,19 @@ fun ResetPasswordScreen(
         }
     }
 
-    LaunchedEffect(isLoading) {
+    /**
+     * Observe Error Message
+     */
+    LaunchedEffect(errorMessage) {
         if (!isLoading && errorMessage != null) {
             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            errorMessage = null
         }
     }
 
+    /**
+     * Layout UI
+     */
     Column(modifier = Modifier.fillMaxSize()) {
         // Header Section
         AppHeaderAuth(
@@ -147,12 +167,6 @@ fun ResetPasswordScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             if (!isOtpVerified) {
-                // Form Input for OTP
-                Text(
-                    text = "Masukkan kode OTP yang telah dikirim ke email Anda",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
 
                 CustomInputField(
                     value = otp,
@@ -160,30 +174,35 @@ fun ResetPasswordScreen(
                     label = "Kode OTP",
                     placeholder = "Masukkan kode OTP",
                     isError = otpError != null,
-                    errorMessage = otpError
+                    errorMessage = otpError,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
-                // OTP Verification Button
                 Button(
                     onClick = { handleOtpVerification() },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isLoading
                 ) {
-                    Text(text = "Verifikasi OTP")
-                }
-
-                // Show loading progress while waiting for verification
-                if (isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 8.dp)
+                        )
+                    }
+                    Text(text = if (isLoading) "Memproses..." else "Verifikasi OTP")
                 }
             } else {
-                // Form Input for Password if OTP is verified
+
                 CustomInputField(
                     value = password,
                     onValueChange = { password = it },
                     label = "Password Baru",
                     placeholder = "Masukkan password baru",
-                    isError = errorMessage != null && password.isBlank(),
-                    errorMessage = if (password.isBlank()) errorMessage else null
+                    isError = passwordError != null,
+                    errorMessage = passwordError,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
 
                 CustomInputField(
@@ -191,27 +210,35 @@ fun ResetPasswordScreen(
                     onValueChange = { confirmPassword = it },
                     label = "Konfirmasi Password",
                     placeholder = "Masukkan konfirmasi password",
-                    isError = errorMessage != null && confirmPassword.isBlank(),
-                    errorMessage = if (confirmPassword.isBlank()) errorMessage else null
+                    isError = confirmPasswordError != null,
+                    errorMessage = confirmPasswordError,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
 
-                // Reset Password Button
                 Button(
                     onClick = { handleResetPassword() },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = !isLoading // Disable button while loading
+                    enabled = !isLoading
                 ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 8.dp)
+                        )
+                    }
                     Text(text = if (isLoading) "Memproses..." else "Atur Ulang Kata Sandi")
                 }
 
-                // Display error message if any
                 errorMessage?.let {
-                    Text(text = it, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
-                }
-
-                // Show loading progress indicator if still loading
-                if (isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
                 }
             }
         }

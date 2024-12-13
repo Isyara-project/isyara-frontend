@@ -1,8 +1,10 @@
 package com.application.isyara.ui.auth
 
 import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +19,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -47,40 +49,40 @@ import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.auth.AppHeaderAuth
 import com.application.isyara.utils.auth.CustomInputField
 import com.application.isyara.utils.state.Result
-import com.application.isyara.viewmodel.auth.LoginViewModel
+import com.application.isyara.viewmodel.auth.AuthViewModel
 
 @Composable
-fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(navController: NavHostController, viewModel: AuthViewModel = hiltViewModel()) {
     val context = LocalContext.current
     var identifier by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
-    val scaffoldState = rememberScaffoldState()
-
     val loginState by viewModel.loginState.collectAsState()
-    val loadingState by viewModel.loadingState.collectAsState()
-    val errorState by viewModel.errorState.collectAsState()
-
+    val isLoading = loginState is Result.Loading
+    val errorMessage =
+        if (loginState is Result.Error) (loginState as Result.Error).message else null
     LaunchedEffect(loginState) {
         when (loginState) {
             is Result.Success -> {
+                Toast.makeText(context, "Login berhasil.", Toast.LENGTH_SHORT).show()
                 navController.navigate(NavRoute.Dashboard.route) {
                     popUpTo(NavRoute.Login.route) { inclusive = true }
                 }
             }
 
             is Result.Error -> {
-                scaffoldState.snackbarHostState.showSnackbar("Login failed: ${errorState ?: "Unknown error"}")
+                val msg = (loginState as Result.Error).message
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             }
 
-            else -> {}
+            else -> {
+            }
         }
     }
 
     Scaffold(
-        scaffoldState = scaffoldState,
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -102,7 +104,7 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
                     .padding(16.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // Input Email
+                // Input Email / Username
                 CustomInputField(
                     value = identifier,
                     onValueChange = {
@@ -144,7 +146,7 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
                         IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                             Icon(
                                 imageVector = if (isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                contentDescription = null
+                                contentDescription = if (isPasswordVisible) "Sembunyikan password" else "Tampilkan password"
                             )
                         }
                     },
@@ -158,7 +160,7 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
                 // Checkbox & Lupa Password
                 LoginCheckboxAndForgotPassword(
                     rememberMe = false,
-                    onRememberMeChange = { },
+                    onRememberMeChange = { /* Implementasi jika diperlukan */ },
                     onForgotPasswordClick = {
                         navController.navigate(NavRoute.ForgotPassword.route)
                     }
@@ -169,47 +171,56 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
                 // Tombol Masuk
                 Button(
                     onClick = {
+                        // Reset error messages
                         emailError = null
                         passwordError = null
 
-                        // Validasi Email dan Password
-                        if (identifier.isBlank()) {
-                            emailError = "Email harus diisi!"
-                        } else if (!Patterns.EMAIL_ADDRESS.matcher(identifier).matches()) {
-                            emailError = "Format email tidak valid!"
+                        val isIdentifierValid = when {
+                            identifier.isBlank() -> {
+                                emailError = "Email harus diisi!"
+                                false
+                            }
+
+                            !Patterns.EMAIL_ADDRESS.matcher(identifier).matches() -> {
+                                emailError = "Format email tidak valid!"
+                                false
+                            }
+
+                            else -> true
                         }
 
-                        if (password.isBlank()) {
-                            passwordError = "Kata sandi harus diisi!"
+                        val isPasswordValid = when {
+                            password.isBlank() -> {
+                                passwordError = "Kata sandi harus diisi!"
+                                false
+                            }
+
+                            else -> true
                         }
 
-                        // Jika tidak ada error, lakukan login
-                        if (emailError == null && passwordError == null) {
+                        if (isIdentifierValid && isPasswordValid) {
                             viewModel.login(identifier, password)
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = !loadingState && emailError == null && passwordError == null
+                    enabled = !isLoading
                 ) {
-                    if (loadingState) {
+                    if (isLoading) {
                         CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = Color.White,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 8.dp)
                         )
-                    } else {
-                        Text("Masuk")
                     }
+                    Text(text = if (isLoading) "Memproses..." else "Masuk")
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Menampilkan pesan error jika ada
-                errorState?.let {
-                    Text(text = it, color = MaterialTheme.colorScheme.error)
-                }
-
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Navigasi ke Register
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
@@ -220,7 +231,9 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
                         text = "Daftar",
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.clickable {
-                            navController.navigate(NavRoute.Register.route)
+                            navController.navigate(NavRoute.Register.route) {
+                                popUpTo(NavRoute.Login.route) { inclusive = true }
+                            }
                         }
                     )
                 }
@@ -228,7 +241,6 @@ fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel = hi
         }
     }
 }
-
 
 @Composable
 fun LoginCheckboxAndForgotPassword(

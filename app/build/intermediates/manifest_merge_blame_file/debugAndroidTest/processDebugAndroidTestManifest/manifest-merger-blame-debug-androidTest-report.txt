@@ -3,32 +3,32 @@
 3    package="com.application.isyara.test" >
 4
 5    <uses-sdk
-5-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:5:5-74
+5-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:5:5-74
 6        android:minSdkVersion="24"
-6-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:5:15-41
+6-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:5:15-41
 7        android:targetSdkVersion="34" />
-7-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:5:42-71
+7-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:5:42-71
 8
 9    <instrumentation
-9-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:11:5-15:72
+9-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:11:5-15:72
 10        android:name="androidx.test.runner.AndroidJUnitRunner"
-10-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:11:22-76
+10-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:11:22-76
 11        android:functionalTest="false"
-11-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:14:22-52
+11-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:14:22-52
 12        android:handleProfiling="false"
-12-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:13:22-53
+12-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:13:22-53
 13        android:label="Tests for com.application.isyara"
-13-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:15:22-70
+13-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:15:22-70
 14        android:targetPackage="com.application.isyara" />
-14-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:12:22-68
+14-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:12:22-68
 15
 16    <application
-16-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:7:5-9:19
+16-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:7:5-9:19
 17        android:debuggable="true"
 18        android:extractNativeLibs="false" >
 19        <uses-library android:name="android.test.runner" />
-19-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:8:9-60
-19-->D:\isyara\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest10072457562824545200.xml:8:23-57
+19-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:8:9-60
+19-->C:\isyara-frontend\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest15320360664673027327.xml:8:23-57
 20    </application>
 21
 22</manifest>

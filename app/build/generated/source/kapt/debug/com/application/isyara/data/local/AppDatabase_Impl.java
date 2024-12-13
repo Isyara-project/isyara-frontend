@@ -30,6 +30,8 @@ public final class AppDatabase_Impl extends AppDatabase {
 
   private volatile TranslatedTextDao _translatedTextDao;
 
+  private volatile DownloadDictionaryPictureDao _downloadDictionaryPictureDao;
+
   @Override
   @NonNull
   protected SupportSQLiteOpenHelper createOpenHelper(@NonNull final DatabaseConfiguration config) {
@@ -38,14 +40,16 @@ public final class AppDatabase_Impl extends AppDatabase {
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS `downloaded_dictionary` (`url` TEXT NOT NULL, `title` TEXT NOT NULL, `localPath` TEXT NOT NULL, `imageUrl` TEXT, `localImagePath` TEXT, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`url`))");
         db.execSQL("CREATE TABLE IF NOT EXISTS `translated_texts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `text` TEXT NOT NULL, `timestamp` INTEGER NOT NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `downloaded_dictionary_pictures` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `word` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `definition` TEXT NOT NULL)");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4d83170070bf5fc59e5e0a4eba49d597')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '964b0a0f3af55d9775b512a6673c5a20')");
       }
 
       @Override
       public void dropAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS `downloaded_dictionary`");
         db.execSQL("DROP TABLE IF EXISTS `translated_texts`");
+        db.execSQL("DROP TABLE IF EXISTS `downloaded_dictionary_pictures`");
         final List<? extends RoomDatabase.Callback> _callbacks = mCallbacks;
         if (_callbacks != null) {
           for (RoomDatabase.Callback _callback : _callbacks) {
@@ -118,9 +122,23 @@ public final class AppDatabase_Impl extends AppDatabase {
                   + " Expected:\n" + _infoTranslatedTexts + "\n"
                   + " Found:\n" + _existingTranslatedTexts);
         }
+        final HashMap<String, TableInfo.Column> _columnsDownloadedDictionaryPictures = new HashMap<String, TableInfo.Column>(4);
+        _columnsDownloadedDictionaryPictures.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsDownloadedDictionaryPictures.put("word", new TableInfo.Column("word", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsDownloadedDictionaryPictures.put("imageUrl", new TableInfo.Column("imageUrl", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsDownloadedDictionaryPictures.put("definition", new TableInfo.Column("definition", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashSet<TableInfo.ForeignKey> _foreignKeysDownloadedDictionaryPictures = new HashSet<TableInfo.ForeignKey>(0);
+        final HashSet<TableInfo.Index> _indicesDownloadedDictionaryPictures = new HashSet<TableInfo.Index>(0);
+        final TableInfo _infoDownloadedDictionaryPictures = new TableInfo("downloaded_dictionary_pictures", _columnsDownloadedDictionaryPictures, _foreignKeysDownloadedDictionaryPictures, _indicesDownloadedDictionaryPictures);
+        final TableInfo _existingDownloadedDictionaryPictures = TableInfo.read(db, "downloaded_dictionary_pictures");
+        if (!_infoDownloadedDictionaryPictures.equals(_existingDownloadedDictionaryPictures)) {
+          return new RoomOpenHelper.ValidationResult(false, "downloaded_dictionary_pictures(com.application.isyara.data.local.DownloadedDictionaryPicture).\n"
+                  + " Expected:\n" + _infoDownloadedDictionaryPictures + "\n"
+                  + " Found:\n" + _existingDownloadedDictionaryPictures);
+        }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "4d83170070bf5fc59e5e0a4eba49d597", "dc8ec8163473bcbccdb67681fbf25473");
+    }, "964b0a0f3af55d9775b512a6673c5a20", "23e82aba7d3b0e490fd188454654edc2");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;
@@ -131,7 +149,7 @@ public final class AppDatabase_Impl extends AppDatabase {
   protected InvalidationTracker createInvalidationTracker() {
     final HashMap<String, String> _shadowTablesMap = new HashMap<String, String>(0);
     final HashMap<String, Set<String>> _viewTables = new HashMap<String, Set<String>>(0);
-    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "downloaded_dictionary","translated_texts");
+    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "downloaded_dictionary","translated_texts","downloaded_dictionary_pictures");
   }
 
   @Override
@@ -142,6 +160,7 @@ public final class AppDatabase_Impl extends AppDatabase {
       super.beginTransaction();
       _db.execSQL("DELETE FROM `downloaded_dictionary`");
       _db.execSQL("DELETE FROM `translated_texts`");
+      _db.execSQL("DELETE FROM `downloaded_dictionary_pictures`");
       super.setTransactionSuccessful();
     } finally {
       super.endTransaction();
@@ -158,6 +177,7 @@ public final class AppDatabase_Impl extends AppDatabase {
     final HashMap<Class<?>, List<Class<?>>> _typeConvertersMap = new HashMap<Class<?>, List<Class<?>>>();
     _typeConvertersMap.put(DownloadedDictionaryDao.class, DownloadedDictionaryDao_Impl.getRequiredConverters());
     _typeConvertersMap.put(TranslatedTextDao.class, TranslatedTextDao_Impl.getRequiredConverters());
+    _typeConvertersMap.put(DownloadDictionaryPictureDao.class, DownloadDictionaryPictureDao_Impl.getRequiredConverters());
     return _typeConvertersMap;
   }
 
@@ -200,6 +220,20 @@ public final class AppDatabase_Impl extends AppDatabase {
           _translatedTextDao = new TranslatedTextDao_Impl(this);
         }
         return _translatedTextDao;
+      }
+    }
+  }
+
+  @Override
+  public DownloadDictionaryPictureDao downloadDictionaryPictureDao() {
+    if (_downloadDictionaryPictureDao != null) {
+      return _downloadDictionaryPictureDao;
+    } else {
+      synchronized(this) {
+        if(_downloadDictionaryPictureDao == null) {
+          _downloadDictionaryPictureDao = new DownloadDictionaryPictureDao_Impl(this);
+        }
+        return _downloadDictionaryPictureDao;
       }
     }
   }

@@ -13,20 +13,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.application.isyara.R
 import com.application.isyara.navigation.NavRoute
-import com.application.isyara.viewmodel.auth.LoginViewModel
+import com.application.isyara.viewmodel.auth.AuthViewModel
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
 @Composable
-fun SplashScreen(navController: NavHostController, viewModel: LoginViewModel = hiltViewModel()) {
+fun SplashScreen(navController: NavHostController, viewModel: AuthViewModel = hiltViewModel()) {
     val tokenState by viewModel.sessionManager.tokenFlow.collectAsState(initial = null)
 
     LaunchedEffect(key1 = true) {
@@ -45,10 +43,9 @@ fun SplashScreen(navController: NavHostController, viewModel: LoginViewModel = h
         }
     }
 
-    // Tampilan Splash
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xFF0077EE) // Blue80
+        color = Color(0xFF0077EE)
     ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -63,10 +60,4 @@ fun SplashScreen(navController: NavHostController, viewModel: LoginViewModel = h
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun SplashScreenPreview() {
-    SplashScreen(navController = NavHostController(LocalContext.current))
 }

@@ -30,6 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.application.isyara.ui.auth.ChangePasswordScreen
 import com.application.isyara.ui.auth.ResetPasswordScreen
 import com.application.isyara.ui.auth.SplashScreen
 import com.application.isyara.ui.main.dashboard.DashboardScreen
@@ -37,7 +38,8 @@ import com.application.isyara.ui.main.dashboard.NotificationsScreen
 import com.application.isyara.ui.main.dashboard.SearchScreen
 import com.application.isyara.ui.main.dashboard.TipsScreen
 import com.application.isyara.ui.main.dictionary.DictionaryScreen
-import com.application.isyara.ui.main.dictionary.SIBIScreen
+import com.application.isyara.ui.main.dictionary.SibiVideoScreen
+import com.application.isyara.ui.main.dictionary.SibiPictureScreen
 import com.application.isyara.ui.main.dictionary.VideoPlayerScreen
 import com.application.isyara.ui.main.history.HistoryScreen
 import com.application.isyara.ui.main.settings.AboutIsyaraScreen
@@ -98,7 +100,6 @@ fun AppMainNavGraph(navController: NavHostController) {
                     SplashScreen(navController)
                 }
 
-                // Auth navigation graph
                 authNavGraph(navController)
 
                 composable(
@@ -136,8 +137,11 @@ fun AppMainNavGraph(navController: NavHostController) {
                 composable(NavRoute.Dictionary.route) {
                     DictionaryScreen(navController = navController)
                 }
-                composable(NavRoute.SIBI.route) {
-                    SIBIScreen(navController = navController)
+                composable(NavRoute.SibiVideo.route) {
+                    SibiVideoScreen(navController = navController)
+                }
+                composable(NavRoute.SibiPicture.route) {
+                    SibiPictureScreen(navController = navController)
                 }
                 composable(
                     route = NavRoute.VideoPlayer.route,
@@ -171,17 +175,16 @@ fun AppMainNavGraph(navController: NavHostController) {
                     )
                 }
 
-                  // Tambahkan rute baru untuk ChangePasswordScreen
                 composable(NavRoute.ChangePassword.route) {
                     ChangePasswordScreen(
                         onBackClick = { navController.popBackStack() },
                         onPasswordChangeSuccess = {
-                            navController.popBackStack() // Navigasi kembali setelah sukses
-                            navController.navigate(NavRoute.Dashboard.route) // Opsional, arahkan ke dashboard setelah sukses
+                            navController.popBackStack()
+                            navController.navigate(NavRoute.Dashboard.route)
                         }
                     )
                 }
-                
+
                 composable(NavRoute.LanguageSettings.route) {
                     LanguageSettingsScreen(
                         navController = navController,

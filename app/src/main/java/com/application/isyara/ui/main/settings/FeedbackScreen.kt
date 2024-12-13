@@ -28,11 +28,12 @@ import com.application.isyara.viewmodel.auth.AuthViewModel
 import com.application.isyara.data.model.FeedbackRequest
 import com.application.isyara.utils.state.Result
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.application.isyara.viewmodel.settings.FeedbackViewModel
 
 @Composable
 fun FeedbackScreen(
     navController: NavController,
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: FeedbackViewModel = hiltViewModel()
 ) {
     // State untuk input email dan deskripsi
     var email by remember { mutableStateOf("") }
@@ -45,19 +46,19 @@ fun FeedbackScreen(
     // Menangani feedback pengiriman
     when (feedbackState) {
         is Result.Loading -> {
-            // Menampilkan loading ketika sedang memproses pengiriman feedback
             Toast.makeText(context, "Mengirim feedback...", Toast.LENGTH_SHORT).show()
         }
+
         is Result.Success -> {
-            // Menampilkan pesan sukses saat feedback terkirim
             Toast.makeText(context, "Feedback berhasil terkirim!", Toast.LENGTH_SHORT).show()
         }
+
         is Result.Error -> {
-            // Menampilkan pesan kesalahan jika ada masalah dalam mengirim feedback
             Toast.makeText(context, "Error: ${feedbackState.message}", Toast.LENGTH_SHORT).show()
         }
+
         else -> {
-            // Tidak ada state yang aktif, biarkan tetap kosong
+
         }
     }
 
@@ -66,10 +67,9 @@ fun FeedbackScreen(
             .fillMaxSize()
             .background(Color(0xFFF7F7F7))
     ) {
-        // Header dengan warna primary
         AppHeaderMain(
             title = "Feedback Pengguna",
-            onBackClick = { navController.popBackStack() }, // Gunakan NavController untuk kembali
+            onBackClick = { navController.popBackStack() },
             backgroundColor = Brush.horizontalGradient(
                 colors = listOf(Color(0xFF008E9B), Color(0xFF00B4D8))
             )
@@ -109,8 +109,8 @@ fun FeedbackScreen(
             Button(
                 onClick = {
                     val feedbackRequest = FeedbackRequest(email, description)
-                    authViewModel.sendFeedback(feedbackRequest) // Mengirim feedback melalui ViewModel
-                    navController.popBackStack() // Navigasi kembali setelah mengirim feedback
+                    authViewModel.sendFeedback(feedbackRequest)
+                    navController.popBackStack()
                 },
                 enabled = email.isNotBlank() && description.isNotBlank(),
                 modifier = Modifier

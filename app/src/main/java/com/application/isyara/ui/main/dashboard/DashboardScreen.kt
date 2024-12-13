@@ -70,7 +70,7 @@ import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.state.Result
 import com.application.isyara.utils.main.AppHeaderMain
 import com.application.isyara.utils.main.QuickAccessItem
-import com.application.isyara.viewmodel.auth.LoginViewModel
+import com.application.isyara.viewmodel.auth.AuthViewModel
 import com.application.isyara.viewmodel.main.ProfileViewModel
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
@@ -84,7 +84,7 @@ fun DashboardScreen(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     val scrollState = rememberScrollState()
-    val profileState by profileViewModel.profile.collectAsState()
+    val profileState by profileViewModel.profileState.collectAsState()
     val scrollThreshold = 50
     val isScrolled by remember {
         derivedStateOf { scrollState.value > scrollThreshold }
@@ -216,7 +216,7 @@ fun DashboardScreen(
 fun ProfileCardSmall(
     navController: NavController,
     fullName: String,
-    loginViewModel: LoginViewModel = hiltViewModel()
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     val cardWidth = 230.dp
     val cardHeight = 250.dp
@@ -281,7 +281,7 @@ fun ProfileCardSmall(
             if (showLogoutDialog) {
                 LogoutConfirmationDialog(
                     onConfirm = {
-                        loginViewModel.logout()
+                        viewModel.logout()
                         navController.navigate(NavRoute.Onboarding.route) {
                             popUpTo(NavRoute.Settings.route) { inclusive = true }
                         }
@@ -469,7 +469,7 @@ fun QuickAccessCard(screenWidth: Int, navController: NavController) {
                             }
 
                             "SIBI" -> {
-                                navController.navigate(NavRoute.SIBI.route)
+                                navController.navigate(NavRoute.SibiVideo.route)
                             }
 
                             "Lainnya" -> {}
