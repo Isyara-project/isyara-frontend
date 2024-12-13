@@ -17,21 +17,16 @@ import javax.inject.Inject
 class FeedbackViewModel @Inject constructor(private val feedbackRepository: FeedbackRepository) :
     ViewModel() {
 
-
-    private val _feedbackState = MutableStateFlow<Result<FeedbackResponse>>(Result.Loading)
+    private val _feedbackState = MutableStateFlow<Result<FeedbackResponse>>(Result.Idle)
     val feedbackState: StateFlow<Result<FeedbackResponse>> get() = _feedbackState
-
-    private val _feedbackHistoriesState =
-        MutableStateFlow<Result<FeedbackHistoryResponse>>(Result.Loading)
-    val feedbackHistoriesState: StateFlow<Result<FeedbackHistoryResponse>> get() = _feedbackHistoriesState
 
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean> get() = _loadingState
 
-
     fun sendFeedback(feedbackRequest: FeedbackRequest) {
         viewModelScope.launch {
             _loadingState.value = true
+            _feedbackState.value = Result.Loading
             try {
                 feedbackRepository.sendFeedback(feedbackRequest).collect { result ->
                     _feedbackState.value = result
@@ -43,21 +38,4 @@ class FeedbackViewModel @Inject constructor(private val feedbackRepository: Feed
             }
         }
     }
-
-    fun getFeedbackHistories() {
-        viewModelScope.launch {
-            _loadingState.value = true
-            try {
-                feedbackRepository.getFeedbackHistories().collect { result ->
-                    _feedbackHistoriesState.value = result
-                }
-            } catch (e: Exception) {
-                _feedbackHistoriesState.value =
-                    Result.Error("Fetching feedback histories failed: ${e.message}")
-            } finally {
-                _loadingState.value = false
-            }
-        }
-    }
-
 }
