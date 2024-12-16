@@ -61,7 +61,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
@@ -69,14 +71,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.application.isyara.R
+import com.application.isyara.data.model.ProfileData
 import com.application.isyara.navigation.NavRoute
+import com.application.isyara.ui.viewmodel.UsageStatisticViewModel
 import com.application.isyara.utils.state.Result
 import com.application.isyara.utils.main.AppHeaderMain
 import com.application.isyara.utils.main.QuickAccessItem
 import com.application.isyara.viewmodel.auth.AuthViewModel
-import com.application.isyara.viewmodel.main.ProfileViewModel
+import com.application.isyara.viewmodel.dashboard.ProfileViewModel
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
@@ -86,8 +93,7 @@ fun DashboardScreen(
     navController: NavController,
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
     val profileState by profileViewModel.profileState.collectAsState()
     val scrollThreshold = 50
@@ -96,7 +102,9 @@ fun DashboardScreen(
         derivedStateOf { scrollState.value > scrollThreshold }
     }
     val headerBackgroundColor by animateColorAsState(
-        targetValue = if (isScrolled) Color.White else Color.Transparent,
+        targetValue = if (isScrolled) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surface.copy(
+            alpha = 0f
+        ),
         animationSpec = tween(durationMillis = 500),
         label = "colorAnimation"
     )
@@ -107,17 +115,30 @@ fun DashboardScreen(
     }
 
     val fullName = when (profileState) {
-        is Result.Idle -> null
-        is Result.Loading -> null
+        is Result.Idle, is Result.Loading -> stringResource(R.string.loading_profile_data)
         is Result.Success -> (profileState as Result.Success).data.fullname
-        is Result.Error -> null
+        is Result.Error -> stringResource(R.string.failed_loading_profile)
+    }
+
+    val pictureUrl = when (profileState) {
+        is Result.Success -> {
+            val originalUrl = (profileState as Result.Success<ProfileData>).data.picture
+            originalUrl?.replace(
+                "https://storage.cloud.google.com/",
+                "https://storage.googleapis.com/"
+            )?.let {
+                "$it?timestamp=${System.currentTimeMillis()}"
+            }
+        }
+
+        else -> null
     }
 
     val logoColor by animateColorAsState(
         targetValue = if (isScrolled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary,
-        animationSpec = tween(durationMillis = 500), label = ""
+        animationSpec = tween(durationMillis = 500),
+        label = ""
     )
-
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -130,30 +151,27 @@ fun DashboardScreen(
 
             Text(
                 text = when (profileState) {
-                    is Result.Idle -> "Memuat profil data..."
-                    is Result.Loading -> "Memuat profil data..."
-                    is Result.Success -> "Selamat Datang, $fullName!"
-                    is Result.Error -> "Gagal memuat profil"
+                    is Result.Idle, is Result.Loading -> context.getString(R.string.loading_profile_data)
+                    is Result.Success -> stringResource(R.string.welcome, fullName)
+                    is Result.Error -> context.getString(R.string.failed_loading_profile)
                 },
                 fontSize = 20.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                style = MaterialTheme.typography.bodyLarge
             )
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            // Hot News Carousel
             HotNewsCarousel()
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Usage Statistics
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
                 UsageStatistics()
@@ -161,19 +179,13 @@ fun DashboardScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Quick Access Card
             QuickAccessCard(
                 navController = navController
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            DevelopmentSection()
-
-            Spacer(modifier = Modifier.height(16.dp))
         }
 
-        // Background Gradient
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -190,7 +202,6 @@ fun DashboardScreen(
                 .zIndex(-1f)
         )
 
-        // Header
         AppHeaderMain(
             title = "Isyara",
             backgroundColor = Brush.verticalGradient(
@@ -215,16 +226,22 @@ fun DashboardScreen(
                     .align(alignment = Alignment.TopEnd)
                     .offset(y = 50.dp)
             ) {
-                ProfileCardSmall(navController = navController, fullName = fullName ?: "User")
+                ProfileCardSmall(
+                    navController = navController,
+                    fullName = fullName,
+                    pictureUrl = pictureUrl
+                )
             }
         }
     }
 }
 
+
 @Composable
 fun ProfileCardSmall(
     navController: NavController,
     fullName: String,
+    pictureUrl: String?,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val cardWidth = 230.dp
@@ -236,8 +253,7 @@ fun ProfileCardSmall(
             .width(cardWidth)
             .height(cardHeight)
             .padding(16.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFFf0f0f0))
+            .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(16.dp))
             .zIndex(3f)
     ) {
         Column(
@@ -249,41 +265,62 @@ fun ProfileCardSmall(
             Box(
                 modifier = Modifier
                     .size(72.dp)
-                    .background(Color(0xFFE1F5FE), CircleShape)
-                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), CircleShape)
+                    .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                    .shadow(4.dp, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                IconButton(
-                    onClick = {
-                        navController.navigate(NavRoute.EditAccount.route)
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
+                if (!pictureUrl.isNullOrEmpty()) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(pictureUrl)
+                            .crossfade(true)
+                            .build(),
                         contentDescription = "Foto Profil",
-                        modifier = Modifier.size(60.dp),
-                        tint = Color(0xFF008E9B)
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(60.dp)
+                            .clip(CircleShape),
+                        placeholder = painterResource(R.drawable.ic_image_placeholder),
+                        error = painterResource(R.drawable.ic_error)
                     )
+                } else {
+                    IconButton(
+                        onClick = {
+                            navController.navigate(NavRoute.EditAccount.route)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Foto Profil",
+                            modifier = Modifier.size(60.dp),
+                            tint = MaterialTheme.colorScheme.tertiary
+                        )
+                    }
                 }
             }
 
             Text(
                 text = fullName,
                 style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Button(
                 onClick = { showLogoutDialog = true },
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .height(36.dp)
-                    .fillMaxWidth(0.6f),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                    .height(28.dp)
+                    .fillMaxWidth(0.5f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) {
                 Text(
                     text = "Logout",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -310,22 +347,22 @@ fun ProfileCardSmall(
 fun LogoutConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Konfirmasi Logout") },
-        text = { Text("Apakah Anda yakin ingin keluar?") },
+        title = { Text(stringResource(R.string.confirm_logout)) },
+        text = { Text(stringResource(R.string.sure_logout)) },
         confirmButton = {
             TextButton(
                 onClick = {
                     onConfirm()
                 }
             ) {
-                Text("Ya")
+                Text(stringResource(R.string.yes))
             }
         },
         dismissButton = {
             TextButton(
                 onClick = onDismiss
             ) {
-                Text("Batal")
+                Text(stringResource(R.string.no))
             }
         }
     )
@@ -366,7 +403,8 @@ fun HotNewsCarousel() {
                 .fillMaxWidth()
                 .height(200.dp)
                 .offset { IntOffset(offsetX.roundToInt(), 0) }
-                .clip(RoundedCornerShape(12.dp)),
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.tertiary),
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -379,13 +417,13 @@ fun HotNewsCarousel() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f))
+                    .background(MaterialTheme.colorScheme.onTertiary.copy(alpha = 0.3f))
             ) {
                 Text(
                     text = newsItems[currentIndex],
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onTertiary,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .align(Alignment.Center)
@@ -400,7 +438,10 @@ fun HotNewsCarousel() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             repeat(newsItems.size) { index ->
-                val color = if (index == currentIndex) Color(0xFF008E9B) else Color.Gray
+                val color =
+                    if (index == currentIndex) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurface.copy(
+                        alpha = 0.5f
+                    )
                 Box(
                     modifier = Modifier
                         .size(8.dp)
@@ -413,13 +454,17 @@ fun HotNewsCarousel() {
 
 
 @Composable
-fun UsageStatistics() {
+fun UsageStatistics(
+    usageStatisticViewModel: UsageStatisticViewModel = hiltViewModel()
+) {
+    val context = LocalContext.current
+    val totalCharacters by usageStatisticViewModel.totalCharacters.collectAsState()
+    val totalDownloadedDictionaries by usageStatisticViewModel.totalDownloadedDictionaries.collectAsState()
+    val totalDownloadedPictureDictionaries by usageStatisticViewModel.totalDownloadedPictureDictionaries.collectAsState()
+
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
@@ -428,13 +473,33 @@ fun UsageStatistics() {
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 120.dp)
-                .padding(16.dp),
+                .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            StatisticItem("Translate", "10 kata")
-            StatisticItem("Kamus", "5 kata")
-            StatisticItem("Waktu", "30 menit")
+            StatisticItem(
+                stringResource(R.string.translate),
+                if (totalCharacters >= 0) stringResource(
+                    R.string.letter,
+                    totalCharacters
+                ) else stringResource(
+                    R.string.loading
+                )
+            )
+            StatisticItem(
+                stringResource(R.string.dictionary_video),
+                if (totalDownloadedDictionaries >= 0) stringResource(
+                    R.string.download,
+                    totalDownloadedDictionaries
+                ) else context.getString(R.string.loading)
+            )
+            StatisticItem(
+                stringResource(R.string.dictionary_picture),
+                if (totalDownloadedDictionaries >= 0) stringResource(
+                    R.string.download,
+                    totalDownloadedPictureDictionaries
+                ) else context.getString(R.string.loading)
+            )
         }
     }
 }
@@ -463,6 +528,7 @@ fun StatisticItem(title: String, value: String) {
 
 @Composable
 fun QuickAccessCard(navController: NavController) {
+    val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     val columns = when {
@@ -474,33 +540,34 @@ fun QuickAccessCard(navController: NavController) {
     val quickAccessItems = listOf(
         QuickAccessItem(
             imageVector = Icons.Default.Translate,
-            label = "Translate",
-            backgroundColor = Color(0xFF1E88E5),
-            contentDescription = "Terjemahkan teks"
+            label = stringResource(R.string.translate),
+            backgroundColor = MaterialTheme.colorScheme.primary,
+            contentDescription = stringResource(R.string.text_translate)
         ),
-        QuickAccessItem(
-            imageVector = Icons.Default.TipsAndUpdates,
-            label = "Tips Belajar",
-            backgroundColor = Color(0xFFFB8C00),
-            contentDescription = "Tips dan Pembaruan"
-        ),
+
         QuickAccessItem(
             painter = painterResource(id = R.drawable.ic_sibi_huruf),
-            label = "Sibi Gambar",
-            backgroundColor = Color(0xFF587FC0),
-            contentDescription = "Gambar SIBI"
+            label = stringResource(R.string.sibi_picture),
+            backgroundColor = MaterialTheme.colorScheme.tertiary,
+            contentDescription = stringResource(R.string.sibi_picture)
         ),
         QuickAccessItem(
             painter = painterResource(id = R.drawable.ic_sibi),
-            label = "Sibi Video",
-            backgroundColor = Color(0xFF5387E1),
-            contentDescription = "Video SIBI"
+            label = stringResource(R.string.sibi_video),
+            backgroundColor = MaterialTheme.colorScheme.primary,
+            contentDescription = stringResource(R.string.sibi_video)
+        ),
+        QuickAccessItem(
+            imageVector = Icons.Default.TipsAndUpdates,
+            label = stringResource(R.string.tips_study),
+            backgroundColor = MaterialTheme.colorScheme.secondary,
+            contentDescription = stringResource(R.string.tips_isyarat)
         ),
         QuickAccessItem(
             imageVector = Icons.Default.MoreHoriz,
-            label = "Lainnya",
-            backgroundColor = Color(0xFF757575),
-            contentDescription = "Opsi Lainnya"
+            label = stringResource(R.string.another),
+            backgroundColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+            contentDescription = stringResource(R.string.another)
         )
     )
 
@@ -509,25 +576,20 @@ fun QuickAccessCard(navController: NavController) {
     if (showMoreDialog) {
         AlertDialog(
             onDismissRequest = { showMoreDialog = false },
-            title = { Text("Lainnya") },
+            title = { Text(stringResource(R.string.another)) },
             text = {
                 Column {
                     TextButton(onClick = {
                         showMoreDialog = false
                         navController.navigate(NavRoute.Settings.route)
                     }) {
-                        Text("Settings")
-                    }
-                    TextButton(onClick = {
-                        showMoreDialog = false
-                    }) {
-                        Text("Help & Support")
+                        Text(stringResource(R.string.settings))
                     }
                 }
             },
             confirmButton = {
                 TextButton(onClick = { showMoreDialog = false }) {
-                    Text("Tutup")
+                    Text(stringResource(R.string.close))
                 }
             }
         )
@@ -538,11 +600,10 @@ fun QuickAccessCard(navController: NavController) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .heightIn(min = 120.dp, max = 200.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
-        )
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
@@ -561,11 +622,20 @@ fun QuickAccessCard(navController: NavController) {
                     contentDescription = item.contentDescription,
                     onClick = {
                         when (item.label) {
-                            "Translate" -> navController.navigate(NavRoute.Translate.route)
-                            "Tips Belajar" -> navController.navigate(NavRoute.TipsBelajar.route)
-                            "Sibi Gambar" -> navController.navigate(NavRoute.SibiPicture.route)
-                            "Sibi Video" -> navController.navigate(NavRoute.SibiVideo.route)
-                            "Lainnya" -> showMoreDialog = true
+                            context.getString(R.string.translate) -> navController.navigate(NavRoute.Translate.route)
+                            context.getString(R.string.tips_study) -> navController.navigate(
+                                NavRoute.TipsBelajar.route
+                            )
+
+                            context.getString(R.string.sibi_picture) -> navController.navigate(
+                                NavRoute.SibiPicture.route
+                            )
+
+                            context.getString(R.string.sibi_video) -> navController.navigate(
+                                NavRoute.SibiVideo.route
+                            )
+
+                            context.getString(R.string.another) -> showMoreDialog = true
                         }
                     }
                 )
@@ -600,7 +670,7 @@ fun QuickAccessIcon(
                     Icon(
                         imageVector = imageVector,
                         contentDescription = contentDescription,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onTertiary,
                         modifier = Modifier.size(30.dp)
                     )
                 }
@@ -618,7 +688,7 @@ fun QuickAccessIcon(
                     Icon(
                         imageVector = Icons.Default.MoreHoriz,
                         contentDescription = "Placeholder",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                         modifier = Modifier.size(30.dp)
                     )
                 }
@@ -636,28 +706,3 @@ fun QuickAccessIcon(
         )
     }
 }
-
-
-@Composable
-fun DevelopmentSection() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Pengembangan Lebih Lanjut",
-                fontSize = 14.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-

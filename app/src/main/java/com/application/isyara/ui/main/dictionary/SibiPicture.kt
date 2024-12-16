@@ -18,6 +18,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,12 +28,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.application.isyara.R
 import com.application.isyara.data.model.DictionaryPictureItem
 import com.application.isyara.utils.dictionary.ImageItems
 import com.application.isyara.utils.dictionary.PictureItem
@@ -48,10 +51,11 @@ fun SibiPictureScreen(
     viewModel: DictionaryPictureViewModel = hiltViewModel()
 ) {
     AlphabetScreen(
-        title = "Sibi Dictionary",
-        descriptionTitle = "Apa itu Sibi?",
-        description = "SIBI (Sistem Isyarat Bahasa Indonesia) adalah bahasa isyarat yang digunakan oleh komunitas tunarungu di Indonesia. SIBI dirancang untuk memberikan representasi tata bahasa Indonesia dalam bentuk isyarat.",
-        alphabetTitle = "Daftar Gambar",
+        title = stringResource(R.string.dictionary_picture_isyarat),
+        descriptionTitle = stringResource(R.string.what_sibi),
+
+        description = stringResource(R.string.description_sibi),
+        alphabetTitle = stringResource(R.string.list_picture),
         navController = navController,
         viewModel = viewModel
     )
@@ -74,13 +78,16 @@ fun AlphabetScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F7F7))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // App Header
         AppHeaderMain(
             title = title,
             backgroundColor = Brush.horizontalGradient(
-                colors = listOf(Color(0xFF008E9B), Color(0xFF00B4D8))
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary
+                )
             ),
             onBackClick = { navController.popBackStack() }
         )
@@ -105,8 +112,8 @@ fun AlphabetScreen(
         when (state) {
             is Result.Idle -> {
                 Text(
-                    text = "Silakan cari gambar di atas.",
-                    color = Color.Gray,
+                    text = stringResource(R.string.start_search),
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 16.sp,
                     modifier = Modifier
                         .padding(16.dp)
@@ -145,7 +152,7 @@ fun AlphabetScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Tidak ada gambar ditemukan.",
+                            text = stringResource(R.string.nothing_picture),
                             color = Color.Gray,
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center
@@ -173,7 +180,7 @@ fun AlphabetScreen(
                                     viewModel.downloadPicture(url)
                                     Toast.makeText(
                                         context,
-                                        "Gambar berhasil diunduh.",
+                                        context.getString(R.string.picture_success_download),
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 },
@@ -181,7 +188,7 @@ fun AlphabetScreen(
                                     viewModel.deleteDownloadedPicture(urlToDelete)
                                     Toast.makeText(
                                         context,
-                                        "Gambar berhasil dihapus.",
+                                        context.getString(R.string.picture_success_delete),
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
@@ -203,7 +210,6 @@ fun AlphabetScreen(
                 )
             }
 
-            else -> {}
         }
     }
 }
@@ -227,7 +233,7 @@ fun SearchBarPicture(query: String, onSearch: (String) -> Unit) {
         leadingIcon = {
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")
         },
-        placeholder = { Text("Cari isyarat...") },
+        placeholder = { Text(stringResource(R.string.search_isyarat)) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp),
@@ -235,8 +241,8 @@ fun SearchBarPicture(query: String, onSearch: (String) -> Unit) {
         shape = RoundedCornerShape(8.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             unfocusedBorderColor = Color.Gray,
-            focusedBorderColor = Color(0xFF008E9B),
-            cursorColor = Color(0xFF008E9B),
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            cursorColor = MaterialTheme.colorScheme.primary,
             textColor = Color.Black,
             placeholderColor = Color.Gray,
             backgroundColor = Color.White

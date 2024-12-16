@@ -26,12 +26,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.application.isyara.R
 import com.application.isyara.utils.main.AppHeaderMain
 
 @Composable
@@ -45,7 +47,7 @@ fun PictureDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F7F7))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         AppHeaderMain(
             title = "Detail Gambar",
@@ -108,7 +110,7 @@ fun PictureDetailScreen(
 
             if (hasError) {
                 Text(
-                    text = "Gagal memuat gambar.",
+                    text = stringResource(R.string.failed_loading_picture),
                     color = Color.Red,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,

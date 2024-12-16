@@ -68,6 +68,7 @@ interface ApiService {
 
     @PATCH("change-password")
     suspend fun changePassword(
+        @Header("Authorization") token: String,
         @Body changePasswordRequest: ChangePasswordRequest
     ): ChangePasswordResponse
 
@@ -92,9 +93,7 @@ interface ApiService {
     @POST("edit-profile")
     suspend fun updateProfile(
         @Header("Authorization") token: String,
-        @Part file: MultipartBody.Part?,
-        @Part("fullname") fullname: RequestBody,
-        @Part("bio") bio: RequestBody
+        @Part file: MultipartBody.Part?
     ): UpdateProfileResponse
 
 

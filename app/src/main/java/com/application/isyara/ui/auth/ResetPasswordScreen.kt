@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -61,15 +62,15 @@ fun ResetPasswordScreen(
     fun handleOtpVerification() {
         when {
             otp.isBlank() -> {
-                otpError = "Kode OTP harus diisi!"
+                otpError = context.getString(R.string.otp_must_filled)
             }
             otp.length != 6 || !otp.all { it.isDigit() } -> {
-                otpError = "Kode OTP harus terdiri dari 6 digit angka!"
+                otpError = context.getString(R.string.otp_must_6)
             }
             else -> {
                 otpError = null
                 isOtpVerified = true
-                Toast.makeText(context, "OTP berhasil diverifikasi!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.otp_successfully_verified), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -85,21 +86,21 @@ fun ResetPasswordScreen(
         var isValid = true
 
         if (password.isBlank()) {
-            passwordError = "Password tidak boleh kosong!"
+            passwordError = context.getString(R.string.password_must_filled)
             isValid = false
         } else if (password.length < 8 || password.length > 16) {
-            passwordError = "Password harus memiliki panjang 8-16 karakter!"
+            passwordError = context.getString(R.string.password_8_16)
             isValid = false
         } else if (!password.matches(Regex("^(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&#]).+$"))) {
-            passwordError = "Password harus mengandung 1 huruf besar, 1 angka, dan 1 karakter spesial!"
+            passwordError = context.getString(R.string.password_must_complete)
             isValid = false
         }
 
         if (confirmPassword.isBlank()) {
-            confirmPasswordError = "Konfirmasi password tidak boleh kosong!"
+            confirmPasswordError = context.getString(R.string.confirm_password_must_filled)
             isValid = false
         } else if (password != confirmPassword) {
-            confirmPasswordError = "Kata sandi dan konfirmasi kata sandi tidak cocok!"
+            confirmPasswordError = context.getString(R.string.password_not_same)
             isValid = false
         }
 
@@ -119,7 +120,8 @@ fun ResetPasswordScreen(
 
             is Result.Success -> {
                 isLoading = false
-                Toast.makeText(context, "Password berhasil diatur ulang!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,
+                    context.getString(R.string.password_succes), Toast.LENGTH_SHORT).show()
                 navController.navigate(NavRoute.Login.route) {
                     popUpTo(NavRoute.ResetPassword.route) { inclusive = true }
                 }
@@ -154,7 +156,7 @@ fun ResetPasswordScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         // Header Section
         AppHeaderAuth(
-            title = "Atur Ulang Kata Sandi",
+            title = stringResource(R.string.reset_password),
             backgroundDrawable = R.drawable.header_isyara
         )
 
@@ -171,8 +173,8 @@ fun ResetPasswordScreen(
                 CustomInputField(
                     value = otp,
                     onValueChange = { otp = it },
-                    label = "Kode OTP",
-                    placeholder = "Masukkan kode OTP",
+                    label = context.getString(R.string.input_otp),
+                    placeholder = context.getString(R.string.input_otp),
                     isError = otpError != null,
                     errorMessage = otpError,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -191,15 +193,15 @@ fun ResetPasswordScreen(
                                 .padding(end = 8.dp)
                         )
                     }
-                    Text(text = if (isLoading) "Memproses..." else "Verifikasi OTP")
+                    Text(text = if (isLoading) context.getString(R.string.process) else context.getString(R.string.verify_otp))
                 }
             } else {
 
                 CustomInputField(
                     value = password,
                     onValueChange = { password = it },
-                    label = "Password Baru",
-                    placeholder = "Masukkan password baru",
+                    label = context.getString(R.string.new_password),
+                    placeholder = context.getString(R.string.new_password),
                     isError = passwordError != null,
                     errorMessage = passwordError,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
@@ -208,8 +210,8 @@ fun ResetPasswordScreen(
                 CustomInputField(
                     value = confirmPassword,
                     onValueChange = { confirmPassword = it },
-                    label = "Konfirmasi Password",
-                    placeholder = "Masukkan konfirmasi password",
+                    label = context.getString(R.string.confirm_password),
+                    placeholder = context.getString(R.string.password_must_filled),
                     isError = confirmPasswordError != null,
                     errorMessage = confirmPasswordError,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
@@ -228,7 +230,7 @@ fun ResetPasswordScreen(
                                 .padding(end = 8.dp)
                         )
                     }
-                    Text(text = if (isLoading) "Memproses..." else "Atur Ulang Kata Sandi")
+                    Text(text = if (isLoading) context.getString(R.string.process) else context.getString(R.string.reset_password))
                 }
 
                 errorMessage?.let {

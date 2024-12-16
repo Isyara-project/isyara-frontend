@@ -37,14 +37,15 @@ fun DictionaryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F7F7))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         AppHeaderMain(
-            title = "Isyara Dictionary",
+            title = "Isyara Kamus",
             backgroundColor = Brush.horizontalGradient(
                 colors = listOf(
                     MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.secondary)
+                    MaterialTheme.colorScheme.secondary
+                )
             ),
             showDashboardElements = false,
             isTopLevelPage = true
@@ -64,7 +65,7 @@ fun DictionaryScreen(
                 DictionaryOptionCard(
                     iconRes = R.drawable.ic_sibi,
                     label = "Kamus Sibi Video",
-                    backgroundColor = Color(0xFFFFD54F),
+                    backgroundColor = MaterialTheme.colorScheme.secondary,
                     onClick = {
                         navController.navigate(NavRoute.SibiVideo.route)
                     }
@@ -73,7 +74,7 @@ fun DictionaryScreen(
                 DictionaryOptionCard(
                     iconRes = R.drawable.ic_bisindo,
                     label = "Kamus Sibi Huruf",
-                    backgroundColor = Color(0xFF4CAF50),
+                    backgroundColor = MaterialTheme.colorScheme.tertiary,
                     onClick = {
                         navController.navigate(NavRoute.SibiPicture.route)
                     }
@@ -119,7 +120,7 @@ fun DictionaryOptionCard(
                     text = label,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }

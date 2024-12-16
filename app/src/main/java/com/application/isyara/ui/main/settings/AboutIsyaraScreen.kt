@@ -12,12 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.application.isyara.R
 import com.application.isyara.utils.main.AppHeaderMain
 
 @Composable
@@ -50,22 +52,18 @@ fun AboutIsyaraScreen(onBackClick: () -> Unit, navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AboutCard(
-                title = "Apa itu Isyara?",
-                description = "Isyara adalah aplikasi yang dirancang untuk membantu pengguna mempelajari dan menerjemahkan bahasa isyarat. Aplikasi ini bertujuan untuk meningkatkan komunikasi antara komunitas tunarungu dan masyarakat umum."
+                title = stringResource(R.string.what_is_isyara),
+                description = stringResource(R.string.description_isyara)
             )
 
             AboutCard(
-                title = "Fitur Utama",
-                description = """
-                    - Translate bahasa isyarat secara real-time menggunakan kamera.
-                    - Riwayat aktivitas untuk melacak fitur yang telah digunakan.
-                    - Pengaturan aplikasi yang mudah untuk menyesuaikan kebutuhan pengguna.
-                """.trimIndent()
+                title = stringResource(R.string.main_feature),
+                description = stringResource(R.string.descripstion_main_feature).trimIndent()
             )
 
             AboutCard(
-                title = "Misi Kami",
-                description = "Kami berkomitmen untuk mendukung inklusi sosial dengan menyediakan alat yang memudahkan komunikasi lintas komunitas."
+                title = stringResource(R.string.our_mission),
+                description = stringResource(R.string.description_our_mission)
             )
         }
 
@@ -73,7 +71,7 @@ fun AboutIsyaraScreen(onBackClick: () -> Unit, navController: NavController) {
 
         // Footer
         Text(
-            text = "Versi Aplikasi: 1.0.0",
+            text = stringResource(R.string.application_version),
             fontSize = 14.sp,
             color = Color.Gray,
             textAlign = TextAlign.Center,

@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -76,7 +77,7 @@ fun ForgotPasswordScreen(
                 val token = response.token
                 Toast.makeText(
                     context,
-                    "Link reset kata sandi telah dikirim ke email",
+                    context.getString(R.string.link_send_reset),
                     Toast.LENGTH_SHORT
                 ).show()
 
@@ -112,7 +113,7 @@ fun ForgotPasswordScreen(
     ) {
         // Header
         AppHeaderAuth(
-            title = "Lupa Kata Sandi",
+            title = stringResource(R.string.forgot_password),
             backgroundDrawable = R.drawable.header_isyara
         )
 
@@ -131,8 +132,8 @@ fun ForgotPasswordScreen(
                     email = it
                     localEmailError = null
                 },
-                label = "Email",
-                placeholder = "Masukkan email Anda",
+                label = context.getString(R.string.email),
+                placeholder = context.getString(R.string.email),
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
                 isError = localEmailError != null || serverEmailError != null,
                 errorMessage = localEmailError ?: serverEmailError
@@ -151,7 +152,7 @@ fun ForgotPasswordScreen(
                             .padding(end = 8.dp)
                     )
                 }
-                Text(text = if (isLoading) "Memproses..." else "Kirim")
+                Text(text = if (isLoading) context.getString(R.string.process) else context.getString(R.string.send))
             }
         }
     }

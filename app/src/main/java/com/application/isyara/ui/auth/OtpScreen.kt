@@ -275,7 +275,6 @@ fun OtpScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Tombol Resend OTP
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,

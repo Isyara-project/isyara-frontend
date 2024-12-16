@@ -68,12 +68,4 @@ class WordBreaker(private val dictionary: Dictionary) {
         dictionary.insert(word)
         cache[word.lowercase(Locale.getDefault())] = true
     }
-
-    /**
-     * Menghapus kata dari kamus dan cache.
-     */
-    fun remove(word: String) {
-        cache.remove(word.lowercase(Locale.getDefault()))
-        dictionary.remove(word)
-    }
 }

@@ -1,10 +1,14 @@
+@file:OptIn(FlowPreview::class)
+
 package com.application.isyara.viewmodel.translate
 
 import android.content.Context
+import android.os.SystemClock
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.application.isyara.data.local.TranslatedText
+import com.application.isyara.data.repository.ModelDownloadRepository
 import com.application.isyara.data.repository.TranslatedTextRepository
 import com.application.isyara.utils.state.Result
 import com.application.isyara.utils.translate.LandmarkerListener
@@ -13,6 +17,7 @@ import com.application.isyara.utils.translate.SignLanguageRecognizer
 import com.application.isyara.utils.translate.WordBreaker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -23,8 +28,21 @@ import javax.inject.Inject
 @HiltViewModel
 class TranslateViewModel @Inject constructor(
     private val translatedTextRepository: TranslatedTextRepository,
+    private val modelDownloadRepository: ModelDownloadRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel(), LandmarkerListener {
+
+    private val mediaPipeUrl =
+        "https://storage.googleapis.com/isyara_kamus_bucket/tools/hand_landmarker.task"
+    private val tfLiteUrl = "https://storage.googleapis.com/isyara_kamus_bucket/model/isyara.tflite"
+    private val mediaPipeFile = "hand_landmarker.task"
+    private val tfLiteFile = "isyara.tflite"
+
+    private val _downloadProgress = MutableStateFlow<Int>(0)
+    val downloadProgress: StateFlow<Int> = _downloadProgress.asStateFlow()
+
+    private val _isModelDownloading = MutableStateFlow(false)
+    val isModelDownloading: StateFlow<Boolean> = _isModelDownloading.asStateFlow()
 
     private val _predictionState = MutableStateFlow<Result<String>>(Result.Idle)
     val predictionState: StateFlow<Result<String>> = _predictionState.asStateFlow()
@@ -66,16 +84,74 @@ class TranslateViewModel @Inject constructor(
                         Result.Error("Unknown error during initialization", null)
                 }
             }
+            downloadModelsIfNeeded()
         }
 
         viewModelScope.launch {
             predictionFlow
                 .throttleLatest(1500)
+                .debounce(50)
                 .collect { prediction ->
                     processPrediction(prediction)
                 }
         }
     }
+
+
+    private suspend fun downloadModelsIfNeeded() {
+        try {
+            _isModelDownloading.value = true
+
+            if (!modelDownloadRepository.isModelDownloaded(mediaPipeFile)) {
+                Timber.d("TranslateViewModel: Mengunduh MediaPipe model...")
+                modelDownloadRepository.downloadModel(
+                    mediaPipeUrl,
+                    mediaPipeFile
+                ) { progress ->
+                    _downloadProgress.value = progress
+                }
+                Timber.d("TranslateViewModel: MediaPipe model berhasil diunduh.")
+            } else {
+                Timber.d("TranslateViewModel: MediaPipe model sudah ada.")
+            }
+
+            if (!modelDownloadRepository.isModelDownloaded(tfLiteFile)) {
+                Timber.d("TranslateViewModel: Mengunduh TensorFlow Lite model...")
+                modelDownloadRepository.downloadModel(
+                    tfLiteUrl,
+                    tfLiteFile
+                ) { progress ->
+                    _downloadProgress.value = progress
+                }
+                Timber.d("TranslateViewModel: TensorFlow Lite model berhasil diunduh.")
+            } else {
+                Timber.d("TranslateViewModel: TensorFlow Lite model sudah ada.")
+            }
+
+            _isModelDownloading.value = false
+            _downloadProgress.value = 0
+
+            if (!_isTranslationActive.value) {
+                signLanguageRecognizer = SignLanguageRecognizer(
+                    context = context,
+                    listener = this@TranslateViewModel,
+                    config = SignLanguageRecognizer.Config(
+                        isDetecting = true,
+                        modelAssetPath = mediaPipeFile,
+                        tfliteModelAssetPath = tfLiteFile,
+                        currentDelegate = SignLanguageRecognizer.DELEGATE_CPU
+                    )
+                )
+                Timber.d("TranslateViewModel: SignLanguageRecognizer diinisialisasi.")
+            }
+        } catch (e: Exception) {
+            _isModelDownloading.value = false
+            _downloadProgress.value = 0
+            Timber.e(e, "TranslateViewModel: Gagal mengunduh model")
+            _predictionState.value = Result.Error("Gagal mengunduh model: ${e.message}", -1)
+        }
+    }
+
 
     /**
      * Callback yang dipanggil ketika hasil deteksi bahasa isyarat tersedia.
@@ -112,17 +188,19 @@ class TranslateViewModel @Inject constructor(
                         translatedText.clear()
                         _predictionState.value = Result.Loading
                         _isTranslationActive.value = true
-                        // Menginisialisasi SignLanguageRecognizer baru
                         signLanguageRecognizer = SignLanguageRecognizer(
                             context = context,
                             listener = this@TranslateViewModel,
                             config = SignLanguageRecognizer.Config(
-                                isDetecting = true
+                                isDetecting = true,
+                                modelAssetPath = mediaPipeFile,
+                                tfliteModelAssetPath = tfLiteFile,
+                                currentDelegate = SignLanguageRecognizer.DELEGATE_CPU
                             )
                         )
+                        Timber.d("TranslateViewModel: SignLanguageRecognizer diinisialisasi saat aktivasi translasi.")
                     } else {
                         Timber.d("TranslateViewModel: Translation sudah aktif")
-                        // Opsional: Tampilkan pesan kepada pengguna bahwa translasi sudah aktif
                         Toast.makeText(
                             context,
                             "Translasi sudah aktif",
@@ -137,14 +215,12 @@ class TranslateViewModel @Inject constructor(
                 if (_isTranslationActive.value) {
                     Timber.d("TranslateViewModel: Translation deactivated")
                     _isTranslationActive.value = false
-                    // Menghentikan dan menutup SignLanguageRecognizer
                     signLanguageRecognizer?.stopTranslation()
                     signLanguageRecognizer?.close()
                     signLanguageRecognizer = null
                     saveTranslatedText()
                 } else {
                     Timber.d("TranslateViewModel: Translation tidak aktif")
-                    // Opsional: Tampilkan pesan kepada pengguna bahwa translasi tidak aktif
                 }
             }
         }
@@ -166,7 +242,7 @@ class TranslateViewModel @Inject constructor(
 
                 is Result.Error -> {
                     _predictionState.value = Result.Error(
-                        result.message ?: "Gagal menyimpan teks terjemahan",
+                        result.message,
                         result.errorCode
                     )
                 }
@@ -197,46 +273,12 @@ class TranslateViewModel @Inject constructor(
 
             is Result.Error -> {
                 _predictionState.value = Result.Error(
-                    result.message ?: "Gagal mengambil teks terjemahan",
+                    result.message,
                     result.errorCode
                 )
             }
 
             else -> {}
-        }
-    }
-
-    /**
-     * Menambahkan kata kustom ke kamus.
-     * @param word Kata kustom yang ingin ditambahkan.
-     */
-    fun addCustomWord(word: String) {
-        viewModelScope.launch {
-            when (val result = translatedTextRepository.addCustomWord(word)) {
-                is Result.Success -> {
-                    Timber.d("TranslateViewModel: Kata kustom '$word' berhasil ditambahkan.")
-                    Toast.makeText(
-                        context,
-                        "Kata '$word' berhasil ditambahkan",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                is Result.Error -> {
-                    Timber.e("TranslateViewModel: Gagal menambahkan kata kustom '$word'.")
-                    _predictionState.value = Result.Error(
-                        result.message ?: "Gagal menambahkan kata kustom",
-                        result.errorCode
-                    )
-                    Toast.makeText(
-                        context,
-                        result.message ?: "Gagal menambahkan kata kustom",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                else -> {}
-            }
         }
     }
 
@@ -253,14 +295,14 @@ class TranslateViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        // Menutup SignLanguageRecognizer jika masih ada
         signLanguageRecognizer?.close()
     }
 
     /**
      * Memproses prediksi dengan menambahkan ke teks terjemahan dan memperbarui UI.
      */
-    private suspend fun processPrediction(prediction: String) {
+    private fun processPrediction(prediction: String) {
+        val startTime = SystemClock.uptimeMillis()
         translatedText.append(prediction)
         val inputText = translatedText.toString()
         Timber.d("TranslateViewModel: TranslatedText setelah append: $inputText")
@@ -272,7 +314,11 @@ class TranslateViewModel @Inject constructor(
             Timber.e("TranslateViewModel: WordBreaker belum diinisialisasi.")
             _predictionState.value = Result.Error("Kamus belum dimuat", -1)
         }
+        val endTime = SystemClock.uptimeMillis()
+        val duration = endTime - startTime
+        Timber.d("TranslateViewModel: processPrediction took $duration ms")
     }
+
 
     /**
      * Extension function untuk melakukan throttleLatest pada SharedFlow.

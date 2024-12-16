@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface DownloadDictionaryPictureDao {
 
+    @Query("SELECT * FROM downloaded_dictionary_pictures")
+    fun getAllDownloadedPictures(): Flow<List<DownloadedDictionaryPicture>>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(pictures: List<DownloadedDictionaryPicture>)
-
-    @Query("SELECT * FROM downloaded_dictionary_pictures")
-    fun getAllPictures(): Flow<List<DownloadedDictionaryPicture>>
 
     @Query("SELECT * FROM downloaded_dictionary_pictures WHERE url = :url LIMIT 1")
     suspend fun getDownloadedPictureByUrl(url: String): DownloadedDictionaryPicture?

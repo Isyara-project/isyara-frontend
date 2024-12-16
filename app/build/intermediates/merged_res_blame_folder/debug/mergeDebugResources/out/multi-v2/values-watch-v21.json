@@ -4,7 +4,7 @@
             "outputFile": "com.application.isyara.app-mergeDebugResources-82:/values-watch-v21/values-watch-v21.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\53c7174db535359e7655cca3a64675b1\\transformed\\appcompat-1.6.1\\res\\values-watch-v21\\values-watch-v21.xml",
+                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\86cac3eab56d07ed6bf1651af5fc8c8c\\transformed\\appcompat-1.6.1\\res\\values-watch-v21\\values-watch-v21.xml",
                     "from": {
                         "startLines": "2,6,10",
                         "startColumns": "4,4,4",

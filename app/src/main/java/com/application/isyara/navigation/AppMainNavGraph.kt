@@ -31,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.application.isyara.ui.MainActivity
 import com.application.isyara.ui.auth.ChangePasswordScreen
 import com.application.isyara.ui.auth.ResetPasswordScreen
 import com.application.isyara.ui.auth.SplashScreen
@@ -193,23 +194,20 @@ fun AppMainNavGraph(navController: NavHostController) {
                         onBackClick = { navController.popBackStack() },
                         onPasswordChangeSuccess = {
                             navController.popBackStack()
-                            navController.navigate(NavRoute.Dashboard.route)
+                            navController.navigate(NavRoute.Settings.route)
                         }
                     )
                 }
 
                 composable(NavRoute.LanguageSettings.route) {
                     LanguageSettingsScreen(
-                        navController = navController,
-                        currentLanguage = "Bahasa Indonesia",
-                        onLanguageChange = { }
+                        navController = navController
                     )
                 }
                 composable(NavRoute.ThemeSettings.route) {
+                    val activity = navController.context as MainActivity
                     ThemeSettingsScreen(
-                        navController,
-                        "System Default",
-                        onThemeChange = {}
+                        navController = navController, activity = activity
                     )
                 }
                 composable(NavRoute.About.route) {

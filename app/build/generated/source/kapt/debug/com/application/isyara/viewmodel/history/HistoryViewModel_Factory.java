@@ -1,5 +1,6 @@
 package com.application.isyara.viewmodel.history;
 
+import com.application.isyara.data.repository.DictionaryPictureRepository;
 import com.application.isyara.data.repository.DictionaryRepository;
 import com.application.isyara.data.repository.TranslatedTextRepository;
 import dagger.internal.DaggerGenerated;
@@ -29,26 +30,32 @@ public final class HistoryViewModel_Factory implements Factory<HistoryViewModel>
 
   private final Provider<DictionaryRepository> dictionaryRepositoryProvider;
 
+  private final Provider<DictionaryPictureRepository> dictionaryPictureRepositoryProvider;
+
   public HistoryViewModel_Factory(
       Provider<TranslatedTextRepository> translatedTextRepositoryProvider,
-      Provider<DictionaryRepository> dictionaryRepositoryProvider) {
+      Provider<DictionaryRepository> dictionaryRepositoryProvider,
+      Provider<DictionaryPictureRepository> dictionaryPictureRepositoryProvider) {
     this.translatedTextRepositoryProvider = translatedTextRepositoryProvider;
     this.dictionaryRepositoryProvider = dictionaryRepositoryProvider;
+    this.dictionaryPictureRepositoryProvider = dictionaryPictureRepositoryProvider;
   }
 
   @Override
   public HistoryViewModel get() {
-    return newInstance(translatedTextRepositoryProvider.get(), dictionaryRepositoryProvider.get());
+    return newInstance(translatedTextRepositoryProvider.get(), dictionaryRepositoryProvider.get(), dictionaryPictureRepositoryProvider.get());
   }
 
   public static HistoryViewModel_Factory create(
       Provider<TranslatedTextRepository> translatedTextRepositoryProvider,
-      Provider<DictionaryRepository> dictionaryRepositoryProvider) {
-    return new HistoryViewModel_Factory(translatedTextRepositoryProvider, dictionaryRepositoryProvider);
+      Provider<DictionaryRepository> dictionaryRepositoryProvider,
+      Provider<DictionaryPictureRepository> dictionaryPictureRepositoryProvider) {
+    return new HistoryViewModel_Factory(translatedTextRepositoryProvider, dictionaryRepositoryProvider, dictionaryPictureRepositoryProvider);
   }
 
   public static HistoryViewModel newInstance(TranslatedTextRepository translatedTextRepository,
-      DictionaryRepository dictionaryRepository) {
-    return new HistoryViewModel(translatedTextRepository, dictionaryRepository);
+      DictionaryRepository dictionaryRepository,
+      DictionaryPictureRepository dictionaryPictureRepository) {
+    return new HistoryViewModel(translatedTextRepository, dictionaryRepository, dictionaryPictureRepository);
   }
 }

@@ -4,7 +4,7 @@
             "outputFile": "com.application.isyara.app-mergeDebugResources-82:/values-v18/values-v18.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\53c7174db535359e7655cca3a64675b1\\transformed\\appcompat-1.6.1\\res\\values-v18\\values-v18.xml",
+                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\86cac3eab56d07ed6bf1651af5fc8c8c\\transformed\\appcompat-1.6.1\\res\\values-v18\\values-v18.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\3ef671b70c5c73cf69d1e8aaceb2bebf\\transformed\\core-1.6.1\\res\\values-v18\\values.xml",
+                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\8a60237ee5e3b70aa1ebbbcecac82da4\\transformed\\core-1.6.1\\res\\values-v18\\values.xml",
                     "from": {
                         "startLines": "4,12",
                         "startColumns": "0,0",

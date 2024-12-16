@@ -5,13 +5,16 @@ import com.application.isyara.data.di.NetworkModule;
 import com.application.isyara.data.di.RepositoryModule;
 import com.application.isyara.data.di.SharedPreferencesModule;
 import com.application.isyara.ui.MainActivity_GeneratedInjector;
+import com.application.isyara.ui.main.settings.LanguageViewModel_HiltModules;
+import com.application.isyara.ui.viewmodel.UsageStatisticViewModel_HiltModules;
+import com.application.isyara.viewmodel.ThemeViewModel_HiltModules;
 import com.application.isyara.viewmodel.auth.AuthViewModel_HiltModules;
 import com.application.isyara.viewmodel.auth.ForgotPasswordViewModel_HiltModules;
 import com.application.isyara.viewmodel.auth.ResetPasswordViewModel_HiltModules;
+import com.application.isyara.viewmodel.dashboard.ProfileViewModel_HiltModules;
 import com.application.isyara.viewmodel.dictionary.DictionaryPictureViewModel_HiltModules;
 import com.application.isyara.viewmodel.dictionary.DictionaryVideoViewModel_HiltModules;
 import com.application.isyara.viewmodel.history.HistoryViewModel_HiltModules;
-import com.application.isyara.viewmodel.main.ProfileViewModel_HiltModules;
 import com.application.isyara.viewmodel.settings.ChangePasswordViewModel_HiltModules;
 import com.application.isyara.viewmodel.settings.FeedbackViewModel_HiltModules;
 import com.application.isyara.viewmodel.translate.TranslateViewModel_HiltModules;
@@ -178,11 +181,14 @@ public final class MyApplication_HiltComponents {
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
           HiltWrapper_SavedStateHandleModule.class,
           HistoryViewModel_HiltModules.KeyModule.class,
+          LanguageViewModel_HiltModules.KeyModule.class,
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
           ProfileViewModel_HiltModules.KeyModule.class,
           ResetPasswordViewModel_HiltModules.KeyModule.class,
-          TranslateViewModel_HiltModules.KeyModule.class
+          ThemeViewModel_HiltModules.KeyModule.class,
+          TranslateViewModel_HiltModules.KeyModule.class,
+          UsageStatisticViewModel_HiltModules.KeyModule.class
       }
   )
   @ActivityRetainedScoped
@@ -226,9 +232,12 @@ public final class MyApplication_HiltComponents {
           ForgotPasswordViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
           HistoryViewModel_HiltModules.BindsModule.class,
+          LanguageViewModel_HiltModules.BindsModule.class,
           ProfileViewModel_HiltModules.BindsModule.class,
           ResetPasswordViewModel_HiltModules.BindsModule.class,
-          TranslateViewModel_HiltModules.BindsModule.class
+          ThemeViewModel_HiltModules.BindsModule.class,
+          TranslateViewModel_HiltModules.BindsModule.class,
+          UsageStatisticViewModel_HiltModules.BindsModule.class
       }
   )
   @ViewModelScoped

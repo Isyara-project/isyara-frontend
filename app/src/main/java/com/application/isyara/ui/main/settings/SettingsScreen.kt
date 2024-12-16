@@ -1,6 +1,7 @@
 package com.application.isyara.ui.main.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,8 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Feedback
@@ -21,47 +24,65 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.ModeNight
+import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.application.isyara.R
+import com.application.isyara.data.model.ProfileData
 import com.application.isyara.navigation.NavRoute
 import com.application.isyara.utils.main.AppHeaderMain
+import com.application.isyara.utils.state.Result
 import com.application.isyara.viewmodel.auth.AuthViewModel
+import com.application.isyara.viewmodel.dashboard.ProfileViewModel
 
 @Composable
-fun SettingsScreen(navController: NavController, viewModel: AuthViewModel= hiltViewModel()) {
+fun SettingsScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel = hiltViewModel()
+) {
     var showLogoutDialog by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF7F7F7))
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(scrollState)
     ) {
         AppHeaderMain(
-            title = "Pengaturan",
+            title = stringResource(R.string.settings),
             onBackClick = { navController.popBackStack() },
             backgroundColor = Brush.horizontalGradient(
                 colors = listOf(
@@ -75,48 +96,42 @@ fun SettingsScreen(navController: NavController, viewModel: AuthViewModel= hiltV
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Profil Pengguna
-        ProfileSection {
+        ProfileSection(viewModel = hiltViewModel()) {
             navController.navigate(NavRoute.EditAccount.route)
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Tombol Pengaturan Lainnya
         SettingsOption(
-            title = "Bahasa Aplikasi",
+            title = "Ubah Password",
+            icon = Icons.Default.Password,
+            onClick = { navController.navigate(NavRoute.ChangePassword.route) }
+        )
+
+        SettingsOption(
+            title = stringResource(R.string.application_language),
             icon = Icons.Default.Language,
             onClick = { navController.navigate(NavRoute.LanguageSettings.route) }
         )
 
         SettingsOption(
-            title = "Tema Aplikasi",
+            title = stringResource(R.string.application_theme),
             icon = Icons.Default.ModeNight,
             onClick = { navController.navigate(NavRoute.ThemeSettings.route) }
         )
 
         SettingsOption(
-            title = "Tentang Isyara",
+            title = stringResource(R.string.about_isyara),
             icon = Icons.Default.Info,
             onClick = { navController.navigate(NavRoute.About.route) }
         )
 
         SettingsOption(
-            title = "Feedback Pengguna",
+            title = stringResource(R.string.feedback_user),
             icon = Icons.Default.Feedback,
             onClick = { navController.navigate(NavRoute.Feedback.route) }
         )
 
         SettingsOption(
-            title = "Kebijakan Privasi & Ketentuan Layanan",
-            icon = Icons.Default.Policy,
-            onClick = { navController.navigate(NavRoute.PrivacyPolicy.route) }
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        SettingsOption(
-            title = "Keluar",
+            title = stringResource(R.string.logout),
             icon = Icons.Default.Logout,
             onClick = { showLogoutDialog = true },
             isDestructive = true
@@ -125,7 +140,7 @@ fun SettingsScreen(navController: NavController, viewModel: AuthViewModel= hiltV
     if (showLogoutDialog) {
         LogoutConfirmationDialog(
             onConfirm = {
-                viewModel.logout()
+                authViewModel.logout()
                 navController.navigate(NavRoute.Onboarding.route) {
                     popUpTo(NavRoute.Settings.route) { inclusive = true }
                 }
@@ -138,8 +153,18 @@ fun SettingsScreen(navController: NavController, viewModel: AuthViewModel= hiltV
     }
 }
 
+
 @Composable
-fun ProfileSection(onEditAccountClick: () -> Unit) {
+fun ProfileSection(
+    viewModel: ProfileViewModel = hiltViewModel(),
+    onEditAccountClick: () -> Unit
+) {
+    val profileState by viewModel.profileState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchProfile()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -153,29 +178,84 @@ fun ProfileSection(onEditAccountClick: () -> Unit) {
                 .background(Color(0xFFE1F5FE), CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = "Foto Profil",
-                modifier = Modifier.size(64.dp),
-                tint = Color(0xFF008E9B)
-            )
+            when (profileState) {
+                is Result.Success -> {
+                    val profileData = (profileState as Result.Success<ProfileData>).data
+                    if (!profileData.picture.isNullOrEmpty()) {
+                        val correctedPictureUrl = profileData.picture.replace(
+                            "https://storage.cloud.google.com/",
+                            "https://storage.googleapis.com/"
+                        )
+                        val pictureUrlWithTimestamp =
+                            "$correctedPictureUrl?timestamp=${System.currentTimeMillis()}"
+
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(pictureUrlWithTimestamp)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Foto Profil",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(64.dp)
+                                .clip(CircleShape)
+                                .border(2.dp, Color(0xFF008E9B), CircleShape),
+                            placeholder = painterResource(R.drawable.ic_image_placeholder),
+                            error = painterResource(R.drawable.ic_error)
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Foto Profil",
+                            modifier = Modifier.size(64.dp),
+                            tint = Color(0xFF008E9B)
+                        )
+                    }
+                }
+
+                is Result.Loading -> {
+                    CircularProgressIndicator(
+                        color = Color(0xFF008E9B),
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+
+                is Result.Error -> {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Foto Profil",
+                        modifier = Modifier.size(64.dp),
+                        tint = Color(0xFF008E9B)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.failed_loading_profile),
+                        color = Color.Red,
+                        fontSize = 12.sp
+                    )
+                }
+
+                else -> {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Foto Profil",
+                        modifier = Modifier.size(64.dp),
+                        tint = Color(0xFF008E9B)
+                    )
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Nama Pengguna",
+            text = when (profileState) {
+                is Result.Success -> (profileState as Result.Success<ProfileData>).data.fullname
+                else -> "Nama Pengguna"
+            },
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            text = "user@isyara.com",
-            fontSize = 14.sp,
-            color = Color.Gray
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -186,13 +266,14 @@ fun ProfileSection(onEditAccountClick: () -> Unit) {
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF008E9B))
         ) {
             Text(
-                text = "Edit Akun",
+                text = stringResource(R.string.edit_foto_profile),
                 fontSize = 16.sp,
                 color = Color.White
             )
         }
     }
 }
+
 
 @Composable
 fun SettingsOption(
@@ -238,31 +319,23 @@ fun SettingsOption(
 fun LogoutConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Konfirmasi Logout") },
-        text = { Text("Apakah Anda yakin ingin keluar?") },
+        title = { Text(stringResource(R.string.confirm_logout)) },
+        text = { Text(stringResource(R.string.sure_logout)) },
         confirmButton = {
             TextButton(
                 onClick = {
                     onConfirm()
                 }
             ) {
-                Text("Ya")
+                Text(stringResource(R.string.yes))
             }
         },
         dismissButton = {
             TextButton(
                 onClick = onDismiss
             ) {
-                Text("Batal")
+                Text(stringResource(R.string.cancel))
             }
         }
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SettingsScreenPreview() {
-    SettingsScreen(
-        navController = NavController(LocalContext.current)
     )
 }

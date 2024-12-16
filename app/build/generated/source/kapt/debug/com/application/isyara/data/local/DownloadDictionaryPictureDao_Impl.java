@@ -44,7 +44,7 @@ public final class DownloadDictionaryPictureDao_Impl implements DownloadDictiona
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR IGNORE INTO `downloaded_dictionary_pictures` (`id`,`url`) VALUES (nullif(?, 0),?)";
+        return "INSERT OR IGNORE INTO `downloaded_dictionary_pictures` (`id`,`url`,`localPath`,`timestamp`) VALUES (nullif(?, 0),?,?,?)";
       }
 
       @Override
@@ -56,6 +56,12 @@ public final class DownloadDictionaryPictureDao_Impl implements DownloadDictiona
         } else {
           statement.bindString(2, entity.getUrl());
         }
+        if (entity.getLocalPath() == null) {
+          statement.bindNull(3);
+        } else {
+          statement.bindString(3, entity.getLocalPath());
+        }
+        statement.bindLong(4, entity.getTimestamp());
       }
     };
     this.__preparedStmtOfDeleteDownloadedPictureByUrl = new SharedSQLiteStatement(__db) {
@@ -149,7 +155,7 @@ public final class DownloadDictionaryPictureDao_Impl implements DownloadDictiona
   }
 
   @Override
-  public Flow<List<DownloadedDictionaryPicture>> getAllPictures() {
+  public Flow<List<DownloadedDictionaryPicture>> getAllDownloadedPictures() {
     final String _sql = "SELECT * FROM downloaded_dictionary_pictures";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     return CoroutinesRoom.createFlow(__db, false, new String[] {"downloaded_dictionary_pictures"}, new Callable<List<DownloadedDictionaryPicture>>() {
@@ -160,18 +166,28 @@ public final class DownloadDictionaryPictureDao_Impl implements DownloadDictiona
         try {
           final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
           final int _cursorIndexOfUrl = CursorUtil.getColumnIndexOrThrow(_cursor, "url");
+          final int _cursorIndexOfLocalPath = CursorUtil.getColumnIndexOrThrow(_cursor, "localPath");
+          final int _cursorIndexOfTimestamp = CursorUtil.getColumnIndexOrThrow(_cursor, "timestamp");
           final List<DownloadedDictionaryPicture> _result = new ArrayList<DownloadedDictionaryPicture>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final DownloadedDictionaryPicture _item;
-            final long _tmpId;
-            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final int _tmpId;
+            _tmpId = _cursor.getInt(_cursorIndexOfId);
             final String _tmpUrl;
             if (_cursor.isNull(_cursorIndexOfUrl)) {
               _tmpUrl = null;
             } else {
               _tmpUrl = _cursor.getString(_cursorIndexOfUrl);
             }
-            _item = new DownloadedDictionaryPicture(_tmpId,_tmpUrl);
+            final String _tmpLocalPath;
+            if (_cursor.isNull(_cursorIndexOfLocalPath)) {
+              _tmpLocalPath = null;
+            } else {
+              _tmpLocalPath = _cursor.getString(_cursorIndexOfLocalPath);
+            }
+            final long _tmpTimestamp;
+            _tmpTimestamp = _cursor.getLong(_cursorIndexOfTimestamp);
+            _item = new DownloadedDictionaryPicture(_tmpId,_tmpUrl,_tmpLocalPath,_tmpTimestamp);
             _result.add(_item);
           }
           return _result;
@@ -207,17 +223,27 @@ public final class DownloadDictionaryPictureDao_Impl implements DownloadDictiona
         try {
           final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
           final int _cursorIndexOfUrl = CursorUtil.getColumnIndexOrThrow(_cursor, "url");
+          final int _cursorIndexOfLocalPath = CursorUtil.getColumnIndexOrThrow(_cursor, "localPath");
+          final int _cursorIndexOfTimestamp = CursorUtil.getColumnIndexOrThrow(_cursor, "timestamp");
           final DownloadedDictionaryPicture _result;
           if (_cursor.moveToFirst()) {
-            final long _tmpId;
-            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final int _tmpId;
+            _tmpId = _cursor.getInt(_cursorIndexOfId);
             final String _tmpUrl;
             if (_cursor.isNull(_cursorIndexOfUrl)) {
               _tmpUrl = null;
             } else {
               _tmpUrl = _cursor.getString(_cursorIndexOfUrl);
             }
-            _result = new DownloadedDictionaryPicture(_tmpId,_tmpUrl);
+            final String _tmpLocalPath;
+            if (_cursor.isNull(_cursorIndexOfLocalPath)) {
+              _tmpLocalPath = null;
+            } else {
+              _tmpLocalPath = _cursor.getString(_cursorIndexOfLocalPath);
+            }
+            final long _tmpTimestamp;
+            _tmpTimestamp = _cursor.getLong(_cursorIndexOfTimestamp);
+            _result = new DownloadedDictionaryPicture(_tmpId,_tmpUrl,_tmpLocalPath,_tmpTimestamp);
           } else {
             _result = null;
           }

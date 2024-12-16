@@ -1,17 +1,20 @@
 package com.application.isyara.data.di
 
-import com.application.isyara.data.local.SessionManager
-import com.application.isyara.data.local.UserPreferences
+import android.content.Context
+import com.application.isyara.data.preferences.SessionManager
+import com.application.isyara.data.preferences.UserPreferences
 import com.application.isyara.data.remote.ApiService
 import com.application.isyara.data.repository.AuthRepository
 import com.application.isyara.data.repository.ChangePasswordRepository
 import com.application.isyara.data.repository.FeedbackRepository
+import com.application.isyara.data.repository.ModelDownloadRepository
 import com.application.isyara.data.repository.PasswordRepository
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -48,9 +51,18 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideChangePasswordRepository(
-        @RetrofitMain apiService: ApiService
+        @RetrofitMain apiService: ApiService,
+        sessionManager: SessionManager
     ): ChangePasswordRepository {
-        return ChangePasswordRepository(apiService)
+        return ChangePasswordRepository(apiService, sessionManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideModelDownloadRepository(
+        @ApplicationContext context: Context
+    ): ModelDownloadRepository {
+        return ModelDownloadRepository(context)
     }
 
     @Provides

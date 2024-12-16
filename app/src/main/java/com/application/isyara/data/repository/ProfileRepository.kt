@@ -1,7 +1,7 @@
 package com.application.isyara.data.repository
 
 import com.application.isyara.data.di.RetrofitMain
-import com.application.isyara.data.local.SessionManager
+import com.application.isyara.data.preferences.SessionManager
 import com.application.isyara.data.model.ErrorResponse
 import com.application.isyara.data.model.ProfileData
 import com.application.isyara.data.model.UpdateProfileResponse
@@ -10,9 +10,7 @@ import com.application.isyara.utils.state.Result
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
@@ -24,98 +22,82 @@ class ProfileRepository @Inject constructor(
     private val gson: Gson
 ) {
 
-    /**
-     * Mendapatkan profil pengguna.
-     *
-     * @return [Flow] yang mengemisi [Result] dengan [ProfileData].
-     */
+    private fun getAuthorizationHeader(): String? {
+        val token = sessionManager.getToken()
+        return if (!token.isNullOrEmpty()) "Bearer $token" else null
+    }
+
     fun getProfile(): Flow<Result<ProfileData>> = flow {
         emit(Result.Loading)
         try {
-            val token = sessionManager.getToken()
-            if (token.isNullOrEmpty()) {
-                emit(Result.Error("Token tidak ditemukan."))
+            val authHeader = getAuthorizationHeader()
+            if (authHeader == null) {
+                emit(Result.Error("Token tidak ditemukan.", null))
                 return@flow
             }
 
-            val profileResponse = apiService.getProfile("Bearer $token")
+            val profileResponse = apiService.getProfile(authHeader)
             profileResponse.data?.let {
                 emit(Result.Success(it))
             } ?: run {
-                emit(Result.Error("Gagal mengambil profil pengguna."))
+                emit(Result.Error("Gagal mengambil profil pengguna.", null))
             }
         } catch (e: HttpException) {
             Timber.e(e, "HTTP Exception: ${e.message()}")
             val errorMessage = parseError(e)
-            emit(Result.Error(errorMessage))
+            emit(Result.Error(errorMessage, e.code()))
         } catch (e: IOException) {
             Timber.e(e, "IO Exception: ${e.message}")
-            emit(Result.Error("Kesalahan jaringan: ${e.localizedMessage}"))
+            emit(Result.Error("Kesalahan jaringan: ${e.localizedMessage}", null))
         } catch (e: Exception) {
             Timber.e(e, "Unknown Exception: ${e.localizedMessage}")
-            emit(Result.Error("Terjadi kesalahan yang tidak terduga: ${e.localizedMessage}"))
+            emit(Result.Error("Terjadi kesalahan yang tidak terduga: ${e.localizedMessage}", null))
         }
     }
 
-    /**
-     * Memperbarui profil pengguna.
-     *
-     * @param file File gambar profil (opsional).
-     * @param fullname Nama lengkap pengguna.
-     * @param bio Biografi pengguna.
-     * @return [Flow] yang mengemisi [Result] dengan [UpdateProfileResponse].
-     */
     fun updateProfile(
-        file: MultipartBody.Part?,
-        fullname: String,
-        bio: String
+        file: MultipartBody.Part?
     ): Flow<Result<UpdateProfileResponse>> = flow {
         emit(Result.Loading)
         try {
-            val token = sessionManager.getToken()
-            if (token.isNullOrEmpty()) {
-                emit(Result.Error("Token tidak ditemukan."))
+            val authHeader = getAuthorizationHeader()
+            if (authHeader == null) {
+                emit(Result.Error("Token tidak ditemukan.", null))
                 return@flow
             }
 
-            val fullnameRequest = fullname.toRequestBody("text/plain".toMediaTypeOrNull())
-            val bioRequest = bio.toRequestBody("text/plain".toMediaTypeOrNull())
-
             val updateResponse = apiService.updateProfile(
-                "Bearer $token",
-                file,
-                fullnameRequest,
-                bioRequest
+                authHeader,
+                file
             )
             emit(Result.Success(updateResponse))
         } catch (e: HttpException) {
             Timber.e(e, "HTTP Exception: ${e.message()}")
             val errorMessage = parseError(e)
-            emit(Result.Error(errorMessage))
+            emit(Result.Error(errorMessage, e.code()))
         } catch (e: IOException) {
             Timber.e(e, "IO Exception: ${e.message}")
-            emit(Result.Error("Kesalahan jaringan: ${e.localizedMessage}"))
+            emit(Result.Error("Kesalahan jaringan: ${e.localizedMessage}", null))
         } catch (e: Exception) {
             Timber.e(e, "Unknown Exception: ${e.localizedMessage}")
-            emit(Result.Error("Terjadi kesalahan yang tidak terduga: ${e.localizedMessage}"))
+            emit(Result.Error("Terjadi kesalahan yang tidak terduga: ${e.localizedMessage}", null))
         }
     }
 
-    /**
-     * Menguraikan pesan kesalahan dari [HttpException].
-     *
-     * @param exception [HttpException] yang dilemparkan.
-     * @return Pesan kesalahan yang diuraikan.
-     */
+
     private fun parseError(exception: HttpException): String {
         return try {
             val errorBody = exception.response()?.errorBody()?.string()
             val errorResponse = errorBody?.let {
                 gson.fromJson(it, ErrorResponse::class.java)
             }
+            if (exception.code() == 401) {
+                sessionManager.clearToken()
+            }
             errorResponse?.message ?: "Terjadi kesalahan HTTP: ${exception.code()}"
         } catch (e: Exception) {
             "Terjadi kesalahan saat memproses kesalahan: ${e.localizedMessage}"
         }
     }
+
 }

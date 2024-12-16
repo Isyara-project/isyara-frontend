@@ -1,5 +1,6 @@
 package com.application.isyara.data.di;
 
+import com.application.isyara.data.preferences.SessionManager;
 import com.application.isyara.data.remote.ApiService;
 import com.application.isyara.data.repository.ChangePasswordRepository;
 import dagger.internal.DaggerGenerated;
@@ -28,22 +29,26 @@ import javax.inject.Provider;
 public final class RepositoryModule_ProvideChangePasswordRepositoryFactory implements Factory<ChangePasswordRepository> {
   private final Provider<ApiService> apiServiceProvider;
 
+  private final Provider<SessionManager> sessionManagerProvider;
+
   public RepositoryModule_ProvideChangePasswordRepositoryFactory(
-      Provider<ApiService> apiServiceProvider) {
+      Provider<ApiService> apiServiceProvider, Provider<SessionManager> sessionManagerProvider) {
     this.apiServiceProvider = apiServiceProvider;
+    this.sessionManagerProvider = sessionManagerProvider;
   }
 
   @Override
   public ChangePasswordRepository get() {
-    return provideChangePasswordRepository(apiServiceProvider.get());
+    return provideChangePasswordRepository(apiServiceProvider.get(), sessionManagerProvider.get());
   }
 
   public static RepositoryModule_ProvideChangePasswordRepositoryFactory create(
-      Provider<ApiService> apiServiceProvider) {
-    return new RepositoryModule_ProvideChangePasswordRepositoryFactory(apiServiceProvider);
+      Provider<ApiService> apiServiceProvider, Provider<SessionManager> sessionManagerProvider) {
+    return new RepositoryModule_ProvideChangePasswordRepositoryFactory(apiServiceProvider, sessionManagerProvider);
   }
 
-  public static ChangePasswordRepository provideChangePasswordRepository(ApiService apiService) {
-    return Preconditions.checkNotNullFromProvides(RepositoryModule.INSTANCE.provideChangePasswordRepository(apiService));
+  public static ChangePasswordRepository provideChangePasswordRepository(ApiService apiService,
+      SessionManager sessionManager) {
+    return Preconditions.checkNotNullFromProvides(RepositoryModule.INSTANCE.provideChangePasswordRepository(apiService, sessionManager));
   }
 }

@@ -2,7 +2,10 @@ package com.application.isyara.data.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.application.isyara.data.local.AppDatabase
+import com.application.isyara.data.local.AppDatabase.Companion.DATABASE_NAME
 import com.application.isyara.data.local.DownloadDictionaryPictureDao
 import com.application.isyara.data.local.DownloadedDictionaryDao
 import com.application.isyara.data.local.TranslatedTextDao
@@ -22,15 +25,22 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
+    val MIGRATION_3_4 = object : Migration(3, 4) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE downloaded_dictionary_pictures ADD COLUMN localPath TEXT NOT NULL DEFAULT 'undefined'")
+            database.execSQL("ALTER TABLE downloaded_dictionary_pictures ADD COLUMN timestamp INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             AppDatabase::class.java,
-            "isyara_database"
+            DATABASE_NAME
         )
-            .addMigrations(AppDatabase.MIGRATION_1_2)
+            .addMigrations(MIGRATION_3_4)
             .build()
     }
 

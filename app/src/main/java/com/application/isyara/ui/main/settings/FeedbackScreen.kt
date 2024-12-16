@@ -44,7 +44,6 @@ fun FeedbackScreen(
     val feedbackState = feedbackViewModel.feedbackState.collectAsStateWithLifecycle().value
     val context = LocalContext.current
 
-    // Validasi Email dan Deskripsi
     fun validateFields(): Boolean {
         emailError = when {
             email.isBlank() -> "Email tidak boleh kosong"
@@ -59,7 +58,6 @@ fun FeedbackScreen(
         return emailError == null && descriptionError == null
     }
 
-    // Menangani feedback pengiriman
     when (feedbackState) {
         is Result.Loading -> {
             Toast.makeText(context, "Mengirim feedback...", Toast.LENGTH_SHORT).show()

@@ -35,14 +35,14 @@ public final class AppDatabase_Impl extends AppDatabase {
   @Override
   @NonNull
   protected SupportSQLiteOpenHelper createOpenHelper(@NonNull final DatabaseConfiguration config) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(2) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(4) {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS `downloaded_dictionary` (`url` TEXT NOT NULL, `title` TEXT NOT NULL, `localPath` TEXT NOT NULL, `imageUrl` TEXT, `localImagePath` TEXT, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`url`))");
         db.execSQL("CREATE TABLE IF NOT EXISTS `translated_texts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `text` TEXT NOT NULL, `timestamp` INTEGER NOT NULL)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `downloaded_dictionary_pictures` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `url` TEXT NOT NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `downloaded_dictionary_pictures` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `url` TEXT NOT NULL, `localPath` TEXT NOT NULL, `timestamp` INTEGER NOT NULL)");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '59d7ea91ff7bc21f7b0059f8a13763d5')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3957aa5067fc316bc9b567bf27fc81c1')");
       }
 
       @Override
@@ -122,9 +122,11 @@ public final class AppDatabase_Impl extends AppDatabase {
                   + " Expected:\n" + _infoTranslatedTexts + "\n"
                   + " Found:\n" + _existingTranslatedTexts);
         }
-        final HashMap<String, TableInfo.Column> _columnsDownloadedDictionaryPictures = new HashMap<String, TableInfo.Column>(2);
+        final HashMap<String, TableInfo.Column> _columnsDownloadedDictionaryPictures = new HashMap<String, TableInfo.Column>(4);
         _columnsDownloadedDictionaryPictures.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsDownloadedDictionaryPictures.put("url", new TableInfo.Column("url", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsDownloadedDictionaryPictures.put("localPath", new TableInfo.Column("localPath", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsDownloadedDictionaryPictures.put("timestamp", new TableInfo.Column("timestamp", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysDownloadedDictionaryPictures = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesDownloadedDictionaryPictures = new HashSet<TableInfo.Index>(0);
         final TableInfo _infoDownloadedDictionaryPictures = new TableInfo("downloaded_dictionary_pictures", _columnsDownloadedDictionaryPictures, _foreignKeysDownloadedDictionaryPictures, _indicesDownloadedDictionaryPictures);
@@ -136,7 +138,7 @@ public final class AppDatabase_Impl extends AppDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "59d7ea91ff7bc21f7b0059f8a13763d5", "c540d24dcf957c52338b6cace48d6072");
+    }, "3957aa5067fc316bc9b567bf27fc81c1", "ca586150aa78bfd0902718f316583805");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;

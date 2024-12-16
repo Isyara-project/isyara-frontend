@@ -32,12 +32,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.application.isyara.R
 import com.application.isyara.utils.dictionary.ShimmerPlaceholderCard
 import com.application.isyara.utils.dictionary.VideoItem
 import com.application.isyara.utils.main.AppHeaderMain
@@ -48,10 +50,10 @@ import kotlinx.coroutines.FlowPreview
 @Composable
 fun SibiVideoScreen(navController: NavController, viewModel: DictionaryVideoViewModel = hiltViewModel()) {
     AlphabetScreen(
-        title = "Sibi Dictionary",
-        descriptionTitle = "Apa itu Sibi?",
-        description = "SIBI (Sistem Isyarat Bahasa Indonesia) adalah bahasa isyarat yang digunakan oleh komunitas tunarungu di Indonesia. SIBI dirancang untuk memberikan representasi tata bahasa Indonesia dalam bentuk isyarat.",
-        alphabetTitle = "Daftar Video",
+        title = stringResource(R.string.dictionary_video_isyarat),
+        descriptionTitle = stringResource(R.string.what_sibi),
+        description = stringResource(R.string.description_sibi),
+        alphabetTitle = stringResource(R.string.list_video),
         navController = navController,
         viewModel = viewModel
     )
@@ -105,7 +107,7 @@ fun AlphabetScreen(
         when (val state = combinedVideos) {
             is Result.Idle -> {
                 Text(
-                    text = "Silakan cari isyarat di atas.",
+                    text = stringResource(R.string.start_search),
                     color = Color.Gray,
                     fontSize = 16.sp,
                     modifier = Modifier
@@ -145,7 +147,7 @@ fun AlphabetScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Tidak ada video ditemukan.",
+                            text = stringResource(R.string.nothing_video),
                             color = Color.Gray,
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center
@@ -172,13 +174,13 @@ fun AlphabetScreen(
                                         if (success) {
                                             Toast.makeText(
                                                 context,
-                                                "Video '$title' berhasil diunduh.",
+                                                context.getString(R.string.success_download, title),
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         } else {
                                             Toast.makeText(
                                                 context,
-                                                "Gagal mengunduh video '$title'.",
+                                                context.getString(R.string.failed_download, title),
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
@@ -189,13 +191,13 @@ fun AlphabetScreen(
                                         if (success) {
                                             Toast.makeText(
                                                 context,
-                                                "Video berhasil dihapus.",
+                                                context.getString(R.string.video_success_delete),
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         } else {
                                             Toast.makeText(
                                                 context,
-                                                "Gagal menghapus video.",
+                                                context.getString(R.string.failed_delete_video),
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
