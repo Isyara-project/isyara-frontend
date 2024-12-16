@@ -1,8 +1,8 @@
 package com.application.isyara.data.di
 
 import com.application.isyara.utils.auth.ISessionManager
-import com.application.isyara.data.local.SessionManager
-import com.application.isyara.data.local.UserPreferences
+import com.application.isyara.data.preferences.SessionManager
+import com.application.isyara.data.preferences.UserPreferences
 import com.application.isyara.utils.auth.IUserPreferences
 import dagger.Binds
 import dagger.Module

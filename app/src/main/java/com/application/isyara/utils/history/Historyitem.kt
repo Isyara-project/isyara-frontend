@@ -18,5 +18,10 @@ sealed class HistoryItem {
         override val timestamp: Long
     ) : HistoryItem()
 
-
+    data class DownloadedDictionaryPicture(
+        val id: Int,
+        val url: String,
+        val localPath: String,
+        override val timestamp: Long
+    ) : HistoryItem()
 }

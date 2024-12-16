@@ -4,24 +4,7 @@
             "outputFile": "com.application.isyara.test.app-mergeDebugAndroidTestResources-35:/values-ml/values-ml.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\88f800282adf46d4ce5ac78a3f63f086\\transformed\\core-1.15.0\\res\\values-ml\\values-ml.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9",
-                        "startColumns": "4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,157,260,362,466,569,670,792",
-                        "endColumns": "101,102,101,103,102,100,121,100",
-                        "endOffsets": "152,255,357,461,564,665,787,888"
-                    },
-                    "to": {
-                        "startLines": "2,3,4,5,6,7,8,24",
-                        "startColumns": "4,4,4,4,4,4,4,4",
-                        "startOffsets": "105,207,310,412,516,619,720,2154",
-                        "endColumns": "101,102,101,103,102,100,121,100",
-                        "endOffsets": "202,305,407,511,614,715,837,2250"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\f08c55822525ca5fdb2d2eb4f1b698a2\\transformed\\ui-release\\res\\values-ml\\values-ml.xml",
+                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\7fa1a06ea3d20b17b06aea4c8f9376a4\\transformed\\ui-release\\res\\values-ml\\values-ml.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -35,6 +18,23 @@
                         "startOffsets": "842,937,1024,1123,1227,1317,1403,1504,1591,1679,1765,1852,1930,2007,2081,2255,2331,2398",
                         "endColumns": "94,86,98,103,89,85,100,86,87,85,86,77,76,73,72,75,66,118",
                         "endOffsets": "932,1019,1118,1222,1312,1398,1499,1586,1674,1760,1847,1925,2002,2076,2149,2326,2393,2512"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\BAZY\\.gradle\\caches\\transforms-4\\72be6cae7b966f66e0171a85de66f175\\transformed\\core-1.15.0\\res\\values-ml\\values-ml.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,157,260,362,466,569,670,792",
+                        "endColumns": "101,102,101,103,102,100,121,100",
+                        "endOffsets": "152,255,357,461,564,665,787,888"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,24",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,207,310,412,516,619,720,2154",
+                        "endColumns": "101,102,101,103,102,100,121,100",
+                        "endOffsets": "202,305,407,511,614,715,837,2250"
                     }
                 }
             ]

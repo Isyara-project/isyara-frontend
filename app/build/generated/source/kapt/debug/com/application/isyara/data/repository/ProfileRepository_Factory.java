@@ -1,6 +1,6 @@
 package com.application.isyara.data.repository;
 
-import com.application.isyara.data.local.SessionManager;
+import com.application.isyara.data.preferences.SessionManager;
 import com.application.isyara.data.remote.ApiService;
 import com.google.gson.Gson;
 import dagger.internal.DaggerGenerated;

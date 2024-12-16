@@ -142,10 +142,9 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.ui)
     implementation(libs.accompanist.swiperefresh)
-
     implementation(libs.tasks.vision)
     implementation(libs.litert)
-    implementation(libs.litert.gpu)
+    implementation(libs.litert.gpu.v101)
     implementation(libs.litert.support)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.dash)

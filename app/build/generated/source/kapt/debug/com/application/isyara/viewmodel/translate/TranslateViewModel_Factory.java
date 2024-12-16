@@ -1,6 +1,7 @@
 package com.application.isyara.viewmodel.translate;
 
 import android.content.Context;
+import com.application.isyara.data.repository.ModelDownloadRepository;
 import com.application.isyara.data.repository.TranslatedTextRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
@@ -27,28 +28,33 @@ import javax.inject.Provider;
 public final class TranslateViewModel_Factory implements Factory<TranslateViewModel> {
   private final Provider<TranslatedTextRepository> translatedTextRepositoryProvider;
 
+  private final Provider<ModelDownloadRepository> modelDownloadRepositoryProvider;
+
   private final Provider<Context> contextProvider;
 
   public TranslateViewModel_Factory(
       Provider<TranslatedTextRepository> translatedTextRepositoryProvider,
+      Provider<ModelDownloadRepository> modelDownloadRepositoryProvider,
       Provider<Context> contextProvider) {
     this.translatedTextRepositoryProvider = translatedTextRepositoryProvider;
+    this.modelDownloadRepositoryProvider = modelDownloadRepositoryProvider;
     this.contextProvider = contextProvider;
   }
 
   @Override
   public TranslateViewModel get() {
-    return newInstance(translatedTextRepositoryProvider.get(), contextProvider.get());
+    return newInstance(translatedTextRepositoryProvider.get(), modelDownloadRepositoryProvider.get(), contextProvider.get());
   }
 
   public static TranslateViewModel_Factory create(
       Provider<TranslatedTextRepository> translatedTextRepositoryProvider,
+      Provider<ModelDownloadRepository> modelDownloadRepositoryProvider,
       Provider<Context> contextProvider) {
-    return new TranslateViewModel_Factory(translatedTextRepositoryProvider, contextProvider);
+    return new TranslateViewModel_Factory(translatedTextRepositoryProvider, modelDownloadRepositoryProvider, contextProvider);
   }
 
   public static TranslateViewModel newInstance(TranslatedTextRepository translatedTextRepository,
-      Context context) {
-    return new TranslateViewModel(translatedTextRepository, context);
+      ModelDownloadRepository modelDownloadRepository, Context context) {
+    return new TranslateViewModel(translatedTextRepository, modelDownloadRepository, context);
   }
 }

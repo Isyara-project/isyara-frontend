@@ -80,38 +80,6 @@ class TranslatedTextRepository @Inject constructor(
         }
     }
 
-    /**
-     * Menambahkan kata kustom ke kamus.
-     * @param word Kata kustom yang ingin ditambahkan.
-     */
-    fun addCustomWord(word: String): Result<Unit> {
-        return try {
-            dictionary.insert(word)
-            wordBreaker.insert(word)
-            Timber.d("TranslatedTextRepository: Kata kustom '$word' berhasil ditambahkan ke kamus.")
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Timber.e(e, "TranslatedTextRepository: Gagal menambahkan kata kustom '$word'.")
-            Result.Error("Gagal menambahkan kata kustom", e.hashCode())
-        }
-    }
-
-    /**
-     * Menghapus kata kustom dari kamus.
-     * @param word Kata kustom yang ingin dihapus.
-     */
-    fun deleteCustomWord(word: String): Result<Unit> {
-        return try {
-            dictionary.remove(word)
-            wordBreaker.remove(word)
-            Timber.d("TranslatedTextRepository: Kata kustom '$word' berhasil dihapus dari kamus.")
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Timber.e(e, "TranslatedTextRepository: Gagal menghapus kata kustom '$word'.")
-            Result.Error("Gagal menghapus kata kustom", e.hashCode())
-        }
-    }
-
     suspend fun deleteAllTranslatedTexts() {
         translatedTextDao.deleteAllTranslatedTexts()
     }

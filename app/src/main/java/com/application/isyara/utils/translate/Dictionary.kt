@@ -22,20 +22,6 @@ class Dictionary(private val trie: Trie) {
         return trie.search(word.lowercase(Locale.getDefault()))
     }
 
-    /**
-     * Mengecek apakah ada kata yang dimulai dengan prefix tertentu.
-     */
-    fun startsWith(prefix: String): Boolean {
-        return trie.startsWith(prefix.lowercase(Locale.getDefault()))
-    }
-
-    /**
-     * Menghapus kata dari kamus.
-     */
-    fun remove(word: String) {
-        trie.remove(word.lowercase(Locale.getDefault()))
-    }
-
     companion object {
         /**
          * Memuat kamus dari file assets.

@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,6 +27,7 @@ import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
+import com.application.isyara.R
 import com.application.isyara.utils.NetworkUtils
 import com.application.isyara.utils.dictionary.capitalizeWords
 import com.application.isyara.utils.main.AppHeaderMain
@@ -78,7 +80,7 @@ fun VideoPlayerScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Tidak dapat memutar video tanpa koneksi internet atau video belum diunduh.",
+                    text = stringResource(R.string.didnt_play_screen_video),
                     color = Color.Red,
                     fontSize = 16.sp,
                     textAlign = TextAlign.Center,
@@ -146,7 +148,7 @@ fun VideoPlayerScreen(
                         colors = listOf(ComposeColor(0xFF008E9B), ComposeColor(0xFF00B4D8))
                     ),
                     onBackClick = { navController.popBackStack() },
-                    isTopLevelPage = false // Sesuaikan dengan implementasi AppHeaderMain
+                    isTopLevelPage = false
                 )
 
                 // Video Player

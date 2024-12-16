@@ -4,211 +4,199 @@
         "source": "com.application.isyara.app-main-86:/drawable/hot_news_2.jpg"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\font_roboto_medium.ttf.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\font\\roboto_medium.ttf"
+        "merged": "com.application.isyara.app-debug-84:/drawable_isyara_putih.png.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/isyara_putih.png"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-xxxhdpi\\ic_launcher.webp"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_otp.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_otp.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_isyara_putih.png.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\isyara_putih.png"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_sibi.png.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_sibi.png"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_otp.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_otp.xml"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_bisindo.png.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_bisindo.png"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-xhdpi\\ic_launcher.webp"
+        "merged": "com.application.isyara.app-debug-84:/mipmap-xxhdpi_ic_launcher_round_round.webp.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-xxhdpi/ic_launcher_round_round.webp"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_header_dictionary.png.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_header_dictionary.png"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_tips.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_tips.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_error.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_error.xml"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_password.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_password.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-mdpi\\ic_launcher_round.webp"
+        "merged": "com.application.isyara.app-debug-84:/mipmap-xxxhdpi_ic_launcher_round_round.webp.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-xxxhdpi/ic_launcher_round_round.webp"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_onboarding_image_1.png.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\onboarding_image_1.png"
+        "merged": "com.application.isyara.app-debug-84:/mipmap-mdpi_ic_launcher_round_round.webp.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-mdpi/ic_launcher_round_round.webp"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_email.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_email.xml"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_header_dictionary.png.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_header_dictionary.png"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_username.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_username.xml"
+        "merged": "com.application.isyara.app-debug-84:/drawable_onboarding_image_2.png.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/onboarding_image_2.png"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_search.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_search.xml"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_notification.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_notification.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_help.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_help.xml"
+        "merged": "com.application.isyara.app-debug-84:/font_roboto_regular.ttf.flat",
+        "source": "com.application.isyara.app-main-86:/font/roboto_regular.ttf"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-xxhdpi\\ic_launcher.webp"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_launcher_round_foreground.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_launcher_round_foreground.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-xxhdpi\\ic_launcher_round.webp"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_error.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_error.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-hdpi\\ic_launcher.webp"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-xhdpi\\ic_launcher_round.webp"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_search.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_search.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_image_placeholder.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_image_placeholder.xml"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_user.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_user.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_isyara_splash.png.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\isyara_splash.png"
+        "merged": "com.application.isyara.app-debug-84:/drawable_isyara_logo.png.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/isyara_logo.png"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_launcher_background.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_launcher_background.xml"
+        "merged": "com.application.isyara.app-debug-84:/font_roboto_medium.ttf.flat",
+        "source": "com.application.isyara.app-main-86:/font/roboto_medium.ttf"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\xml_backup_rules.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\xml\\backup_rules.xml"
+        "merged": "com.application.isyara.app-debug-84:/xml_backup_rules.xml.flat",
+        "source": "com.application.isyara.app-main-86:/xml/backup_rules.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-mdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-mdpi\\ic_launcher_foreground.webp"
+        "merged": "com.application.isyara.app-debug-84:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-hdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_notification.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_notification.xml"
-    },
-    {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_sibi.png.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_sibi.png"
-    },
-    {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_tips.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_tips.xml"
-    },
-    {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_sibi_huruf.png.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_sibi_huruf.png"
-    },
-    {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
-    },
-    {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-xhdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-xhdpi\\ic_launcher_foreground.webp"
-    },
-    {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_hot_news.jpg.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\hot_news.jpg"
+        "merged": "com.application.isyara.app-debug-84:/drawable_logo_isyara_white.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/logo_isyara_white.xml"
     },
     {
         "merged": "com.application.isyara.app-debug-84:/drawable_hot_news_3.jpg.flat",
         "source": "com.application.isyara.app-main-86:/drawable/hot_news_3.jpg"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_more.png.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_more.png"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_email.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_email.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-hdpi\\ic_launcher_round.webp"
+        "merged": "com.application.isyara.app-debug-84:/mipmap-anydpi-v26_ic_launcher_round_round.xml.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-anydpi-v26/ic_launcher_round_round.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_user.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_user.xml"
+        "merged": "com.application.isyara.app-debug-84:/mipmap-xhdpi_ic_launcher_round_round.webp.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-xhdpi/ic_launcher_round_round.webp"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\font_roboto_bold.ttf.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\font\\roboto_bold.ttf"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_image_placeholder.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_image_placeholder.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-hdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-hdpi\\ic_launcher_foreground.webp"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_help.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_help.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_isyara_logo.png.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\isyara_logo.png"
+        "merged": "com.application.isyara.app-debug-84:/drawable_header_isyara.png.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/header_isyara.png"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_header_isyara.png.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\header_isyara.png"
+        "merged": "com.application.isyara.app-debug-84:/font_roboto_bold.ttf.flat",
+        "source": "com.application.isyara.app-main-86:/font/roboto_bold.ttf"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_arrow_back.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_arrow_back.xml"
+        "merged": "com.application.isyara.app-debug-84:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-anydpi-v26\\ic_launcher.xml"
+        "merged": "com.application.isyara.app-debug-84:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-xxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\font_roboto_regular.ttf.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\font\\roboto_regular.ttf"
+        "merged": "com.application.isyara.app-debug-84:/drawable_logo_isyara_putih__1.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/logo_isyara_putih__1.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\xml_data_extraction_rules.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\xml\\data_extraction_rules.xml"
+        "merged": "com.application.isyara.app-debug-84:/mipmap-hdpi_ic_launcher_round_round.webp.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-hdpi/ic_launcher_round_round.webp"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-xxhdpi\\ic_launcher_foreground.webp"
+        "merged": "com.application.isyara.app-debug-84:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-xhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-xxxhdpi\\ic_launcher_foreground.webp"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_more.png.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_more.png"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_phone.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_phone.xml"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_sibi_huruf.png.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_sibi_huruf.png"
     },
     {
         "merged": "com.application.isyara.app-debug-84:/drawable_hot_news_1.jpg.flat",
         "source": "com.application.isyara.app-main-86:/drawable/hot_news_1.jpg"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_launcher_foreground.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_launcher_foreground.xml"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_username.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_username.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-mdpi\\ic_launcher.webp"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_phone.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_phone.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
+        "merged": "com.application.isyara.app-debug-84:/drawable_isyara_splash.png.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/isyara_splash.png"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_password.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_password.xml"
+        "merged": "com.application.isyara.app-debug-84:/xml_data_extraction_rules.xml.flat",
+        "source": "com.application.isyara.app-main-86:/xml/data_extraction_rules.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_logout.xml.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_logout.xml"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_arrow_back.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_arrow_back.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_onboarding_image_2.png.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\onboarding_image_2.png"
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_launcher_background.xml"
     },
     {
-        "merged": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-debug-84:\\drawable_ic_bisindo.png.flat",
-        "source": "C:\\Users\\BAZY\\.gradle\\daemon\\8.7\\com.application.isyara.app-main-86:\\drawable\\ic_bisindo.png"
+        "merged": "com.application.isyara.app-debug-84:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-84:/drawable_ic_logout.xml.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/ic_logout.xml"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-84:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.application.isyara.app-main-86:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.application.isyara.app-debug-84:/drawable_onboarding_image_1.png.flat",
+        "source": "com.application.isyara.app-main-86:/drawable/onboarding_image_1.png"
     }
 ]

@@ -1,7 +1,6 @@
-@file:Suppress("DEPRECATION")
-
 package com.application.isyara.utils.translate
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Size
 import androidx.camera.core.CameraSelector
@@ -31,18 +30,18 @@ fun CameraPreview(
     viewModel: TranslateViewModel,
     isFrontCamera: Boolean = true,
     isTranslationActive: Boolean = true,
-    modifier: Modifier = Modifier
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     val cameraExecutor: ExecutorService = remember { Executors.newSingleThreadExecutor() }
     var previewView by remember { mutableStateOf<PreviewView?>(null) }
+
     LaunchedEffect(previewView, isFrontCamera, isTranslationActive) {
         previewView?.let { view ->
             try {
                 val cameraProvider = cameraProviderFuture.get()
                 val preview = Preview.Builder()
-                    .setTargetResolution(Size(1280,720))
                     .build()
                     .also {
                         it.surfaceProvider = view.surfaceProvider
@@ -53,9 +52,9 @@ fun CameraPreview(
                 } else {
                     CameraSelector.DEFAULT_BACK_CAMERA
                 }
+
                 val imageAnalysis = ImageAnalysis.Builder()
-                    .setTargetResolution(Size(1280,720))
-                    .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+                    .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()
                     .also {

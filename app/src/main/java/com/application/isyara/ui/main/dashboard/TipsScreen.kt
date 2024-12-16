@@ -1,7 +1,17 @@
 package com.application.isyara.ui.main.dashboard
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -30,33 +40,58 @@ fun TipsScreen(onBackClick: () -> Unit, navController: NavController) {
     val tipsList = listOf(
         TipItem(
             iconRes = R.drawable.ic_tips,
-            title = "Belajar dengan Konsisten",
-            description = "Luangkan waktu 30 menit setiap hari untuk belajar bahasa isyarat."
+            title = stringResource(R.string.title_1),
+            description = stringResource(R.string.description_1)
         ),
         TipItem(
             iconRes = R.drawable.ic_tips,
-            title = "Praktek dengan Teman",
-            description = "Latih bahasa isyarat dengan teman atau keluarga agar lebih percaya diri."
+            title = stringResource(R.string.title_2),
+            description = stringResource(R.string.description_2)
         ),
         TipItem(
             iconRes = R.drawable.ic_tips,
-            title = "Gunakan Aplikasi Isyara",
-            description = "Eksplor fitur translate dan kamus di aplikasi Isyara untuk mempermudah belajar."
+            title = stringResource(R.string.title_3),
+            description = stringResource(R.string.description_3)
         ),
         TipItem(
             iconRes = R.drawable.ic_tips,
-            title = "Tonton Video dan Konten Online",
-            description = "Belajar dari video tutorial bahasa isyarat di YouTube atau platform lainnya."
+            title = stringResource(R.string.title_4),
+            description = stringResource(R.string.description_4)
         ),
         TipItem(
             iconRes = R.drawable.ic_tips,
-            title = "Ikut Komunitas Bahasa Isyarat",
-            description = "Bergabung dengan komunitas atau forum untuk belajar bersama dan berbagi pengalaman."
+            title = stringResource(R.string.title_5),
+            description = stringResource(R.string.description_5)
         ),
         TipItem(
             iconRes = R.drawable.ic_tips,
-            title = "Gunakan Cermin",
-            description = "Berlatih bahasa isyarat di depan cermin untuk melihat gerakan tangan dan ekspresi wajah Anda."
+            title = stringResource(R.string.title_6),
+            description = stringResource(R.string.description_6)
+        ),
+        TipItem(
+            iconRes = R.drawable.ic_tips,
+            title = stringResource(R.string.title_7),
+            description = stringResource(R.string.description_7)
+        ),
+        TipItem(
+            iconRes = R.drawable.ic_tips,
+            title = stringResource(R.string.title_8),
+            description = stringResource(R.string.description_8)
+        ),
+        TipItem(
+            iconRes = R.drawable.ic_tips,
+            title = stringResource(R.string.title_9),
+            description = stringResource(R.string.description_9)
+        ),
+        TipItem(
+            iconRes = R.drawable.ic_tips,
+            title = stringResource(R.string.title_10),
+            description = stringResource(R.string.description_10)
+        ),
+        TipItem(
+            iconRes = R.drawable.ic_tips,
+            title = stringResource(R.string.title_11),
+            description = stringResource(R.string.description_11)
         )
     )
 
@@ -67,7 +102,7 @@ fun TipsScreen(onBackClick: () -> Unit, navController: NavController) {
     ) {
         // Header
         AppHeaderMain(
-            title = "Tips Belajar",
+            title = stringResource(R.string.tips_isyarat),
             onBackClick = onBackClick,
             backgroundColor = Brush.horizontalGradient(
                 colors = listOf(

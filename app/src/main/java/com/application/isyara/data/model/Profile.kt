@@ -9,19 +9,19 @@ data class ProfileResponse(
 
 data class ProfileData(
     @SerializedName("id")
-    val id: String,
+    val id: String = "",
 
     @SerializedName("fullname")
-    val fullname: String,
+    val fullname: String = "",
 
     @SerializedName("picture")
-    val picture: String?,
+    val picture: String? = null,
 
     @SerializedName("bio")
-    val bio: String?,
+    val bio: String? = null,
 
     @SerializedName("userId")
-    val userId: String
+    val userId: String = ""
 )
 
 data class UpdateProfileResponse(

@@ -1,8 +1,6 @@
 package com.application.isyara.ui.main.settings
 
-import android.content.Context
 import android.net.Uri
-import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -12,10 +10,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,9 +27,12 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.application.isyara.R
 import com.application.isyara.utils.main.AppHeaderMain
-import com.application.isyara.utils.settings.toMultipartBodyPart
+import com.application.isyara.utils.settings.MultipartData
+import com.application.isyara.utils.settings.toMultipartData
 import com.application.isyara.utils.state.Result
-import com.application.isyara.viewmodel.main.ProfileViewModel
+import com.application.isyara.viewmodel.dashboard.ProfileViewModel
+import timber.log.Timber
+
 
 @Composable
 fun EditAccountScreen(
@@ -45,11 +42,7 @@ fun EditAccountScreen(
     val context = LocalContext.current
 
     // State untuk gambar profil yang dipilih
-    var profileImageUri by remember { mutableStateOf<Uri?>(null) }
-
-    // State untuk input nama dan bio
-    var name by remember { mutableStateOf("") }
-    var bio by remember { mutableStateOf("") }
+    var profileImageData by remember { mutableStateOf<MultipartData?>(null) }
 
     // Launcher untuk memilih gambar
     val imagePickerLauncher = rememberLauncherForActivityResult(
@@ -59,7 +52,18 @@ fun EditAccountScreen(
                 // Validasi tipe dan ukuran file
                 val isValid = validateImage(context, uri)
                 if (isValid) {
-                    profileImageUri = uri
+                    val multipartData = uri.toMultipartData(context, "file")
+                    if (multipartData != null) {
+                        profileImageData = multipartData
+                        Timber.d("Selected Image URI: ${multipartData.file.absolutePath}")
+                        Toast.makeText(context, "Gambar dipilih.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Gagal memproses gambar.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 } else {
                     Toast.makeText(
                         context,
@@ -87,6 +91,13 @@ fun EditAccountScreen(
                 Toast.makeText(context, "Profil berhasil diperbarui.", Toast.LENGTH_SHORT).show()
                 profileViewModel.resetUpdateProfileState()
                 navController.popBackStack()
+
+                // Hapus file sementara setelah berhasil upload
+                profileImageData?.file?.delete()
+                profileImageData = null
+
+                // Mengambil profil lagi untuk memperbarui UI
+                profileViewModel.fetchProfile()
             }
 
             is Result.Error -> {
@@ -123,10 +134,8 @@ fun EditAccountScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Konten berdasarkan state profil
             when (profileState) {
                 is Result.Loading -> {
-                    // Indikator loading saat profil sedang dimuat
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -137,14 +146,13 @@ fun EditAccountScreen(
 
                 is Result.Success -> {
                     val profileData = (profileState as Result.Success).data
-
-                    // Mengisi state input dengan data profil saat ini
                     LaunchedEffect(profileData) {
-                        name = profileData.fullname
-                        bio = profileData.bio ?: ""
+                        Timber.d("Fetched Profile Data: $profileData")
+                        Timber.d("Picture URL: ${profileData.picture}")
                     }
 
-                    // UI untuk Foto Profil
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -153,40 +161,36 @@ fun EditAccountScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(100.dp)
+                                .size(120.dp)
                                 .background(Color(0xFFE1F5FE), CircleShape)
                                 .border(2.dp, Color(0xFF008E9B), CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
-                            profileImageUri?.let { uri ->
-                                AsyncImage(
-                                    model = uri,
-                                    contentDescription = "Foto Profil",
-                                    modifier = Modifier
-                                        .size(80.dp)
-                                        .clip(CircleShape)
-                                        .background(Color.Gray),
-                                    placeholder = painterResource(id = R.drawable.ic_image_placeholder),
-                                    error = painterResource(id = R.drawable.ic_error),
-                                    contentScale = ContentScale.Crop
-                                )
-                            } ?: profileData.picture?.let { pictureUrl ->
-                                AsyncImage(
-                                    model = pictureUrl,
-                                    contentDescription = "Foto Profil",
-                                    modifier = Modifier
-                                        .size(80.dp)
-                                        .clip(CircleShape)
-                                        .background(Color.Gray),
-                                    placeholder = painterResource(id = R.drawable.ic_image_placeholder),
-                                    error = painterResource(id = R.drawable.ic_error),
-                                    contentScale = ContentScale.Crop
-                                )
-                            } ?: Icon(
-                                imageVector = Icons.Default.AccountCircle,
+                            val correctedPictureUrl = profileData.picture?.replace(
+                                "https://storage.cloud.google.com/",
+                                "https://storage.googleapis.com/"
+                            )
+
+                            val pictureUrlWithTimestamp = correctedPictureUrl?.let {
+                                "$it?timestamp=${System.currentTimeMillis()}"
+                            }
+
+                            val imageModel = profileImageData?.file ?: pictureUrlWithTimestamp
+
+                            LaunchedEffect(imageModel) {
+                                Timber.d("AsyncImage Model: $imageModel")
+                            }
+
+                            AsyncImage(
+                                model = imageModel,
                                 contentDescription = "Foto Profil",
-                                modifier = Modifier.size(80.dp),
-                                tint = Color(0xFF008E9B)
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Gray),
+                                placeholder = painterResource(id = R.drawable.ic_image_placeholder),
+                                error = painterResource(id = R.drawable.ic_error),
+                                contentScale = ContentScale.Crop
                             )
                         }
                     }
@@ -208,72 +212,25 @@ fun EditAccountScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Kolom untuk input Nama Lengkap dan Bio
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        // Input Nama Lengkap
-                        TextField(
-                            value = name,
-                            onValueChange = { name = it },
-                            label = { Text("Nama Lengkap") },
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = TextFieldDefaults.textFieldColors(
-                                focusedIndicatorColor = Color(0xFF008E9B),
-                                unfocusedIndicatorColor = Color.Gray
-                            )
-                        )
-
-                        // Input Bio
-                        TextField(
-                            value = bio,
-                            onValueChange = { bio = it },
-                            label = { Text("Bio") },
-                            singleLine = false,
-                            modifier = Modifier.fillMaxWidth(),
-                            maxLines = 3,
-                            placeholder = { Text("Ceritakan sedikit tentang dirimu...") },
-                            colors = TextFieldDefaults.textFieldColors(
-                                focusedIndicatorColor = Color(0xFF008E9B),
-                                unfocusedIndicatorColor = Color.Gray
-                            )
-                        )
-                    }
-
                     Spacer(modifier = Modifier.height(24.dp))
 
                     // Tombol untuk menyimpan perubahan
                     Button(
                         onClick = {
-                            // Validasi input
-                            if (name.isBlank()) {
+                            val multipartData = profileImageData
+                            val filePart = multipartData?.part
+
+                            if (filePart == null) {
                                 Toast.makeText(
                                     context,
-                                    "Nama Lengkap tidak boleh kosong.",
+                                    "Silakan pilih foto profil terlebih dahulu.",
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 return@Button
                             }
 
-                            // Menyiapkan MultipartBody.Part untuk gambar
-                            val filePart = profileImageUri?.let { uri ->
-                                uri.toMultipartBodyPart(context, "file")
-                            }
-
-                            // Menyiapkan data profil yang diperbarui
-                            val updatedName = name
-                            val updatedBio = bio
-
                             profileViewModel.updateProfile(
-                                file = filePart,
-                                fullname = updatedName,
-                                bio = updatedBio
+                                file = filePart
                             )
                         },
                         enabled = updateProfileState !is Result.Loading,
@@ -330,7 +287,6 @@ fun EditAccountScreen(
                 }
 
                 else -> {
-                    // State Idle atau lainnya, bisa dibiarkan kosong atau diisi sesuai kebutuhan
                 }
             }
         }
@@ -341,7 +297,7 @@ fun EditAccountScreen(
  * Fungsi untuk memvalidasi tipe dan ukuran gambar.
  * Mengembalikan true jika valid, false jika tidak.
  */
-fun validateImage(context: Context, uri: Uri): Boolean {
+fun validateImage(context: android.content.Context, uri: Uri): Boolean {
     val contentResolver = context.contentResolver
     val mimeType = contentResolver.getType(uri) ?: return false
     val isValidType = mimeType in listOf("image/jpeg", "image/png", "image/jpg")
@@ -349,7 +305,7 @@ fun validateImage(context: Context, uri: Uri): Boolean {
     var sizeInBytes: Long = 0
     cursor?.use {
         if (it.moveToFirst()) {
-            val sizeIndex = it.getColumnIndex(OpenableColumns.SIZE)
+            val sizeIndex = it.getColumnIndex(android.provider.OpenableColumns.SIZE)
             if (sizeIndex != -1) {
                 sizeInBytes = it.getLong(sizeIndex)
             }
